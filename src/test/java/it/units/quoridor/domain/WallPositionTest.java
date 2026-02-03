@@ -36,4 +36,15 @@ class WallPositionTest {
         assertThrows(IllegalArgumentException.class, () -> new WallPosition(4, 8));
     }
 
+    @Test
+    void wallsWithSameCoordinatesAreEqual() {
+        assertEquals(new WallPosition(4, 4), new WallPosition(4, 4));
+    }
+
+    @Test
+    void wallsWithDifferentCoordinatesAreNotEqual() {
+        assertNotEquals(new WallPosition(4, 4), new WallPosition(4, 5));
+        assertNotEquals(new WallPosition(4, 4), new WallPosition(3, 4));
+    }
+
 }

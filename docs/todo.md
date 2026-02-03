@@ -34,8 +34,8 @@
 - [x] Reject wall position with row > 7
 - [x] Reject wall position with negative column
 - [x] Reject wall position with column > 7
-- [ ] Two wall positions with same coordinates are equal
-- [ ] Two wall positions with different coordinates are not equal
+- [x] Two wall positions with same coordinates are equal
+- [x] Two wall positions with different coordinates are not equal
 
 ### WallOrientation
 - [ ] HORIZONTAL orientation exists
