@@ -5,8 +5,8 @@
 ## Domain Objects
 
 ### Direction
-- [x] NORTH has row delta -1, col delta 0
-- [x] SOUTH has row delta +1, col delta 0
+- [x] NORTH has row delta +1, col delta 0
+- [x] SOUTH has row delta -1, col delta 0
 - [x] EAST has row delta 0, col delta +1
 - [x] WEST has row delta 0, col delta -1
 

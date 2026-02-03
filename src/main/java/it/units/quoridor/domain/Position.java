@@ -1,7 +1,12 @@
 package it.units.quoridor.domain;
 
 /**
- * Represent a valid position on the 9x9 quoridor board
+ * Represent a valid position on the 9x9 Quoridor board.
+ *
+ * Uses Cartesian coordinate system:
+ * - Origin (0,0) at bottom-left corner
+ * - row 0 = bottom, row 8 = top
+ * - col 0 = left, col 8 = right
  */
 
 public record Position(int row, int col) {

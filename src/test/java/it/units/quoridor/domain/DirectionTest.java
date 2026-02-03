@@ -8,12 +8,14 @@ class DirectionTest {
 
     @Test
     void northHasCorrectDelta() {
-        assertEquals(-1, Direction.NORTH.rowDelta());
+        // Cartesian: NORTH (up) increases row
+        assertEquals(1, Direction.NORTH.rowDelta());
         assertEquals(0, Direction.NORTH.colDelta());
     }
     @Test
     void southHasCorrectDelta() {
-        assertEquals(1, Direction.SOUTH.rowDelta());
+        // Cartesian: SOUTH (down) decreases row
+        assertEquals(-1, Direction.SOUTH.rowDelta());
         assertEquals(0, Direction.SOUTH.colDelta());
     }
 
