@@ -5,10 +5,10 @@
 ## Domain Objects
 
 ### Direction
-- [ ] NORTH has row delta -1, col delta 0
-- [ ] SOUTH has row delta +1, col delta 0
-- [ ] EAST has row delta 0, col delta +1
-- [ ] WEST has row delta 0, col delta -1
+- [x] NORTH has row delta -1, col delta 0
+- [x] SOUTH has row delta +1, col delta 0
+- [x] EAST has row delta 0, col delta +1
+- [x] WEST has row delta 0, col delta -1
 - [ ] NORTH opposite is SOUTH
 - [ ] SOUTH opposite is NORTH
 - [ ] EAST opposite is WEST
