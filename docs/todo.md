@@ -49,3 +49,39 @@
 - [x] Two walls with same position but different orientation are not equal
 - [x] Two walls with different position but same orientation are not equal
 
+### BlockedEdge
+- [ ] Create blocked edge with position and direction
+- [ ] Two blocked edges with same position and direction are equal
+- [ ] Two blocked edges with different position are not equal
+- [ ] Two blocked edges with different direction are not equal
+
+### Wall - Blocked Edges Behavior
+- [ ] Horizontal wall at (3,4) blocks (3,4) moving SOUTH
+- [ ] Horizontal wall at (3,4) blocks (3,5) moving SOUTH
+- [ ] Horizontal wall at (3,4) blocks (4,4) moving NORTH
+- [ ] Horizontal wall at (3,4) blocks (4,5) moving NORTH
+- [ ] Vertical wall at (3,4) blocks (3,4) moving EAST
+- [ ] Vertical wall at (3,4) blocks (3,5) moving WEST
+- [ ] Vertical wall at (3,4) blocks (4,4) moving EAST
+- [ ] Vertical wall at (3,4) blocks (4,5) moving WEST
+
+### PlayerId
+- [ ] PLAYER_1 exists with ordinal 0
+- [ ] PLAYER_2 exists with ordinal 1
+- [ ] PLAYER_3 exists with ordinal 2
+- [ ] PLAYER_4 exists with ordinal 3
+
+### Player
+- [ ] Create player with id, name, start position, goal row, and initial walls
+- [ ] Player knows its id
+- [ ] Player knows its name
+- [ ] Player knows its position
+- [ ] Player knows its goal row
+- [ ] Player knows walls remaining
+- [ ] Move player to new position updates position
+- [ ] Use wall decrements walls remaining
+- [ ] Use wall with zero walls throws exception
+- [ ] Return wall increments walls remaining
+- [ ] Player at goal row has reached goal
+- [ ] Player not at goal row has not reached goal
+
