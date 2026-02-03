@@ -24,30 +24,22 @@ class PositionTest {
     @Test
     void positionWithNegativeRowThrowsException() {
 
-        assertThrows(IllegalArgumentException.class, () -> {
-            new Position(-1, 4);
-        });
+        assertThrows(IllegalArgumentException.class, () -> new Position(-1, 4));
     }
 
     @Test
     void positionWithRowGreaterThan8ThrowsException() {
-        assertThrows(IllegalArgumentException.class, () -> {
-            new Position(9, 4);
-        });
+        assertThrows(IllegalArgumentException.class, () -> new Position(9, 4));
     }
 
     @Test
     void positionWithNegativeColThrowsException() {
-        assertThrows(IllegalArgumentException.class, () -> {
-            new Position(4, -1);
-        });
+        assertThrows(IllegalArgumentException.class, () -> new Position(4, -1));
     }
 
     @Test
     void positionWithColGreaterThan8ThrowsException() {
-        assertThrows(IllegalArgumentException.class, () -> {
-            new Position(4, 9);
-        });
+        assertThrows(IllegalArgumentException.class, () -> new Position(4, 9));
     }
 
     // ============================================================
@@ -98,36 +90,28 @@ class PositionTest {
     void moveNorthfromTopRowThrowsException() {
         Position topEdge = new Position(8, 4);
 
-        assertThrows(IllegalArgumentException.class, () -> {
-            topEdge.move(Direction.NORTH);
-        });
+        assertThrows(IllegalArgumentException.class, () -> topEdge.move(Direction.NORTH));
     }
 
     @Test
     void moveSouthFromBottomRowThrowsException() {
         Position bottomEdge = new Position(0, 4);
 
-        assertThrows(IllegalArgumentException.class, () -> {
-            bottomEdge.move(Direction.SOUTH);
-        });
+        assertThrows(IllegalArgumentException.class, () -> bottomEdge.move(Direction.SOUTH));
     }
 
     @Test
     void moveEastFromRightmostColThrowsException() {
         Position rightEdge = new Position(4, 8);
 
-        assertThrows(IllegalArgumentException.class, () -> {
-            rightEdge.move(Direction.EAST);
-        });
+        assertThrows(IllegalArgumentException.class, () -> rightEdge.move(Direction.EAST));
     }
 
     @Test
     void moveWestFromLeftmostColThrowsException() {
         Position leftEdge = new Position(4, 0);
 
-        assertThrows(IllegalArgumentException.class, () -> {
-            leftEdge.move(Direction.WEST);
-        });
+        assertThrows(IllegalArgumentException.class, () -> leftEdge.move(Direction.WEST));
     }
 
 }
