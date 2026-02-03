@@ -29,11 +29,11 @@
 - [ ] Two positions with different col are not equal
 
 ### WallPosition
-- [ ] Create wall position with valid values (0-7, 0-7)
-- [ ] Reject wall position with negative row
-- [ ] Reject wall position with row > 7
-- [ ] Reject wall position with negative column
-- [ ] Reject wall position with column > 7
+- [x] Create wall position with valid values (0-7, 0-7)
+- [x] Reject wall position with negative row
+- [x] Reject wall position with row > 7
+- [x] Reject wall position with negative column
+- [x] Reject wall position with column > 7
 - [ ] Two wall positions with same coordinates are equal
 - [ ] Two wall positions with different coordinates are not equal
 
