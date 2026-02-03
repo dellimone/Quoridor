@@ -38,8 +38,8 @@
 - [x] Two wall positions with different coordinates are not equal
 
 ### WallOrientation
-- [ ] HORIZONTAL orientation exists
-- [ ] VERTICAL orientation exists
+- [x] HORIZONTAL orientation exists
+- [x] VERTICAL orientation exists
 
 ### Wall
 - [ ] Create wall with position and orientation
