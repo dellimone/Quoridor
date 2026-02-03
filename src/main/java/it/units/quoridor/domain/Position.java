@@ -22,4 +22,8 @@ public record Position(int row, int col) {
             throw new IllegalArgumentException("col must be between 0 and 8");
         }
     }
+
+    public Position move(Direction direction) {
+        return new Position(row + direction.rowDelta(), col + direction.colDelta());
+    }
 }

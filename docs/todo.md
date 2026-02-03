@@ -16,8 +16,12 @@
 - [x] Reject position with row > 8
 - [x] Reject position with negative column
 - [x] Reject position with column > 8
-- [ ] Move north from (4,4) gives (3,4)
-- [ ] Move south from (4,4) gives (5,4)
-- [ ] Move east from (4,4) gives (4,5)
-- [ ] Move west from (4,4) gives (4,3)
+- [x] Move north from (4,4) gives (3,4)
+- [x] Move south from (4,4) gives (5,4)
+- [x] Move east from (4,4) gives (4,5)
+- [x] Move west from (4,4) gives (4,3)
+- [x] Reject move north from top row
+- [x] Reject move south from bottom row
+- [x] Reject move west from leftmost column
+- [x] Reject move east from rightmost column
 
