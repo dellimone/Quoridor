@@ -24,9 +24,9 @@
 - [x] Reject move south from bottom row (row 0)
 - [x] Reject move west from leftmost column (col 0)
 - [x] Reject move east from rightmost column (col 8)
-- [ ] Two positions with same row and col are equal
-- [ ] Two positions with different row are not equal
-- [ ] Two positions with different col are not equal
+- [x] Two positions with same row and col are equal
+- [x] Two positions with different row are not equal
+- [x] Two positions with different col are not equal
 
 ### WallPosition
 - [x] Create wall position with valid values (0-7, 0-7)

@@ -42,6 +42,18 @@ class PositionTest {
         assertThrows(IllegalArgumentException.class, () -> new Position(4, 9));
     }
 
+    @Test
+    void positionWithSameCoordinatesAreEqual() {
+        assertEquals(new Position(4, 4), new Position(4, 4));
+    }
+
+    @Test
+    void positionWithDifferentCoordinatesAreNotEqual() {
+        assertNotEquals(new Position(4, 4), new Position(4, 5));
+        assertNotEquals(new Position(4, 4), new Position(5, 4));
+
+    }
+
     // ============================================================
     // Movement Tests
     // ============================================================
