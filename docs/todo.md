@@ -42,10 +42,10 @@
 - [x] VERTICAL orientation exists
 
 ### Wall
-- [ ] Create wall with position and orientation
-- [ ] Wall knows its position
-- [ ] Wall knows its orientation
-- [ ] Two walls with same position and orientation are equal
-- [ ] Two walls with same position but different orientation are not equal
-- [ ] Two walls with different position but same orientation are not equal
+- [x] Create wall with position and orientation
+- [x] Wall knows its position
+- [x] Wall knows its orientation
+- [x] Two walls with same position and orientation are equal
+- [x] Two walls with same position but different orientation are not equal
+- [x] Two walls with different position but same orientation are not equal
 
