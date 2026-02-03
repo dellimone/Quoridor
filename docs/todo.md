@@ -9,14 +9,6 @@
 - [x] SOUTH has row delta +1, col delta 0
 - [x] EAST has row delta 0, col delta +1
 - [x] WEST has row delta 0, col delta -1
-- [ ] NORTH opposite is SOUTH
-- [ ] SOUTH opposite is NORTH
-- [ ] EAST opposite is WEST
-- [ ] WEST opposite is EAST
-- [ ] NORTH perpendiculars are EAST and WEST
-- [ ] SOUTH perpendiculars are EAST and WEST
-- [ ] EAST perpendiculars are NORTH and SOUTH
-- [ ] WEST perpendiculars are NORTH and SOUTH
 
 ### Position
 - [x] Create position with valid values (0-8, 0-8)
