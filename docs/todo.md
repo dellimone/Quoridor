@@ -50,10 +50,10 @@
 - [x] Two walls with different position but same orientation are not equal
 
 ### BlockedEdge
-- [ ] Create blocked edge with position and direction
-- [ ] Two blocked edges with same position and direction are equal
-- [ ] Two blocked edges with different position are not equal
-- [ ] Two blocked edges with different direction are not equal
+- [x] Create blocked edge with position and direction
+- [x] Two blocked edges with same position and direction are equal
+- [x] Two blocked edges with different position are not equal
+- [x] Two blocked edges with different direction are not equal
 
 ### Wall - Blocked Edges Behavior
 - [ ] Horizontal wall at (3,4) blocks (3,4) moving SOUTH
