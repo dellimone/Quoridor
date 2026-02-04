@@ -72,12 +72,12 @@
 - [x] PLAYER_4 exists with ordinal 3
 
 ### Player
-- [ ] Create player with id, name, start position, goal row, and initial walls
-- [ ] Player knows its id
-- [ ] Player knows its name
-- [ ] Player knows its position
-- [ ] Player knows its goal row
-- [ ] Player knows walls remaining
+- [x] Create player with id, name, start position, goal row, and initial walls
+- [x] Player knows its id
+- [x] Player knows its name
+- [x] Player knows its position
+- [x] Player knows its goal row
+- [x] Player knows walls remaining
 - [ ] Move player to new position updates position
 - [ ] Use wall decrements walls remaining
 - [ ] Use wall with zero walls throws exception
