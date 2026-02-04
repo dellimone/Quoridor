@@ -37,5 +37,29 @@ class WallTest {
 
     }
 
+    @Test
+    void horizontalWallCreatesBlockedEdges() {
+        WallPosition wallPosition = new WallPosition(3, 4);
+        Wall wall = new Wall(wallPosition, WallOrientation.HORIZONTAL);
+
+        var blockedEdges = wall.getBlockedEdges();
+        assertTrue(blockedEdges.contains(new BlockedEdge(new Position(3, 4), Direction.NORTH)));
+        assertTrue(blockedEdges.contains(new BlockedEdge(new Position(3, 5), Direction.NORTH)));
+        assertTrue(blockedEdges.contains(new BlockedEdge(new Position(4, 4), Direction.SOUTH)));
+        assertTrue(blockedEdges.contains(new BlockedEdge(new Position(4, 5), Direction.SOUTH)));
+    }
+
+    @Test
+    void verticalWallCreatesBlockedEdges() {
+        WallPosition wallPosition = new WallPosition(3, 4);
+        Wall wall = new Wall(wallPosition, WallOrientation.VERTICAL);
+
+        var blockedEdges = wall.getBlockedEdges();
+        assertTrue(blockedEdges.contains(new BlockedEdge(new Position(3, 4), Direction.EAST)));
+        assertTrue(blockedEdges.contains(new BlockedEdge(new Position(4, 4), Direction.EAST)));
+        assertTrue(blockedEdges.contains(new BlockedEdge(new Position(3, 5), Direction.WEST)));
+        assertTrue(blockedEdges.contains(new BlockedEdge(new Position(4, 5), Direction.WEST)));
+    }
+
 
 }

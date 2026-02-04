@@ -56,14 +56,14 @@
 - [x] Two blocked edges with different direction are not equal
 
 ### Wall - Blocked Edges Behavior
-- [ ] Horizontal wall at (3,4) blocks (3,4) moving SOUTH
-- [ ] Horizontal wall at (3,4) blocks (3,5) moving SOUTH
-- [ ] Horizontal wall at (3,4) blocks (4,4) moving NORTH
-- [ ] Horizontal wall at (3,4) blocks (4,5) moving NORTH
-- [ ] Vertical wall at (3,4) blocks (3,4) moving EAST
-- [ ] Vertical wall at (3,4) blocks (3,5) moving WEST
-- [ ] Vertical wall at (3,4) blocks (4,4) moving EAST
-- [ ] Vertical wall at (3,4) blocks (4,5) moving WEST
+- [x] Horizontal wall at (3,4) blocks (3,4) moving SOUTH
+- [x] Horizontal wall at (3,4) blocks (3,5) moving SOUTH
+- [x] Horizontal wall at (3,4) blocks (4,4) moving NORTH
+- [x] Horizontal wall at (3,4) blocks (4,5) moving NORTH
+- [x] Vertical wall at (3,4) blocks (3,4) moving EAST
+- [x] Vertical wall at (3,4) blocks (3,5) moving WEST
+- [x] Vertical wall at (3,4) blocks (4,4) moving EAST
+- [x] Vertical wall at (3,4) blocks (4,5) moving WEST
 
 ### PlayerId
 - [ ] PLAYER_1 exists with ordinal 0

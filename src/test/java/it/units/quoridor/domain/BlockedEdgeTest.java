@@ -33,4 +33,6 @@ class BlockedEdgeTest {
                 new BlockedEdge(new Position(3,4),Direction.SOUTH));
     }
 
+
+
 }
