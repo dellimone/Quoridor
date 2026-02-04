@@ -40,4 +40,8 @@ public class Player {
     public int goalRow() {
         return goalRow;
     }
+
+    public void move(Position endingPosition) {
+        this.position = endingPosition;
+    }
 }

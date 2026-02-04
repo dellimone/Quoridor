@@ -78,7 +78,7 @@
 - [x] Player knows its position
 - [x] Player knows its goal row
 - [x] Player knows walls remaining
-- [ ] Move player to new position updates position
+- [x] Move player to new position updates position
 - [ ] Use wall decrements walls remaining
 - [ ] Use wall with zero walls throws exception
 - [ ] Return wall increments walls remaining

@@ -48,4 +48,13 @@ class PlayerTest {
         assertEquals(8, player.goalRow());
     }
 
+    @Test
+    void movePlayerToNewPositionUpdatePosition(){
+        Position startingPosition = new Position(4, 4);
+        Position endingPosition = new Position(6, 6);
+        Player player = new Player(PlayerId.PLAYER_1, "Alice", startingPosition, 10, 8);
+        player.move(endingPosition);
+        assertEquals(endingPosition, player.position());
+    }
+
 }
