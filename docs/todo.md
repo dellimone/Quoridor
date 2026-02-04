@@ -80,7 +80,7 @@
 - [x] Player knows walls remaining
 - [x] Move player to new position updates position
 - [x] Use wall decrements walls remaining
-- [ ] Use wall with zero walls throws exception
+- [x] Use wall with zero walls throws exception
 - [ ] Return wall increments walls remaining
 - [ ] Player at goal row has reached goal
 - [ ] Player not at goal row has not reached goal

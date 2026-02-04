@@ -46,6 +46,11 @@ public class Player {
     }
 
     public void useWall() {
-        this.wallsRemaining--;
+        if (this.wallsRemaining > 0) {
+            this.wallsRemaining--;
+        }
+        else  {
+            throw new IllegalStateException("No walls remaining");
+        }
     }
 }

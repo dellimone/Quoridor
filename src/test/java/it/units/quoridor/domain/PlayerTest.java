@@ -64,4 +64,10 @@ class PlayerTest {
         assertEquals(9, player.wallsRemaining());
     }
 
+    @Test
+    void useWallWithNoRemainingWallsThrowsException(){
+        Player player = new Player(PlayerId.PLAYER_1, "Alice", new Position(8, 4), 0, 8);
+        assertThrows(IllegalStateException.class, () -> player.useWall());
+    }
+
 }
