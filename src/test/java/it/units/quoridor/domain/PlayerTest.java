@@ -70,4 +70,15 @@ class PlayerTest {
         assertThrows(IllegalStateException.class, () -> player.useWall());
     }
 
+    @Test
+    void playerAtGoalRowHasReachedGoal(){
+        Player player = new Player(PlayerId.PLAYER_1, "Alice", new Position(8, 4), 10, 8);
+        assertTrue(player.hasReachedGoal());
+    }
+
+    @Test
+    void playerNotAtGoalRowRowHasNotReachedGoal(){
+        Player player = new Player(PlayerId.PLAYER_1, "Alice", new Position(0, 4), 10, 8);
+        assertFalse(player.hasReachedGoal());
+    }
 }

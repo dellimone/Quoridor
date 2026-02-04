@@ -53,4 +53,8 @@ public class Player {
             throw new IllegalStateException("No walls remaining");
         }
     }
+
+    public boolean hasReachedGoal() {
+        return this.goalRow == this.position.row();
+    }
 }
