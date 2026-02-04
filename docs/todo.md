@@ -66,10 +66,10 @@
 - [x] Vertical wall at (3,4) blocks (4,5) moving WEST
 
 ### PlayerId
-- [ ] PLAYER_1 exists with ordinal 0
-- [ ] PLAYER_2 exists with ordinal 1
-- [ ] PLAYER_3 exists with ordinal 2
-- [ ] PLAYER_4 exists with ordinal 3
+- [x] PLAYER_1 exists with ordinal 0
+- [x] PLAYER_2 exists with ordinal 1
+- [x] PLAYER_3 exists with ordinal 2
+- [x] PLAYER_4 exists with ordinal 3
 
 ### Player
 - [ ] Create player with id, name, start position, goal row, and initial walls
