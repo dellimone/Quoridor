@@ -44,4 +44,8 @@ public class Player {
     public void move(Position endingPosition) {
         this.position = endingPosition;
     }
+
+    public void useWall() {
+        this.wallsRemaining--;
+    }
 }

@@ -57,4 +57,11 @@ class PlayerTest {
         assertEquals(endingPosition, player.position());
     }
 
+    @Test
+    void useWallDecreaseRemainingWalls(){
+        Player player = new Player(PlayerId.PLAYER_1, "Alice", new Position(8, 4), 10, 8);
+        player.useWall();
+        assertEquals(9, player.wallsRemaining());
+    }
+
 }
