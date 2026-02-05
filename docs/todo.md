@@ -104,10 +104,10 @@
 - [x] Get board from game state
 - [x] Get current player
 - [x] Get player by id
-- [ ] Get all players
-- [ ] Switch to next player (2-player game)
-- [ ] Switch to next player (4-player game)
-- [ ] Current player cycles correctly (P1 → P2 → P1)
-- [ ] Current player cycles correctly in 4-player (P1 → P2 → P3 → P4 → P1)
+- [x] Get all players
+- [x] Switch to next player (2-player game)
+- [x] Switch to next player (4-player game)
+- [x] Current player cycles correctly (P1 → P2 → P1)
+- [x] Current player cycles correctly in 4-player (P1 → P2 → P3 → P4 → P1)
 - [ ] Game state knows number of players
 
