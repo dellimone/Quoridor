@@ -29,4 +29,12 @@ public record Board(
     public Position playerPosition(PlayerId playerId) {
         return playerPositions.get(playerId);
     }
+
+    public Set<BlockedEdge> getAllBlockedEdges() {
+        Set<BlockedEdge> blockedEdges = new HashSet<>();
+        for (Wall wall : walls) {
+            blockedEdges.addAll(wall.getBlockedEdges());
+        }
+        return blockedEdges;
+    }
 }

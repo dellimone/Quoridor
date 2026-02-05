@@ -2,16 +2,18 @@ package it.units.quoridor.domain;
 
 import org.junit.jupiter.api.Test;
 
+import java.util.Set;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 class BoardTest {
 
     @Test
     void createEmptyBoard() {
-        Board board = new Board();
+        Board emptyBoard = new Board();
 
-        assertTrue(board.walls().isEmpty());
-        assertTrue(board.playerPositions().isEmpty());
+        assertTrue(emptyBoard.walls().isEmpty());
+        assertTrue(emptyBoard.playerPositions().isEmpty());
     }
 
     @Test
@@ -21,10 +23,10 @@ class BoardTest {
                 new WallPosition(1,2),
                 WallOrientation.HORIZONTAL);
 
-        Board newBoard = board.addWall(wall);
+        Board boardWithWall = board.addWall(wall);
 
         assertTrue(board.walls().isEmpty());
-        assertTrue(newBoard.walls().contains(wall));
+        assertTrue(boardWithWall.walls().contains(wall));
     }
 
     @Test
@@ -33,11 +35,11 @@ class BoardTest {
         Wall wall1 = new Wall(new WallPosition(2, 2), WallOrientation.HORIZONTAL);
         Wall wall2 = new Wall(new WallPosition(4, 4), WallOrientation.VERTICAL);
 
-        Board newBoard = board.addWall(wall1).addWall(wall2);
+        Board boardWithWalls = board.addWall(wall1).addWall(wall2);
 
-        assertEquals(2, newBoard.walls().size());
-        assertTrue(newBoard.walls().contains(wall1));
-        assertTrue(newBoard.walls().contains(wall2));
+        assertEquals(2, boardWithWalls.walls().size());
+        assertTrue(boardWithWalls.walls().contains(wall1));
+        assertTrue(boardWithWalls.walls().contains(wall2));
         assertTrue(board.walls().isEmpty()); // Original unchanged
     }
 
@@ -46,22 +48,38 @@ class BoardTest {
         Board board = new Board();
         Position position = new Position(4, 4);
 
-        Board newBoard = board.withPlayerAt(PlayerId.PLAYER_1, position);
+        Board boardWithPlayer = board.withPlayerAt(PlayerId.PLAYER_1, position);
 
         assertNull(board.playerPosition(PlayerId.PLAYER_1)); // Original has no players
-        assertEquals(position, newBoard.playerPosition(PlayerId.PLAYER_1));
+        assertEquals(position, boardWithPlayer.playerPosition(PlayerId.PLAYER_1));
     }
 
     @Test
     void movingPlayerUpdatesPositionOnNewBoard() {
-        Board board = new Board();
+        Board emptyBoard = new Board();
         Position startPosition = new Position(4, 4);
         Position endPosition = new Position(5, 4);
 
-        Board boardWithPlayer = board.withPlayerAt(PlayerId.PLAYER_1, startPosition);
+        Board boardWithPlayer = emptyBoard.withPlayerAt(PlayerId.PLAYER_1, startPosition);
         Board boardAfterMove = boardWithPlayer.withPlayerAt(PlayerId.PLAYER_1, endPosition);
 
         assertEquals(startPosition, boardWithPlayer.playerPosition(PlayerId.PLAYER_1)); // Original position unchanged
         assertEquals(endPosition, boardAfterMove.playerPosition(PlayerId.PLAYER_1));     // New position updated
+    }
+
+    @Test
+    void getAllBlockedEdgesReturnsEdgesFromAllWalls() {
+        Board board = new Board();
+        Wall wall1 = new Wall(new WallPosition(2, 3), WallOrientation.HORIZONTAL);
+        Wall wall2 = new Wall(new WallPosition(5, 5), WallOrientation.VERTICAL);
+
+        Board boardWithWalls = board.addWall(wall1).addWall(wall2);
+
+        Set<BlockedEdge> blockedEdges = boardWithWalls.getAllBlockedEdges();
+
+        // Horizontal wall blocks 4 edges, vertical wall blocks 4 edges
+        assertEquals(8, blockedEdges.size());
+        assertTrue(blockedEdges.containsAll(wall1.getBlockedEdges()));
+        assertTrue(blockedEdges.containsAll(wall2.getBlockedEdges()));
     }
 }
