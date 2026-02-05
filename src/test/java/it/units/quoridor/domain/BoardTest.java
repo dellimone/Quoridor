@@ -82,4 +82,28 @@ class BoardTest {
         assertTrue(blockedEdges.containsAll(wall1.getBlockedEdges()));
         assertTrue(blockedEdges.containsAll(wall2.getBlockedEdges()));
     }
+
+    @Test
+    void isEdgeBlockedReturnsTrueForBlockedEdge() {
+        Board board = new Board();
+        Wall wall = new Wall(new WallPosition(3, 4), WallOrientation.HORIZONTAL);
+        Board boardWithWall = board.addWall(wall);
+
+        // Horizontal wall at (3,4) blocks position (3,4) moving NORTH
+        assertTrue(boardWithWall.isEdgeBlocked(new Position(3, 4), Direction.NORTH));
+        // And also blocks position (4,4) moving SOUTH
+        assertTrue(boardWithWall.isEdgeBlocked(new Position(4, 4), Direction.SOUTH));
+    }
+
+    @Test
+    void isEdgeBlockedReturnsFalseForUnblockedEdge() {
+        Board board = new Board();
+        Wall wall = new Wall(new WallPosition(3, 4), WallOrientation.HORIZONTAL);
+        Board boardWithWall = board.addWall(wall);
+
+        // This edge is not blocked by the horizontal wall
+        assertFalse(boardWithWall.isEdgeBlocked(new Position(3, 4), Direction.EAST));
+        // Empty board has no blocked edges
+        assertFalse(board.isEdgeBlocked(new Position(3, 4), Direction.NORTH));
+    }
 }

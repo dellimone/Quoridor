@@ -96,9 +96,8 @@
 - [x] Get player position from board
 - [x] Move player updates position on board
 - [x] Get all blocked edges from all walls
-- [ ] Check if specific edge is blocked
-- [ ] Cannot place same wall twice
-- [ ] Board with walls at (2,3) HORIZONTAL and (5,5) VERTICAL has both walls
+- [x] Check if specific edge is blocked
+- ~~[ ] Cannot place same wall twice~~ (MOVED TO VALIDATOR)
 
 ### GameState
 - [ ] Create game state with board and players
