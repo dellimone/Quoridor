@@ -17,11 +17,15 @@ public record GameState(
         this(board, players, players.getFirst().id());
     }
 
-    public Player currentPlayer() {
+    public Player getPlayer(PlayerId playerId) {
         return players.stream()
                 .filter(p ->p.id()
-                .equals(currentPlayerId))
+                        .equals(playerId))
                 .findFirst()
                 .orElseThrow();
+    }
+
+    public Player currentPlayer() {
+        return getPlayer(currentPlayerId);
     }
 }

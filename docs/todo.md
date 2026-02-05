@@ -103,7 +103,7 @@
 - [x] Create game state with board and players
 - [x] Get board from game state
 - [x] Get current player
-- [ ] Get player by id
+- [x] Get player by id
 - [ ] Get all players
 - [ ] Switch to next player (2-player game)
 - [ ] Switch to next player (4-player game)
