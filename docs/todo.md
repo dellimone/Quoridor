@@ -83,9 +83,9 @@
 - [x] Use wall with zero walls throws exception
 - ~~[x] Player at goal row has reached goal~~ (MOVED TO LOGIC LAYER)
 - ~~[x] Player not at goal row has not reached goal~~ (MOVED TO LOGIC LAYER)
-- [ ] **REFACTOR**: Remove position attribute from Player
-- [ ] **REFACTOR**: Remove move() method from Player
-- [ ] **REFACTOR**: Update constructor to not take startingPosition
+- [x] **REFACTOR**: Remove position attribute from Player
+- [x] **REFACTOR**: Remove move() method from Player
+- [x] **REFACTOR**: Update constructor to not take startingPosition
 
 ### Board
 - [x] Create empty board
@@ -97,7 +97,7 @@
 - [x] Move player updates position on board
 - [x] Get all blocked edges from all walls
 - [x] Check if specific edge is blocked
-- ~~[ ] Cannot place same wall twice~~ (MOVED TO VALIDATOR)
+- ~~[ ] Cannot place same wall twice~~ (MOVED TO LOGIC LAYER)
 
 ### GameState
 - [ ] Create game state with board and players
