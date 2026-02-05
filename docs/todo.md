@@ -50,38 +50,64 @@
 - [x] Two walls with different position but same orientation are not equal
 
 ### BlockedEdge
-- [ ] Create blocked edge with position and direction
-- [ ] Two blocked edges with same position and direction are equal
-- [ ] Two blocked edges with different position are not equal
-- [ ] Two blocked edges with different direction are not equal
+- [x] Create blocked edge with position and direction
+- [x] Two blocked edges with same position and direction are equal
+- [x] Two blocked edges with different position are not equal
+- [x] Two blocked edges with different direction are not equal
 
 ### Wall - Blocked Edges Behavior
-- [ ] Horizontal wall at (3,4) blocks (3,4) moving SOUTH
-- [ ] Horizontal wall at (3,4) blocks (3,5) moving SOUTH
-- [ ] Horizontal wall at (3,4) blocks (4,4) moving NORTH
-- [ ] Horizontal wall at (3,4) blocks (4,5) moving NORTH
-- [ ] Vertical wall at (3,4) blocks (3,4) moving EAST
-- [ ] Vertical wall at (3,4) blocks (3,5) moving WEST
-- [ ] Vertical wall at (3,4) blocks (4,4) moving EAST
-- [ ] Vertical wall at (3,4) blocks (4,5) moving WEST
+- [x] Horizontal wall at (3,4) blocks (3,4) moving SOUTH
+- [x] Horizontal wall at (3,4) blocks (3,5) moving SOUTH
+- [x] Horizontal wall at (3,4) blocks (4,4) moving NORTH
+- [x] Horizontal wall at (3,4) blocks (4,5) moving NORTH
+- [x] Vertical wall at (3,4) blocks (3,4) moving EAST
+- [x] Vertical wall at (3,4) blocks (3,5) moving WEST
+- [x] Vertical wall at (3,4) blocks (4,4) moving EAST
+- [x] Vertical wall at (3,4) blocks (4,5) moving WEST
 
 ### PlayerId
-- [ ] PLAYER_1 exists with ordinal 0
-- [ ] PLAYER_2 exists with ordinal 1
-- [ ] PLAYER_3 exists with ordinal 2
-- [ ] PLAYER_4 exists with ordinal 3
+- [x] PLAYER_1 exists with ordinal 0
+- [x] PLAYER_2 exists with ordinal 1
+- [x] PLAYER_3 exists with ordinal 2
+- [x] PLAYER_4 exists with ordinal 3
 
-### Player
-- [ ] Create player with id, name, start position, goal row, and initial walls
-- [ ] Player knows its id
-- [ ] Player knows its name
-- [ ] Player knows its position
-- [ ] Player knows its goal row
-- [ ] Player knows walls remaining
-- [ ] Move player to new position updates position
-- [ ] Use wall decrements walls remaining
-- [ ] Use wall with zero walls throws exception
-- [ ] Return wall increments walls remaining
-- [ ] Player at goal row has reached goal
-- [ ] Player not at goal row has not reached goal
+### Player (Refactored - Position moved to Board)
+- [x] Create player with id, name, goal row, and initial walls
+- [x] Player knows its id
+- [x] Player knows its name
+- [x] ~~Player knows its position~~ (MOVED TO BOARD)
+- [x] Player knows its goal row
+- [x] Player knows walls remaining
+- ~~[x] Move player to new position updates position~~ (MOVED TO BOARD)
+- [x] Use wall decrements walls remaining
+- [x] Use wall with zero walls throws exception
+- ~~[x] Player at goal row has reached goal~~ (MOVED TO LOGIC LAYER)
+- ~~[x] Player not at goal row has not reached goal~~ (MOVED TO LOGIC LAYER)
+- [x] **REFACTOR**: Remove position attribute from Player
+- [x] **REFACTOR**: Remove move() method from Player
+- [x] **REFACTOR**: Update constructor to not take startingPosition
+
+### Board
+- [x] Create empty board
+- [x] Add wall to board
+- [x] Get all walls from board
+- [x] Check if board contains specific wall
+- [x] Set player position on board
+- [x] Get player position from board
+- [x] Move player updates position on board
+- [x] Get all blocked edges from all walls
+- [x] Check if specific edge is blocked
+- ~~[ ] Cannot place same wall twice~~ (MOVED TO LOGIC LAYER)
+
+### GameState
+- [x] Create game state with board and players
+- [x] Get board from game state
+- [x] Get current player
+- [x] Get player by id
+- [x] Get all players
+- [x] Switch to next player (2-player game)
+- [x] Switch to next player (4-player game)
+- [x] Current player cycles correctly (P1 → P2 → P1)
+- [x] Current player cycles correctly in 4-player (P1 → P2 → P3 → P4 → P1)
+- [ ] Game state knows number of players
 
