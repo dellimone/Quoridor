@@ -71,16 +71,44 @@
 - [x] PLAYER_3 exists with ordinal 2
 - [x] PLAYER_4 exists with ordinal 3
 
-### Player
-- [x] Create player with id, name, start position, goal row, and initial walls
+### Player (Refactored - Position moved to Board)
+- [x] Create player with id, name, goal row, and initial walls
 - [x] Player knows its id
 - [x] Player knows its name
-- [x] Player knows its position
+- [x] ~~Player knows its position~~ (MOVED TO BOARD)
 - [x] Player knows its goal row
 - [x] Player knows walls remaining
-- [x] Move player to new position updates position
+- ~~[x] Move player to new position updates position~~ (MOVED TO BOARD)
 - [x] Use wall decrements walls remaining
 - [x] Use wall with zero walls throws exception
-- [x] Player at goal row has reached goal
-- [x] Player not at goal row has not reached goal
+- ~~[x] Player at goal row has reached goal~~ (MOVED TO LOGIC LAYER)
+- ~~[x] Player not at goal row has not reached goal~~ (MOVED TO LOGIC LAYER)
+- [ ] **REFACTOR**: Remove position attribute from Player
+- [ ] **REFACTOR**: Remove move() method from Player
+- [ ] **REFACTOR**: Update constructor to not take startingPosition
+
+### Board
+- [ ] Create empty board
+- [ ] Add wall to board
+- [ ] Get all walls from board
+- [ ] Check if board contains specific wall
+- [ ] Set player position on board
+- [ ] Get player position from board
+- [ ] Move player updates position on board
+- [ ] Get all blocked edges from all walls
+- [ ] Check if specific edge is blocked
+- [ ] Cannot place same wall twice
+- [ ] Board with walls at (2,3) HORIZONTAL and (5,5) VERTICAL has both walls
+
+### GameState
+- [ ] Create game state with board and players
+- [ ] Get board from game state
+- [ ] Get current player
+- [ ] Get player by id
+- [ ] Get all players
+- [ ] Switch to next player (2-player game)
+- [ ] Switch to next player (4-player game)
+- [ ] Current player cycles correctly (P1 → P2 → P1)
+- [ ] Current player cycles correctly in 4-player (P1 → P2 → P3 → P4 → P1)
+- [ ] Game state knows number of players
 
