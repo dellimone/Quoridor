@@ -89,9 +89,9 @@
 
 ### Board
 - [x] Create empty board
-- [ ] Add wall to board
-- [ ] Get all walls from board
-- [ ] Check if board contains specific wall
+- [x] Add wall to board
+- [x] Get all walls from board
+- [x] Check if board contains specific wall
 - [ ] Set player position on board
 - [ ] Get player position from board
 - [ ] Move player updates position on board
