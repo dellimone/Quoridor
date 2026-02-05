@@ -100,7 +100,7 @@
 - ~~[ ] Cannot place same wall twice~~ (MOVED TO LOGIC LAYER)
 
 ### GameState
-- [ ] Create game state with board and players
+- [x] Create game state with board and players
 - [ ] Get board from game state
 - [ ] Get current player
 - [ ] Get player by id
