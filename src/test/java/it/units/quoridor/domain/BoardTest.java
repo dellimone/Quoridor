@@ -40,4 +40,28 @@ class BoardTest {
         assertTrue(newBoard.walls().contains(wall2));
         assertTrue(board.walls().isEmpty()); // Original unchanged
     }
+
+    @Test
+    void withPlayerAtReturnsNewBoardWithPlayerPosition() {
+        Board board = new Board();
+        Position position = new Position(4, 4);
+
+        Board newBoard = board.withPlayerAt(PlayerId.PLAYER_1, position);
+
+        assertNull(board.playerPosition(PlayerId.PLAYER_1)); // Original has no players
+        assertEquals(position, newBoard.playerPosition(PlayerId.PLAYER_1));
+    }
+
+    @Test
+    void movingPlayerUpdatesPositionOnNewBoard() {
+        Board board = new Board();
+        Position startPosition = new Position(4, 4);
+        Position endPosition = new Position(5, 4);
+
+        Board boardWithPlayer = board.withPlayerAt(PlayerId.PLAYER_1, startPosition);
+        Board boardAfterMove = boardWithPlayer.withPlayerAt(PlayerId.PLAYER_1, endPosition);
+
+        assertEquals(startPosition, boardWithPlayer.playerPosition(PlayerId.PLAYER_1)); // Original position unchanged
+        assertEquals(endPosition, boardAfterMove.playerPosition(PlayerId.PLAYER_1));     // New position updated
+    }
 }

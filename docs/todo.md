@@ -92,9 +92,9 @@
 - [x] Add wall to board
 - [x] Get all walls from board
 - [x] Check if board contains specific wall
-- [ ] Set player position on board
-- [ ] Get player position from board
-- [ ] Move player updates position on board
+- [x] Set player position on board
+- [x] Get player position from board
+- [x] Move player updates position on board
 - [ ] Get all blocked edges from all walls
 - [ ] Check if specific edge is blocked
 - [ ] Cannot place same wall twice
