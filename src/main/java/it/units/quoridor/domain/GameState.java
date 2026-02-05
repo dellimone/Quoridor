@@ -14,6 +14,14 @@ public record GameState(
 
     // Convenience constructor - starts with first player
     public GameState(Board board, List<Player> players) {
-        this(board, players, players.get(0).id());
+        this(board, players, players.getFirst().id());
+    }
+
+    public Player currentPlayer() {
+        return players.stream()
+                .filter(p ->p.id()
+                .equals(currentPlayerId))
+                .findFirst()
+                .orElseThrow();
     }
 }

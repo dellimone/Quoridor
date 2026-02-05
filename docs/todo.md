@@ -101,8 +101,8 @@
 
 ### GameState
 - [x] Create game state with board and players
-- [ ] Get board from game state
-- [ ] Get current player
+- [x] Get board from game state
+- [x] Get current player
 - [ ] Get player by id
 - [ ] Get all players
 - [ ] Switch to next player (2-player game)
