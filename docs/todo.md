@@ -88,7 +88,7 @@
 - [ ] **REFACTOR**: Update constructor to not take startingPosition
 
 ### Board
-- [ ] Create empty board
+- [x] Create empty board
 - [ ] Add wall to board
 - [ ] Get all walls from board
 - [ ] Check if board contains specific wall
