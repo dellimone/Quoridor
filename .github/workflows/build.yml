@@ -2,7 +2,7 @@ name: CI
 
 on:
   push:
-    branches: [main, master, domain-objects]
+    branches: [main, master, gui-views]
   pull_request:
     branches: [main, master]
 
