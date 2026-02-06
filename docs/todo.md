@@ -118,8 +118,8 @@
 - [x] Create player view model record (id, name, wallsRemaining, isCurrentPlayer)
 
 ### View Interfaces
-- [ ] Create GameView interface (renderBoard, highlightValidMoves, etc.)
-- [ ] Create ViewListener interface (onCellClicked, onWallPlacement, onUndo)
+- [x] Create GameView interface (renderBoard, highlightValidMoves, etc.)
+- [x] Create ViewListener interface (onCellClicked, onWallPlacement, onUndo)
 
 ### Swing Components
 - [ ] Create SwingGameView skeleton (JFrame)
