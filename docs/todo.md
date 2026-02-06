@@ -114,8 +114,8 @@
 ## View Layer
 
 ### View Models (Pure Data)
-- [ ] Create board view model record (playerPositions, walls)
-- [ ] Create player view model record (id, name, wallsRemaining, isCurrentPlayer)
+- [x] Create board view model record (playerPositions, walls)
+- [x] Create player view model record (id, name, wallsRemaining, isCurrentPlayer)
 
 ### View Interfaces
 - [ ] Create GameView interface (renderBoard, highlightValidMoves, etc.)
