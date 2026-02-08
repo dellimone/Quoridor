@@ -20,7 +20,7 @@ public class SwingGameView extends JFrame implements GameView {
 
     // Components
     private JPanel boardPanel;           // Placeholder for now
-    private JPanel playerInfoPanel;      // Placeholder for now
+    private PlayerInfoPanel playerInfoPanel;
     private JButton undoButton;
     private JButton newGameButton;
     private JLabel messageLabel;
@@ -47,10 +47,7 @@ public class SwingGameView extends JFrame implements GameView {
         boardPanel.setBackground(Color.LIGHT_GRAY);
         boardPanel.setBorder(BorderFactory.createLineBorder(Color.BLACK, 2));
 
-        playerInfoPanel = new JPanel();
-        playerInfoPanel.setPreferredSize(new Dimension(200, 600));
-        playerInfoPanel.setBackground(Color.WHITE);
-        playerInfoPanel.setBorder(BorderFactory.createTitledBorder("Players"));
+        playerInfoPanel = new PlayerInfoPanel();
 
         // Control buttons
         undoButton = new JButton("Undo");
@@ -120,14 +117,12 @@ public class SwingGameView extends JFrame implements GameView {
 
     @Override
     public void updatePlayerInfo(List<PlayerViewModel> players) {
-        // TODO: Delegate to PlayerInfoPanel when implemented
-        System.out.println("Update player info: " + players.size() + " players");
+        playerInfoPanel.updatePlayers(players);
     }
 
     @Override
     public void setCurrentPlayer(PlayerId player) {
-        // TODO: Delegate to PlayerInfoPanel when implemented
-        System.out.println("Current player: " + player);
+        playerInfoPanel.setCurrentPlayer(player);
     }
 
     @Override
@@ -201,6 +196,14 @@ public class SwingGameView extends JFrame implements GameView {
                     System.exit(0);
                 }
             });
+
+            List<PlayerViewModel> testPlayers = List.of(
+                    new PlayerViewModel(PlayerId.PLAYER_1, "Alice", 10, true),
+                    new PlayerViewModel(PlayerId.PLAYER_2, "Bob", 7, false)
+            );
+            view.updatePlayerInfo(testPlayers);
+            view.setCurrentPlayer(PlayerId.PLAYER_1);
+            view.showMessage("Player 1's turn");
 
             view.setVisible(true);
         });
