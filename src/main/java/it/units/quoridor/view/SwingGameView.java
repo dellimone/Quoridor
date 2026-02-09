@@ -19,7 +19,7 @@ import java.util.Set;
 public class SwingGameView extends JFrame implements GameView {
 
     // Components
-    private JPanel boardPanel;           // Placeholder for now
+    private BoardPanel boardPanel;
     private PlayerInfoPanel playerInfoPanel;
     private JButton undoButton;
     private JButton newGameButton;
@@ -41,12 +41,8 @@ public class SwingGameView extends JFrame implements GameView {
     }
 
     private void initializeComponents() {
-        // Placeholder panels (will be replaced with real implementations)
-        boardPanel = new JPanel();
-        boardPanel.setPreferredSize(new Dimension(600, 600));
-        boardPanel.setBackground(Color.LIGHT_GRAY);
-        boardPanel.setBorder(BorderFactory.createLineBorder(Color.BLACK, 2));
 
+        boardPanel = new BoardPanel();
         playerInfoPanel = new PlayerInfoPanel();
 
         // Control buttons
@@ -98,21 +94,17 @@ public class SwingGameView extends JFrame implements GameView {
 
     @Override
     public void renderBoard(BoardViewModel board) {
-        // TODO: Delegate to BoardPanel when implemented
-        System.out.println("Render board: " + board.playerPositions().size() + " players, "
-                + board.walls().size() + " walls");
+        boardPanel.render(board);
     }
 
     @Override
     public void highlightValidMoves(Set<Position> positions) {
-        // TODO: Delegate to BoardPanel when implemented
-        System.out.println("Highlight valid moves: " + positions);
+        boardPanel.highlightCells(positions);
     }
 
     @Override
     public void clearHighlights() {
-        // TODO: Delegate to BoardPanel when implemented
-        System.out.println("Clear highlights");
+        boardPanel.clearHighlights();
     }
 
     @Override
@@ -158,6 +150,7 @@ public class SwingGameView extends JFrame implements GameView {
     @Override
     public void setListener(ViewListener listener) {
         this.listener = listener;
+        boardPanel.setViewListener(listener);
     }
 
     // === For Testing ===
@@ -197,13 +190,40 @@ public class SwingGameView extends JFrame implements GameView {
                 }
             });
 
+            // Set up test board data
+            java.util.Map<PlayerId, Position> positions = new java.util.HashMap<>();
+            positions.put(PlayerId.PLAYER_1, new Position(8, 4));  // Bottom center (image coords)
+            positions.put(PlayerId.PLAYER_2, new Position(0, 4));  // Top center (image coords)
+
+            java.util.Set<it.units.quoridor.domain.Wall> walls = new java.util.HashSet<>();
+            walls.add(new it.units.quoridor.domain.Wall(
+                    new it.units.quoridor.domain.WallPosition(3, 4),
+                    it.units.quoridor.domain.WallOrientation.HORIZONTAL
+            ));
+            walls.add(new it.units.quoridor.domain.Wall(
+                    new it.units.quoridor.domain.WallPosition(5, 2),
+                    it.units.quoridor.domain.WallOrientation.VERTICAL
+            ));
+
+            BoardViewModel boardModel = new BoardViewModel(positions, walls);
+            view.renderBoard(boardModel);
+
+            // Highlight some valid moves for Player 1
+            java.util.Set<Position> validMoves = new java.util.HashSet<>();
+            validMoves.add(new Position(7, 4));  // One step forward
+            validMoves.add(new Position(8, 3));  // Left
+            validMoves.add(new Position(8, 5));  // Right
+            view.highlightValidMoves(validMoves);
+
+            // Set up player info
             List<PlayerViewModel> testPlayers = List.of(
                     new PlayerViewModel(PlayerId.PLAYER_1, "Alice", 10, true),
-                    new PlayerViewModel(PlayerId.PLAYER_2, "Bob", 7, false)
+                    new PlayerViewModel(PlayerId.PLAYER_2, "Bob", 9, false)
             );
             view.updatePlayerInfo(testPlayers);
             view.setCurrentPlayer(PlayerId.PLAYER_1);
-            view.showMessage("Player 1's turn");
+            view.showMessage("Player 1's turn - Click to move!");
+            view.setUndoEnabled(true);
 
             view.setVisible(true);
         });
