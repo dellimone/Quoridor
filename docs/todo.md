@@ -122,17 +122,18 @@
 - [x] Create ViewListener interface (onCellClicked, onWallPlacement, onUndo)
 
 ### Swing Components
-- [ ] Create SwingGameView skeleton (JFrame)
-- [ ] Create BoardPanel for 9x9 grid rendering
-  - [ ] Draw grid lines
-  - [ ] Handle cell clicks (forward to listener)
-  - [ ] Render player pawns at positions
-  - [ ] Render walls (horizontal and vertical)
-  - [ ] Highlight cells (for valid moves)
-- [ ] Create PlayerInfoPanel
-  - [ ] Display player name
-  - [ ] Display walls remaining
-  - [ ] Highlight current player
-- [ ] Create control buttons (Undo, New Game)
-- [ ] Wire up event forwarding to ViewListener
+- [x] Create SwingGameView skeleton (JFrame)
+- [x] Create BoardPanel for 9x9 grid rendering
+  - [x] Draw grid lines
+  - [x] Handle cell clicks (forward to listener)
+  - [x] Render player pawns at positions
+  - [x] Render walls (horizontal and vertical)
+  - [x] Highlight cells (for valid moves)
+- [x] Create PlayerInfoPanel
+  - [x] Display player name
+  - [x] Display walls remaining
+  - [x] Highlight current player
+- [x] Create control buttons (Undo, New Game)
+- [x] Wire up event forwarding to ViewListener
+- [ ] Fix layout issues when window is resized (maybe disable resizing)
 
