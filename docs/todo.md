@@ -137,3 +137,21 @@
 - [x] Wire up event forwarding to ViewListener
 - [ ] Fix layout issues when window is resized (maybe disable resizing)
 
+### Game Engine 
+#### Engine Skeleton
+- [x] Create GameEngine class (stores GameState and exposes getGameState())
+- [x] Create ActionValidator
+- [x] Create MoveResult (will be expanded later)
+
+#### Game Engine Tests
+For the _pawn_ part:
+- [x] Engine holds the initial state
+- [ ] Engine asks validator on a pawn move
+- [ ] Invalid pawn moves are rejected and state is unchanged
+- [ ] Valid moves should advance the turn
+- [ ] Engine refuses moves from a non-current player
+
+For the _walls_ part:
+- [ ] Engine asks validator on wall placement
+- [ ] Invalid wall placements are rejected and state unchanged (as with pawn!)
+- [ ] Valid wall placements should advance the turn and "consume?" the wall
