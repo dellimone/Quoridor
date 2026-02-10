@@ -111,3 +111,29 @@
 - [x] Current player cycles correctly in 4-player (P1 → P2 → P3 → P4 → P1)
 - [ ] Game state knows number of players
 
+## View Layer
+
+### View Models (Pure Data)
+- [x] Create board view model record (playerPositions, walls)
+- [x] Create player view model record (id, name, wallsRemaining, isCurrentPlayer)
+
+### View Interfaces
+- [x] Create GameView interface (renderBoard, highlightValidMoves, etc.)
+- [x] Create ViewListener interface (onCellClicked, onWallPlacement, onUndo)
+
+### Swing Components
+- [x] Create SwingGameView skeleton (JFrame)
+- [x] Create BoardPanel for 9x9 grid rendering
+  - [x] Draw grid lines
+  - [x] Handle cell clicks (forward to listener)
+  - [x] Render player pawns at positions
+  - [x] Render walls (horizontal and vertical)
+  - [x] Highlight cells (for valid moves)
+- [x] Create PlayerInfoPanel
+  - [x] Display player name
+  - [x] Display walls remaining
+  - [x] Highlight current player
+- [x] Create control buttons (Undo, New Game)
+- [x] Wire up event forwarding to ViewListener
+- [ ] Fix layout issues when window is resized (maybe disable resizing)
+
