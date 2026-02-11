@@ -271,8 +271,6 @@ public class QuoridorEngineTest {
     }
 
 
-
-
     // WALL PLACEMENT ORCHESTRATION
 
     // 9. Wall validation is delegated to the wall validator by the engine
