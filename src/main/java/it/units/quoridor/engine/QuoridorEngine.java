@@ -95,7 +95,8 @@ public class QuoridorEngine implements GameEngine {
             return MoveResult.INVALID;
         }
 
-        state = state.withNextTurn();
+        Board newBoard = state.board().addWall(wall);
+        state = new GameState(newBoard, state.players(), state.currentPlayerIndex()).withNextTurn();
 
         return MoveResult.OK;
     }

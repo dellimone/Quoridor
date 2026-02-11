@@ -227,6 +227,12 @@ public class QuoridorEngineTest {
         verify(winChecker).isWin(initialState.withNextTurn(), PlayerId.PLAYER_1);
     }
 
+    // 15. making a valid pawn move should update the pawn position on the board
+
+    // TODO
+
+
+
 
     // WALL PLACEMENT ORCHESTRATION
 
@@ -369,4 +375,43 @@ public class QuoridorEngineTest {
         // wall validator SHOULD NOT be called at all
         verifyNoInteractions(wallValidator);
     }
+
+    // 14. placing valid walls should update the board
+    @Test
+    void boardUpdateValidWallPlacement() {
+        // test setup
+        Player p1 = new Player(PlayerId.PLAYER_1, "P1", 10, 8);
+        Player p2 = new Player(PlayerId.PLAYER_2, "P2", 10, 0);
+        Board board = new Board()
+                .withPlayerAt(PlayerId.PLAYER_1, new Position(0, 4))
+                .withPlayerAt(PlayerId.PLAYER_2, new Position(8, 4));
+
+        GameState initialState = new GameState(board, List.of(p1, p2)); // current player is PLAYER_1
+        QuoridorEngine engine = new QuoridorEngine(initialState, pawnValidator, wallValidator, winChecker);
+
+        // define a new wall
+        Wall wall = new Wall(new WallPosition(1, 2), WallOrientation.HORIZONTAL);
+
+        // return true for this wall placement
+        when(wallValidator.canPlaceWall(initialState, PlayerId.PLAYER_1, wall)).thenReturn(true);
+
+        MoveResult result = engine.placeWall(PlayerId.PLAYER_1, wall);
+
+        // assertions
+        assertSame(MoveResult.OK, result);
+
+        GameState nextState = engine.getGameState();
+        Board newBoard = engine.getGameState().board();
+
+        assertEquals(PlayerId.PLAYER_2, nextState.currentPlayerId());
+        assertEquals(board.addWall(wall), newBoard); // new board should reflect valid wall placement
+
+        verify(wallValidator).canPlaceWall(initialState, PlayerId.PLAYER_1, wall);
+        verifyNoMoreInteractions(wallValidator);
+
+    }
+
+
+
 }
+
