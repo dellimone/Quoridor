@@ -17,8 +17,16 @@ public class GameEngine {
         return state;
     }
 
+
     public MoveResult movePawn(PlayerId player, Direction direction) {
         boolean valid = validator.canMovePawn(state, player, direction);
-        return valid ? MoveResult.OK : MoveResult.INVALID; // if valid, move OK else INVALID
+
+        if (!valid) {
+            return MoveResult.INVALID;
+        }
+
+        // need to change state if move was valid
+        state = state.withNextTurn();
+        return MoveResult.OK;
     }
 }
