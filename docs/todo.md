@@ -152,7 +152,7 @@ For the _pawn_ part:
 - [x] Engine refuses moves from a non-current player
 - [X] Engine handles validator checking whether the last move is winning and handles the aftermath (change internal state
 and do not allow further moves, they should all be marked INVALID)
-- [ ] Valid move that is NOT winning should make the "win checker" to return false (prevent the always gameOver)
+- [X] Valid move that is NOT winning should make the "win checker" to return false (prevent the always gameOver)
 
 
 For the _walls_ part:
