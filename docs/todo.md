@@ -150,7 +150,7 @@ For the _pawn_ part:
 - [x] Invalid pawn moves are rejected and state is unchanged
 - [x] Valid moves should advance the turn
 - [x] Engine refuses moves from a non-current player
-- [ ] Engine handles validator checking whether the last move is winning and handles the aftermath (change internal state
+- [X] Engine handles validator checking whether the last move is winning and handles the aftermath (change internal state
 and do not allow further moves, they should all be marked INVALID)
 - [ ] Valid move that is NOT winning should make the "win checker" to return false (prevent the always gameOver)
 

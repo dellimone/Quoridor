@@ -193,4 +193,31 @@ public class QuoridorEngineTest {
         verify(validator).canMovePawn(initialState, PlayerId.PLAYER_1, Direction.EAST);
         verify(winChecker).isWin(initialState.withNextTurn(), PlayerId.PLAYER_1);
     }
+
+    // 8. Valid pawn move that is not winning should NOT end the game (mirrors test 7)
+
+    @Test
+    void ValidNonEndingPawnMove() {
+        // test setup
+        Board board = new Board();
+        Player p1 = new Player(PlayerId.PLAYER_1, "P1", 10, 8);
+        Player p2 = new Player(PlayerId.PLAYER_2, "P2", 10, 0);
+
+        GameState initialState = new GameState(board, List.of(p1, p2)); // current player is PLAYER_1
+        QuoridorEngine engine = new QuoridorEngine(initialState, validator, winChecker);
+
+        // the validator should just check the validity of the move, the winChecker whether that move leads to a win
+        when(validator.canMovePawn(initialState, PlayerId.PLAYER_1, Direction.EAST)).thenReturn(true);
+        when(winChecker.isWin(initialState.withNextTurn(), PlayerId.PLAYER_1)).thenReturn(false);
+
+        MoveResult result = engine.movePawn(PlayerId.PLAYER_1, Direction.EAST);
+
+        // assertios
+        assertEquals(MoveResult.OK, result); // check that the move does not result in a win
+        assertFalse(engine.isGameOver()); // check that the engine DID NOT set game over
+        assertNull(engine.getWinner()); // check that the engine's winner is still null
+
+        verify(validator).canMovePawn(initialState, PlayerId.PLAYER_1, Direction.EAST);
+        verify(winChecker).isWin(initialState.withNextTurn(), PlayerId.PLAYER_1);
+    }
 }
