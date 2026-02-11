@@ -4,7 +4,7 @@ import it.units.quoridor.domain.*;
 
 public class QuoridorEngine implements GameEngine {
 
-    private final ActionValidator validator;
+    private final PawnMoveValidator validator;
     private final WinChecker winChecker;
     private GameState state;
 
@@ -12,7 +12,7 @@ public class QuoridorEngine implements GameEngine {
     private PlayerId winner = null;
 
 
-    public QuoridorEngine(GameState initialState, ActionValidator validator, WinChecker winChecker) {
+    public QuoridorEngine(GameState initialState, PawnMoveValidator validator, WinChecker winChecker) {
         this.state = initialState;
         this.validator = validator;
         this.winChecker = winChecker;
@@ -72,6 +72,11 @@ public class QuoridorEngine implements GameEngine {
             return MoveResult.WIN;
         }
 
+        return MoveResult.OK;
+    }
+
+    @Override
+    public MoveResult placeWall(PlayerId player, WallPosition pos, WallOrientation orientation) {
         return MoveResult.OK;
     }
 }

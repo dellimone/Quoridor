@@ -16,7 +16,7 @@ import static org.mockito.Mockito.*;
 public class QuoridorEngineTest {
 
     @Mock
-    ActionValidator validator;
+    PawnMoveValidator validator;
     @Mock WinChecker winChecker; // will be implemented later
 
     // 1. we want to test whether the GameEngine handles the board correctly -> initial state set correctly
@@ -193,6 +193,7 @@ public class QuoridorEngineTest {
         verify(validator).canMovePawn(initialState, PlayerId.PLAYER_1, Direction.EAST);
         verify(winChecker).isWin(initialState.withNextTurn(), PlayerId.PLAYER_1);
     }
+
 
     // 8. Valid pawn move that is not winning should NOT end the game (mirrors test 7)
 
