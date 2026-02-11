@@ -3,6 +3,7 @@ package it.units.quoridor.engine;
 import it.units.quoridor.domain.*;
 import it.units.quoridor.domain.GameState;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestTemplate;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -316,4 +317,29 @@ public class QuoridorEngineTest {
         verifyNoMoreInteractions(wallValidator);
     }
 
+    // 12. Wrong player CANNOT place wall
+    @Test
+    void wrongTurnInvalidPlacement() {
+        // test setup
+        Player p1 = new Player(PlayerId.PLAYER_1, "P1", 10, 8);
+        Player p2 = new Player(PlayerId.PLAYER_2, "P2", 10, 0);
+        Board board = new Board()
+                .withPlayerAt(PlayerId.PLAYER_1, new Position(0, 4))
+                .withPlayerAt(PlayerId.PLAYER_2, new Position(8, 4));
+
+        GameState initialState = new GameState(board, List.of(p1, p2)); // current player is PLAYER_1
+        QuoridorEngine engine = new QuoridorEngine(initialState, pawnValidator, wallValidator, winChecker);
+
+        // define a new wall
+        Wall wall = new Wall(new WallPosition(1, 2), WallOrientation.HORIZONTAL);
+
+        MoveResult result = engine.placeWall(PlayerId.PLAYER_2, wall);
+
+        // assertions
+        assertSame(MoveResult.INVALID, result);
+        assertEquals(initialState, engine.getGameState());
+
+        // wall validator SHOULD NOT be called at all
+        verifyNoInteractions(wallValidator);
+    }
 }
