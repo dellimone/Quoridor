@@ -342,4 +342,31 @@ public class QuoridorEngineTest {
         // wall validator SHOULD NOT be called at all
         verifyNoInteractions(wallValidator);
     }
+
+    // 13. walls cannot be place after game ended (although with a wall we obviously cannot win :) )
+    @Test
+    void noWallsAfterGameOver() {
+        // test setup
+        Player p1 = new Player(PlayerId.PLAYER_1, "P1", 10, 8);
+        Player p2 = new Player(PlayerId.PLAYER_2, "P2", 10, 0);
+        Board board = new Board()
+                .withPlayerAt(PlayerId.PLAYER_1, new Position(0, 4))
+                .withPlayerAt(PlayerId.PLAYER_2, new Position(8, 4));
+
+        GameState initialState = new GameState(board, List.of(p1, p2)); // current player is PLAYER_1
+        QuoridorEngine engine = new QuoridorEngine(initialState, pawnValidator, wallValidator, winChecker);
+        engine.endGame(PlayerId.PLAYER_1); // set a winner (thus, end the game)
+
+        // define a new wall
+        Wall wall = new Wall(new WallPosition(1, 2), WallOrientation.HORIZONTAL);
+
+        MoveResult result = engine.placeWall(PlayerId.PLAYER_1, wall);
+
+        // assertions
+        assertSame(MoveResult.INVALID, result);
+        assertTrue(engine.isGameOver()); // we should not change the "game over" mark
+
+        // wall validator SHOULD NOT be called at all
+        verifyNoInteractions(wallValidator);
+    }
 }

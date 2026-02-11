@@ -80,6 +80,10 @@ public class QuoridorEngine implements GameEngine {
     @Override
     public MoveResult placeWall(PlayerId player, Wall wall) {
 
+        if (gameOver) {
+            return MoveResult.INVALID;
+        }
+
         if (player != state.currentPlayerId()) {
             return MoveResult.INVALID;
         }
