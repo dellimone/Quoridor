@@ -4,7 +4,8 @@ import it.units.quoridor.domain.*;
 
 public class QuoridorEngine implements GameEngine {
 
-    private final PawnMoveValidator validator;
+    private final PawnMoveValidator pawnValidator;
+    private final WallPlacementValidator wallValidator;
     private final WinChecker winChecker;
     private GameState state;
 
@@ -12,9 +13,10 @@ public class QuoridorEngine implements GameEngine {
     private PlayerId winner = null;
 
 
-    public QuoridorEngine(GameState initialState, PawnMoveValidator validator, WinChecker winChecker) {
+    public QuoridorEngine(GameState initialState, PawnMoveValidator pawnValidator, WallPlacementValidator wallValidator, WinChecker winChecker) {
         this.state = initialState;
-        this.validator = validator;
+        this.pawnValidator = pawnValidator;
+        this.wallValidator = wallValidator;
         this.winChecker = winChecker;
     }
 
@@ -56,7 +58,7 @@ public class QuoridorEngine implements GameEngine {
         }
 
         // check move validity
-        boolean valid = validator.canMovePawn(state, player, direction);
+        boolean valid = pawnValidator.canMovePawn(state, player, direction);
 
         if (!valid) {
             return MoveResult.INVALID;
