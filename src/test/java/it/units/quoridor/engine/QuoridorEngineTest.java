@@ -226,6 +226,7 @@ public class QuoridorEngineTest {
         verify(winChecker).isWin(initialState.withNextTurn(), PlayerId.PLAYER_1);
     }
 
+
     // WALL PLACEMENT ORCHESTRATION
 
     // 9. Wall validation is delegated to the wall validator by the engine
@@ -242,16 +243,44 @@ public class QuoridorEngineTest {
         QuoridorEngine engine = new QuoridorEngine(initialState, pawnValidator, wallValidator, winChecker);
 
         // define a new wall
-        WallPosition position = new WallPosition(1, 2);
-        WallOrientation orientation = WallOrientation.HORIZONTAL;
+        Wall wall = new Wall(new WallPosition(1, 2), WallOrientation.HORIZONTAL);
 
         // make the wall positioning move
-        engine.placeWall(PlayerId.PLAYER_1, position, orientation);
+        engine.placeWall(PlayerId.PLAYER_1, wall);
 
         // verify the wall validator is called
-        verify(wallValidator).canPlaceWall(initialState, PlayerId.PLAYER_1, position, orientation);
+        verify(wallValidator).canPlaceWall(initialState, PlayerId.PLAYER_1, wall);
         verifyNoMoreInteractions(wallValidator);
 
+    }
+
+    // 10. Invalid wall -> MoveResult.INVALID and unchanged state
+    @Test
+    void invalidWallPlacement() {
+        // test setup
+        Player p1 = new Player(PlayerId.PLAYER_1, "P1", 10, 8);
+        Player p2 = new Player(PlayerId.PLAYER_2, "P2", 10, 0);
+        Board board = new Board()
+                .withPlayerAt(PlayerId.PLAYER_1, new Position(0, 4))
+                .withPlayerAt(PlayerId.PLAYER_2, new Position(8, 4));
+
+        GameState initialState = new GameState(board, List.of(p1, p2)); // current player is PLAYER_1
+        QuoridorEngine engine = new QuoridorEngine(initialState, pawnValidator, wallValidator, winChecker);
+
+        // define a new wall
+        Wall wall = new Wall(new WallPosition(1, 2), WallOrientation.HORIZONTAL);
+
+        // return false for this wall placement
+        when(wallValidator.canPlaceWall(initialState, PlayerId.PLAYER_1, wall)).thenReturn(false);
+
+        MoveResult result = engine.placeWall(PlayerId.PLAYER_1, wall);
+
+        // assertions
+        assertEquals(MoveResult.INVALID, result);
+        assertSame(initialState, engine.getGameState());
+
+        verify(wallValidator).canPlaceWall(initialState, PlayerId.PLAYER_1, wall);
+        verifyNoMoreInteractions(wallValidator);
     }
 
 }
