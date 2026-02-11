@@ -64,8 +64,12 @@ public class QuoridorEngine implements GameEngine {
             return MoveResult.INVALID;
         }
 
+        // we need to update the board with the new position
+        Position nextPosition = state.board().playerPosition(player).move(direction);
+        Board newBoard = state.board().withPlayerAt(player, nextPosition);
+
         // need to change state if move was valid
-        state = state.withNextTurn();
+        state = new GameState(newBoard, state.players(), state.currentPlayerIndex()).withNextTurn();
 
         // check if the next state is a win
         if (winChecker.isWin(state, player)) {
