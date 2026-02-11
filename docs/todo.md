@@ -146,9 +146,9 @@
 #### Game Engine Tests
 For the _pawn_ part:
 - [x] Engine holds the initial state
-- [ ] Engine asks validator on a pawn move
-- [ ] Invalid pawn moves are rejected and state is unchanged
-- [ ] Valid moves should advance the turn
+- [x] Engine asks validator on a pawn move
+- [x] Invalid pawn moves are rejected and state is unchanged
+- [x] Valid moves should advance the turn
 - [ ] Engine refuses moves from a non-current player
 
 For the _walls_ part:
