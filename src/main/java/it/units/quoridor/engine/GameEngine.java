@@ -19,6 +19,12 @@ public class GameEngine {
 
 
     public MoveResult movePawn(PlayerId player, Direction direction) {
+
+        // if the "not current"-player tries to make a move, we mark it directly as invalid
+        if (!player.equals(state.currentPlayerId())) {
+            return MoveResult.INVALID;
+        }
+
         boolean valid = validator.canMovePawn(state, player, direction);
 
         if (!valid) {

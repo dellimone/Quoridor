@@ -115,4 +115,29 @@ public class GameEngineTest {
 
     }
 
+
+    // 5. If some who is not a new player tries to make a move engine return MoveResult.INVALID,
+    // engine state is unchanged and validator should not even be called
+
+    @Test
+    void wrongPlayerTurn() {
+        // test setup
+        Board board = new Board();
+        Player p1 = new Player(PlayerId.PLAYER_1, "P1", 10, 8);
+        Player p2 = new Player(PlayerId.PLAYER_2, "P2", 10, 0);
+
+        GameState initialState = new GameState(board, List.of(p1, p2)); // current player is PLAYER_1
+        GameEngine engine = new GameEngine(initialState, validator);
+
+        // P2 tries to move when it's P1's turn
+        MoveResult result = engine.movePawn(PlayerId.PLAYER_2, Direction.EAST);
+        // need to change movePawn to reflect this case
+
+        // assertion
+        assertEquals(MoveResult.INVALID, result);
+        assertSame(initialState, engine.getGameState());
+
+        verifyNoMoreInteractions(validator);
+
+    }
 }
