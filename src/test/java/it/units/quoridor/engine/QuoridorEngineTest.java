@@ -411,7 +411,67 @@ public class QuoridorEngineTest {
 
     }
 
+    // 16. valid wall placement should consume a wall
+    @Test
+    void validWallPlacementWallConsumption() {
+        // test setup
+        Player p1 = new Player(PlayerId.PLAYER_1, "P1", 10, 8);
+        Player p2 = new Player(PlayerId.PLAYER_2, "P2", 10, 0);
+        Board board = new Board()
+                .withPlayerAt(PlayerId.PLAYER_1, new Position(0, 4))
+                .withPlayerAt(PlayerId.PLAYER_2, new Position(8, 4));
 
+        GameState initialState = new GameState(board, List.of(p1, p2)); // current player is PLAYER_1
+        QuoridorEngine engine = new QuoridorEngine(initialState, pawnValidator, wallValidator, winChecker);
 
+        // define a new wall
+        Wall wall = new Wall(new WallPosition(1, 2), WallOrientation.HORIZONTAL);
+
+        // return true for this wall placement
+        when(wallValidator.canPlaceWall(initialState, PlayerId.PLAYER_1, wall)).thenReturn(true);
+
+        int currentWalls = p1.wallsRemaining();
+        MoveResult result = engine.placeWall(PlayerId.PLAYER_1, wall);
+        int updatedWalls = p1.wallsRemaining();
+
+        assertEquals(MoveResult.OK, result);
+        assertEquals(currentWalls - 1, updatedWalls);
+        // we should have removed one wall from those available to p1
+
+        verify(wallValidator).canPlaceWall(initialState, PlayerId.PLAYER_1, wall);
+        verifyNoMoreInteractions(wallValidator);
+    }
+
+    // 17. invalid wall placements should not consume walls
+    @Test
+    void invalidWallPlacementWallConsumption() {
+        // test setup
+        Player p1 = new Player(PlayerId.PLAYER_1, "P1", 10, 8);
+        Player p2 = new Player(PlayerId.PLAYER_2, "P2", 10, 0);
+        Board board = new Board()
+                .withPlayerAt(PlayerId.PLAYER_1, new Position(0, 4))
+                .withPlayerAt(PlayerId.PLAYER_2, new Position(8, 4));
+
+        GameState initialState = new GameState(board, List.of(p1, p2)); // current player is PLAYER_1
+        QuoridorEngine engine = new QuoridorEngine(initialState, pawnValidator, wallValidator, winChecker);
+
+        // define a new wall
+        Wall wall = new Wall(new WallPosition(1, 2), WallOrientation.HORIZONTAL);
+
+        // return true for this wall placement
+        when(wallValidator.canPlaceWall(initialState, PlayerId.PLAYER_1, wall)).thenReturn(false);
+
+        int currentWalls = p1.wallsRemaining();
+        MoveResult result = engine.placeWall(PlayerId.PLAYER_1, wall);
+        int updatedWalls = p1.wallsRemaining();
+
+        assertEquals(MoveResult.INVALID, result);
+        assertEquals(currentWalls, updatedWalls);
+        assertEquals(initialState, engine.getGameState());
+        // we should have the same number of walls and the state should not have changed
+
+        verify(wallValidator).canPlaceWall(initialState, PlayerId.PLAYER_1, wall);
+        verifyNoMoreInteractions(wallValidator);
+    }
 }
 

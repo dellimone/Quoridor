@@ -96,6 +96,8 @@ public class QuoridorEngine implements GameEngine {
         }
 
         Board newBoard = state.board().addWall(wall);
+        state.currentPlayer().useWall(); // consume a wall from current player
+
         state = new GameState(newBoard, state.players(), state.currentPlayerIndex()).withNextTurn();
 
         return MoveResult.OK;
