@@ -78,7 +78,10 @@ public class QuoridorEngine implements GameEngine {
     }
 
     @Override
-    public MoveResult placeWall(PlayerId player, WallPosition pos, WallOrientation orientation) {
+    public MoveResult placeWall(PlayerId player, WallPosition position, WallOrientation orientation) {
+
+        // calls the wall validator to check
+        boolean valid = wallValidator.canPlaceWall(state, player, position, orientation);
         return MoveResult.OK;
     }
 }

@@ -38,6 +38,8 @@ public class QuoridorEngineTest {
         assertSame(initialState, actual);
     }
 
+
+    // PAWN MOVES ORCHESTRATION
     // 2. When we call the engine on a move, the validator should check whether the move is valid and return the result
     // to the engine
     @Test
@@ -223,4 +225,33 @@ public class QuoridorEngineTest {
         verify(pawnValidator).canMovePawn(initialState, PlayerId.PLAYER_1, Direction.EAST);
         verify(winChecker).isWin(initialState.withNextTurn(), PlayerId.PLAYER_1);
     }
+
+    // WALL PLACEMENT ORCHESTRATION
+
+    // 9. Wall validation is delegated to the wall validator by the engine
+    @Test
+    void wallValidation() {
+        // test setup - we start considering player positions
+        Player p1 = new Player(PlayerId.PLAYER_1, "P1", 10, 8);
+        Player p2 = new Player(PlayerId.PLAYER_2, "P2", 10, 0);
+        Board board = new Board()
+                .withPlayerAt(PlayerId.PLAYER_1, new Position(0, 4))
+                .withPlayerAt(PlayerId.PLAYER_2, new Position(8, 4));
+
+        GameState initialState = new GameState(board, List.of(p1, p2)); // current player is PLAYER_1
+        QuoridorEngine engine = new QuoridorEngine(initialState, pawnValidator, wallValidator, winChecker);
+
+        // define a new wall
+        WallPosition position = new WallPosition(1, 2);
+        WallOrientation orientation = WallOrientation.HORIZONTAL;
+
+        // make the wall positioning move
+        engine.placeWall(PlayerId.PLAYER_1, position, orientation);
+
+        // verify the wall validator is called
+        verify(wallValidator).canPlaceWall(initialState, PlayerId.PLAYER_1, position, orientation);
+        verifyNoMoreInteractions(wallValidator);
+
+    }
+
 }
