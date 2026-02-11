@@ -92,6 +92,11 @@ public class QuoridorEngine implements GameEngine {
             return MoveResult.INVALID;
         }
 
+        // if a player has no walls remaining, the move is invalid
+        if (state.currentPlayer().wallsRemaining() == 0) {
+            return MoveResult.INVALID;
+        }
+
         // calls the wall validator to check
         boolean valid = wallValidator.canPlaceWall(state, player, wall);
 
