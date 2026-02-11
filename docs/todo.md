@@ -150,8 +150,13 @@ For the _pawn_ part:
 - [x] Invalid pawn moves are rejected and state is unchanged
 - [x] Valid moves should advance the turn
 - [x] Engine refuses moves from a non-current player
+- [ ] Engine handles validator checking whether the last move is winning and handles the aftermath (change internal state
+and do not allow further moves, they should all be marked INVALID)
+- [ ] Valid move that is NOT winning should make the "win checker" to return false (prevent the always gameOver)
+
 
 For the _walls_ part:
 - [ ] Engine asks validator on wall placement
 - [ ] Invalid wall placements are rejected and state unchanged (as with pawn!)
-- [ ] Valid wall placements should advance the turn and "consume?" the wall
+- [ ] Valid wall placements should advance the turn 
+- [ ] Valid wall placements should consume a wall
