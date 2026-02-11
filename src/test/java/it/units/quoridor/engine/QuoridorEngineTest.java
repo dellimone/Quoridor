@@ -15,8 +15,10 @@ import static org.mockito.Mockito.*;
 @ExtendWith(MockitoExtension.class)
 public class QuoridorEngineTest {
 
-    @Mock
-    PawnMoveValidator validator;
+    @Mock PawnMoveValidator pawnValidator;
+
+    @Mock WallPlacementValidator wallValidator;
+
     @Mock WinChecker winChecker; // will be implemented later
 
     // 1. we want to test whether the GameEngine handles the board correctly -> initial state set correctly
@@ -28,7 +30,7 @@ public class QuoridorEngineTest {
         Player p2 = new Player(PlayerId.PLAYER_2, "P2", 10, 0);
 
         GameState initialState = new GameState(board, List.of(p1, p2));
-        QuoridorEngine engine = new QuoridorEngine(initialState, validator, , winChecker);
+        QuoridorEngine engine = new QuoridorEngine(initialState, pawnValidator, wallValidator, winChecker);
 
         GameState actual = engine.getGameState();
 
@@ -46,15 +48,15 @@ public class QuoridorEngineTest {
         Player p2 = new Player(PlayerId.PLAYER_2, "P2", 10, 0);
 
         GameState initialState = new GameState(board, List.of(p1, p2));
-        QuoridorEngine engine = new QuoridorEngine(initialState, validator, , winChecker);
+        QuoridorEngine engine = new QuoridorEngine(initialState, pawnValidator, wallValidator, winChecker);
 
         // assume a player proposed an action: "Move Pawn EAST"
         engine.movePawn(PlayerId.PLAYER_1, Direction.EAST);
         // to make it compile we add small movePawn methd
 
         // assertion
-        verify(validator).canMovePawn(initialState, PlayerId.PLAYER_1, Direction.EAST);
-        verifyNoMoreInteractions(validator);
+        verify(pawnValidator).canMovePawn(initialState, PlayerId.PLAYER_1, Direction.EAST);
+        verifyNoMoreInteractions(pawnValidator);
     }
 
 
@@ -69,10 +71,10 @@ public class QuoridorEngineTest {
         Player p2 = new Player(PlayerId.PLAYER_2, "P2", 10, 0);
 
         GameState initialState = new GameState(board, List.of(p1, p2));
-        QuoridorEngine engine = new QuoridorEngine(initialState, validator, , winChecker);
+        QuoridorEngine engine = new QuoridorEngine(initialState, pawnValidator, wallValidator, winChecker);
 
         // now for the Mockito setup: when we ask if moving EAST was valid, validator returns false
-        when(validator.canMovePawn(initialState, PlayerId.PLAYER_1, Direction.EAST)).thenReturn(false);
+        when(pawnValidator.canMovePawn(initialState, PlayerId.PLAYER_1, Direction.EAST)).thenReturn(false);
 
         // result from engine (MovePawn is subsequently changed for the test to pass)
         MoveResult result = engine.movePawn(PlayerId.PLAYER_1, Direction.EAST);
@@ -81,8 +83,8 @@ public class QuoridorEngineTest {
         assertEquals(MoveResult.INVALID, result); // check if the move was marked INVALID
         assertSame(initialState, engine.getGameState()); // check if current state is thus UNCHANGED
 
-        verify(validator).canMovePawn(initialState, PlayerId.PLAYER_1, Direction.EAST);
-        verifyNoMoreInteractions(validator);
+        verify(pawnValidator).canMovePawn(initialState, PlayerId.PLAYER_1, Direction.EAST);
+        verifyNoMoreInteractions(pawnValidator);
 
     }
 
@@ -98,10 +100,10 @@ public class QuoridorEngineTest {
         Player p2 = new Player(PlayerId.PLAYER_2, "P2", 10, 0);
 
         GameState initialState = new GameState(board, List.of(p1, p2));
-        QuoridorEngine engine = new QuoridorEngine(initialState, validator, , winChecker);
+        QuoridorEngine engine = new QuoridorEngine(initialState, pawnValidator, wallValidator, winChecker);
 
         // now for the Mockito setup: when we ask if moving EAST was valid, validator returns true
-        when(validator.canMovePawn(initialState, PlayerId.PLAYER_1, Direction.EAST)).thenReturn(true);
+        when(pawnValidator.canMovePawn(initialState, PlayerId.PLAYER_1, Direction.EAST)).thenReturn(true);
 
         // result from engine (MovePawn is subsequently changed for the test to pass)
         MoveResult result = engine.movePawn(PlayerId.PLAYER_1, Direction.EAST);
@@ -111,8 +113,8 @@ public class QuoridorEngineTest {
         assertEquals(initialState.withNextTurn(), engine.getGameState()); // check if current state has CHANGED
         // for now we just check if the turn changed, not the board
 
-        verify(validator).canMovePawn(initialState, PlayerId.PLAYER_1, Direction.EAST);
-        verifyNoMoreInteractions(validator);
+        verify(pawnValidator).canMovePawn(initialState, PlayerId.PLAYER_1, Direction.EAST);
+        verifyNoMoreInteractions(pawnValidator);
 
     }
 
@@ -128,7 +130,7 @@ public class QuoridorEngineTest {
         Player p2 = new Player(PlayerId.PLAYER_2, "P2", 10, 0);
 
         GameState initialState = new GameState(board, List.of(p1, p2)); // current player is PLAYER_1
-        QuoridorEngine engine = new QuoridorEngine(initialState, validator, , winChecker);
+        QuoridorEngine engine = new QuoridorEngine(initialState, pawnValidator, wallValidator, winChecker);
 
         // P2 tries to move when it's P1's turn
         MoveResult result = engine.movePawn(PlayerId.PLAYER_2, Direction.EAST);
@@ -138,7 +140,7 @@ public class QuoridorEngineTest {
         assertEquals(MoveResult.INVALID, result);
         assertSame(initialState, engine.getGameState());
 
-        verifyNoMoreInteractions(validator);
+        verifyNoMoreInteractions(pawnValidator);
     }
 
     // 6. after engine marks GameOver, every movePawn should return INVALID, state should not change and validator should
@@ -152,7 +154,7 @@ public class QuoridorEngineTest {
         Player p2 = new Player(PlayerId.PLAYER_2, "P2", 10, 0);
 
         GameState initialState = new GameState(board, List.of(p1, p2)); // current player is PLAYER_1
-        QuoridorEngine engine = new QuoridorEngine(initialState, validator, , winChecker);
+        QuoridorEngine engine = new QuoridorEngine(initialState, pawnValidator, wallValidator, winChecker);
 
         // we need the engine to signal "game ended":
         engine.endGame(PlayerId.PLAYER_1);
@@ -164,7 +166,7 @@ public class QuoridorEngineTest {
         // assertion
         assertEquals(MoveResult.INVALID, result);
         assertSame(initialState, engine.getGameState());
-        verifyNoInteractions(validator);
+        verifyNoInteractions(pawnValidator);
     }
 
     // 7. Valid pawn move can return WIN now and end the game
@@ -177,10 +179,10 @@ public class QuoridorEngineTest {
         Player p2 = new Player(PlayerId.PLAYER_2, "P2", 10, 0);
 
         GameState initialState = new GameState(board, List.of(p1, p2)); // current player is PLAYER_1
-        QuoridorEngine engine = new QuoridorEngine(initialState, validator, , winChecker);
+        QuoridorEngine engine = new QuoridorEngine(initialState, pawnValidator, wallValidator, winChecker);
 
         // the validator should just check the validity of the move, the winChecker whether that move leads to a win
-        when(validator.canMovePawn(initialState, PlayerId.PLAYER_1, Direction.EAST)).thenReturn(true);
+        when(pawnValidator.canMovePawn(initialState, PlayerId.PLAYER_1, Direction.EAST)).thenReturn(true);
         when(winChecker.isWin(initialState.withNextTurn(), PlayerId.PLAYER_1)).thenReturn(true);
 
         MoveResult result = engine.movePawn(PlayerId.PLAYER_1, Direction.EAST);
@@ -190,7 +192,7 @@ public class QuoridorEngineTest {
         assertTrue(engine.isGameOver()); // check that the engine set game over
         assertEquals(PlayerId.PLAYER_1, engine.getWinner()); // check that the engine marked P1 as winner
 
-        verify(validator).canMovePawn(initialState, PlayerId.PLAYER_1, Direction.EAST);
+        verify(pawnValidator).canMovePawn(initialState, PlayerId.PLAYER_1, Direction.EAST);
         verify(winChecker).isWin(initialState.withNextTurn(), PlayerId.PLAYER_1);
     }
 
@@ -205,10 +207,10 @@ public class QuoridorEngineTest {
         Player p2 = new Player(PlayerId.PLAYER_2, "P2", 10, 0);
 
         GameState initialState = new GameState(board, List.of(p1, p2)); // current player is PLAYER_1
-        QuoridorEngine engine = new QuoridorEngine(initialState, validator, , winChecker);
+        QuoridorEngine engine = new QuoridorEngine(initialState, pawnValidator, wallValidator, winChecker);
 
         // the validator should just check the validity of the move, the winChecker whether that move leads to a win
-        when(validator.canMovePawn(initialState, PlayerId.PLAYER_1, Direction.EAST)).thenReturn(true);
+        when(pawnValidator.canMovePawn(initialState, PlayerId.PLAYER_1, Direction.EAST)).thenReturn(true);
         when(winChecker.isWin(initialState.withNextTurn(), PlayerId.PLAYER_1)).thenReturn(false);
 
         MoveResult result = engine.movePawn(PlayerId.PLAYER_1, Direction.EAST);
@@ -218,7 +220,7 @@ public class QuoridorEngineTest {
         assertFalse(engine.isGameOver()); // check that the engine DID NOT set game over
         assertNull(engine.getWinner()); // check that the engine's winner is still null
 
-        verify(validator).canMovePawn(initialState, PlayerId.PLAYER_1, Direction.EAST);
+        verify(pawnValidator).canMovePawn(initialState, PlayerId.PLAYER_1, Direction.EAST);
         verify(winChecker).isWin(initialState.withNextTurn(), PlayerId.PLAYER_1);
     }
 }
