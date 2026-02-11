@@ -149,7 +149,7 @@ For the _pawn_ part:
 - [x] Engine asks validator on a pawn move
 - [x] Invalid pawn moves are rejected and state is unchanged
 - [x] Valid moves should advance the turn
-- [ ] Engine refuses moves from a non-current player
+- [x] Engine refuses moves from a non-current player
 
 For the _walls_ part:
 - [ ] Engine asks validator on wall placement

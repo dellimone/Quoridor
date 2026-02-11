@@ -138,6 +138,31 @@ public class GameEngineTest {
         assertSame(initialState, engine.getGameState());
 
         verifyNoMoreInteractions(validator);
+    }
 
+    // 6. after engine marks GameOver, every movePawn should return INVALID, state should not change and validator should
+    // not be called -> after the match ends, reject all inputs (no rule checks post-game)
+
+    @Test
+    void gameOverTest() {
+        // test setup
+        Board board = new Board();
+        Player p1 = new Player(PlayerId.PLAYER_1, "P1", 10, 8);
+        Player p2 = new Player(PlayerId.PLAYER_2, "P2", 10, 0);
+
+        GameState initialState = new GameState(board, List.of(p1, p2)); // current player is PLAYER_1
+        GameEngine engine = new GameEngine(initialState, validator);
+
+        // we need the engine to signal "game ended":
+        engine.endGame(PlayerId.PLAYER_1);
+        // modifications are needed in GameEngine
+
+        // try to make a move
+        MoveResult result = engine.movePawn(PlayerId.PLAYER_1, Direction.EAST);
+
+        // assertion
+        assertEquals(MoveResult.INVALID, result);
+        assertSame(initialState, engine.getGameState());
+        verifyNoInteractions(validator);
     }
 }
