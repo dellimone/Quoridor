@@ -51,11 +51,37 @@ public class GameEngineTest {
         engine.movePawn(PlayerId.PLAYER_1, Direction.EAST);
         // to make it compile we add small movePawn methd
 
-
         // assertion
         verify(validator).canMovePawn(initialState, PlayerId.PLAYER_1, Direction.EAST);
         verifyNoMoreInteractions(validator);
     }
 
+    // 3. we want the engine to react to the validator's outcome:
+    // - simple version for MoveResult needed
+
+    @Test
+    void invalidPawnMove_unchangedState() {
+        // test setup
+        Board board = new Board();
+        Player p1 = new Player(PlayerId.PLAYER_1, "P1", 10, 8);
+        Player p2 = new Player(PlayerId.PLAYER_2, "P2", 10, 0);
+
+        GameState initialState = new GameState(board, List.of(p1, p2));
+        GameEngine engine = new GameEngine(initialState, validator);
+
+        // now for the Mockito setup: when we ask if moving EAST was valid, validator returns false
+        when(validator.canMovePawn(initialState, PlayerId.PLAYER_1, Direction.EAST)).thenReturn(false);
+
+        // result from engine (MovePawn is subsequently changed for the test to pass)
+        MoveResult result = engine.movePawn(PlayerId.PLAYER_1, Direction.EAST);
+
+        // assertion
+        assertEquals(MoveResult.INVALID, result); // check if the move was marked INVALID
+        assertSame(initialState, engine.getGameState()); // check if current state is thus UNCHANGED
+
+        verify(validator).canMovePawn(initialState, PlayerId.PLAYER_1, Direction.EAST);
+        verifyNoMoreInteractions(validator);
+
+    }
 
 }
