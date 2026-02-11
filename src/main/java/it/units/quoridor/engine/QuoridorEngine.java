@@ -86,7 +86,9 @@ public class QuoridorEngine implements GameEngine {
         if (!valid) {
             return MoveResult.INVALID;
         }
-        
+
+        state = state.withNextTurn();
+
         return MoveResult.OK;
     }
 }
