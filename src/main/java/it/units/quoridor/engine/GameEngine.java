@@ -1,6 +1,6 @@
 package it.units.quoridor.engine;
 
-import it.units.quoridor.domain.GameState;
+import it.units.quoridor.domain.*;
 
 public class GameEngine {
 
@@ -15,5 +15,9 @@ public class GameEngine {
 
     public GameState getGameState() {
         return state;
+    }
+
+    public void movePawn(PlayerId player, Direction direction) {
+        validator.canMovePawn(state, player, direction);
     }
 }
