@@ -470,11 +470,15 @@ public class QuoridorEngineTest {
 
         int currentWalls = p1.wallsRemaining();
         MoveResult result = engine.placeWall(PlayerId.PLAYER_1, wall);
-        int updatedWalls = p1.wallsRemaining();
-
         assertEquals(MoveResult.OK, result);
-        assertEquals(currentWalls - 1, updatedWalls);
+
+        // because now the new player lives inside the new GameState
+        Player updatedP1 = engine.getGameState().getPlayer(PlayerId.PLAYER_1);
+        assertEquals(currentWalls - 1, updatedP1.wallsRemaining());
         // we should have removed one wall from those available to p1
+
+        // since that now Player is immutable:
+        assertNotSame(p1, updatedP1);
 
         verify(wallValidator).canPlaceWall(initialState, PlayerId.PLAYER_1, wall);
         verifyNoMoreInteractions(wallValidator);
