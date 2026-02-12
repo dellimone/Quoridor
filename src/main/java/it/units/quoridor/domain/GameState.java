@@ -36,4 +36,18 @@ public record GameState(
         int nextIndex = (currentPlayerIndex + 1) % players.size();
         return new GameState(board, players, nextIndex);
     }
+
+    // we return a new GameState with updated turn (useful for valid pawn movements and pawn placements)
+    public GameState withBoard(Board newBoard) {
+        return new GameState(newBoard, players, currentPlayerIndex);
+    }
+
+    // creates a new player list where the player with the same id is replaced -> to avoid mutating
+    public GameState withUpdatedPlayer(Player updatedPlayer) {
+        List<Player> newPlayers = players.stream()
+                .map(player -> player.id().equals(updatedPlayer.id()) ? updatedPlayer : player)
+                .toList();
+
+        return new GameState(board, newPlayers, currentPlayerIndex);
+    }
 }

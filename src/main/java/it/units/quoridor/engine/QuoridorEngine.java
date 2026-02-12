@@ -45,6 +45,11 @@ public class QuoridorEngine implements GameEngine {
 
 
     @Override
+    public void newGame(){
+
+    }
+
+    @Override
     public MoveResult movePawn(PlayerId player, Direction direction) {
 
         // if the game has ended, every move is marked invalid

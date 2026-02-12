@@ -9,6 +9,7 @@ public interface GameEngine {
     MoveResult movePawn(PlayerId player, Direction direction);
     MoveResult placeWall(PlayerId player, Wall wall);
 
+    void newGame();
     boolean isGameOver();
     PlayerId getWinner();
 }

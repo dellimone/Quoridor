@@ -537,5 +537,8 @@ public class QuoridorEngineTest {
 
         verifyNoInteractions(wallValidator);
     }
+
+    // 19. reset game on demand
+
 }
 

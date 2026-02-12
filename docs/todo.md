@@ -140,7 +140,7 @@
 ### Game Engine 
 #### Engine Skeleton
 - [x] Create GameEngine class (stores GameState and exposes getGameState())
-- [x] Create ActionValidator
+- [x] ~~Create ActionValidator~~ -> became PawnMoveValidator and WallPlacementValidator
 - [x] Create MoveResult (will be expanded later)
 
 #### Game Engine Tests
@@ -161,3 +161,4 @@ For the _walls_ part:
 - [X] Valid wall placements should advance the turn 
 - [X] Valid wall placements should update the board status
 - [X] Valid wall placements should consume a wall
+- [ ] Player with no walls remaining CANNOT place a wall
