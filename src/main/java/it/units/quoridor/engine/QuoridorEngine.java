@@ -1,9 +1,12 @@
 package it.units.quoridor.engine;
 
 import it.units.quoridor.domain.*;
+import it.units.quoridor.logic.rules.*;
+import it.units.quoridor.logic.rules.setup.*;
 
 import java.util.ArrayDeque;
 import java.util.Deque;
+import java.util.List;
 
 
 public class QuoridorEngine implements GameEngine {
@@ -26,14 +29,30 @@ public class QuoridorEngine implements GameEngine {
     private boolean gameOver = false;
     private PlayerId winner = null;
 
-    
-    public QuoridorEngine(GameState initialState, PawnMoveValidator pawnValidator, WallPlacementValidator wallValidator, WinChecker winChecker) {
+    // we make this package private (for the tests already implemented, for now)
+    QuoridorEngine(GameState initialState, PawnMoveValidator pawnValidator, WallPlacementValidator wallValidator, WinChecker winChecker) {
         this.initialState = initialState;
         this.state = initialState;
         this.pawnValidator = pawnValidator;
         this.wallValidator = wallValidator;
         this.winChecker = winChecker;
     }
+
+    // we will leverage a "factory" that will provide our engine with the needed setup
+    public static QuoridorEngine newGame(
+            GameRules rules,
+            PlayerCount playerCount,
+            List<PlayerSpec> specification,
+
+            PawnMoveValidator pawnValidator,
+            WallPlacementValidator wallValidator,
+            WinChecker winChecker
+    ) {
+        GameState initialState = InitialStateFactory.create(rules, playerCount, specification);
+
+        return new QuoridorEngine(initialState, pawnValidator, wallValidator, winChecker);
+    }
+
 
     @Override
     public GameState getGameState() {
