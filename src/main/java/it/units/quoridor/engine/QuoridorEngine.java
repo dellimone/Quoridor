@@ -26,7 +26,7 @@ public class QuoridorEngine implements GameEngine {
     private boolean gameOver = false;
     private PlayerId winner = null;
 
-
+    
     public QuoridorEngine(GameState initialState, PawnMoveValidator pawnValidator, WallPlacementValidator wallValidator, WinChecker winChecker) {
         this.initialState = initialState;
         this.state = initialState;
