@@ -1,4 +1,4 @@
-package it.units.quoridor.logic;
+package it.units.quoridor.logic.rules;
 
 import it.units.quoridor.domain.GameState;
 import it.units.quoridor.domain.PlayerId;

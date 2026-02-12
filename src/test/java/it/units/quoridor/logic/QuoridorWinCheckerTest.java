@@ -2,6 +2,7 @@ package it.units.quoridor.logic;
 
 import it.units.quoridor.domain.*;
 import it.units.quoridor.engine.WinChecker;
+import it.units.quoridor.logic.rules.QuoridorWinChecker;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;

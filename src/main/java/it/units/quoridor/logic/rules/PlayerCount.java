@@ -1,4 +1,4 @@
-package it.units.quoridor.logic;
+package it.units.quoridor.logic.rules;
 
 public enum PlayerCount {
     TWO_PLAYERS,
