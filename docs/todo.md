@@ -175,9 +175,9 @@ For the _walls_ part:
 - [x] Create QuoridorGameRules implementation
 - [x] Get start position for Player 1 in 2-player (8,4)
 - [x] Get start position for Player 2 in 2-player (0,4)
-- [ ] Get start positions for 4-player game
-- [ ] Get goal row for Player 1 (row 0)
-- [ ] Get goal row for Player 2 (row 8)
+- [x] Get start positions for 4-player game
+- [x] Get goal row for Player 1 (row 0)
+- [x] Get goal row for Player 2 (row 8)
 - [ ] Get initial wall count for 2-player (10 each)
 - [ ] Get initial wall count for 4-player (5 each)
 - [ ] Get next player in 2-player (P1 → P2 → P1)
