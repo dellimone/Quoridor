@@ -33,7 +33,7 @@ public class Controller implements ViewListener {
     // Start a new game
     @Override
     public void onNewGame(int playerCount) {
-        // TODO engine.setup();
+        // engine.setup();
         updateView();
     }
 

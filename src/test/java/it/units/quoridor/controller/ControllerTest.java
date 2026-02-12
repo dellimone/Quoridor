@@ -49,7 +49,6 @@ class ControllerTest {
 
         // if we want to do reset
         // TODO verify(gameEngine).setUp()
-
         // control that the controller has told the view to redraw the players
         verify(gameView).renderBoard(any());
     }
