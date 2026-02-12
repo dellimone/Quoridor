@@ -29,4 +29,24 @@ class QuoridorWinCheckerTest {
         // Assert
         assertTrue(hasWon);
     }
+
+    @Test
+    void playerNotAtGoalRowHasNotWon() {
+        // Arrange
+        Player player1 = new Player(PlayerId.PLAYER_1, "Alice", 10, 0);
+        Player player2 = new Player(PlayerId.PLAYER_2, "Bob", 10, 8);
+
+        Board board = new Board()
+                .withPlayerAt(PlayerId.PLAYER_1, new Position(5, 4)); // Player 1 at row 5, NOT at goal row 0
+
+        GameState state = new GameState(board, List.of(player1, player2));
+
+        WinChecker winChecker = new QuoridorWinChecker();
+
+        // Act
+        boolean hasWon = winChecker.isWin(state, PlayerId.PLAYER_1);
+
+        // Assert
+        assertFalse(hasWon);
+    }
 }
