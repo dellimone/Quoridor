@@ -51,13 +51,13 @@ class QuoridorWinCheckerTest {
     }
 
     @Test
-    void player1WinsAtRow0 () {
+    void player1WinsAtRow8 () {
         // Arrange
-        Player player1 = new Player(PlayerId.PLAYER_1, "Alice", 10, 0);
-        Player player2 = new Player(PlayerId.PLAYER_2, "Bob", 10, 8);
+        Player player1 = new Player(PlayerId.PLAYER_1, "Alice", 10, 8);
+        Player player2 = new Player(PlayerId.PLAYER_2, "Bob", 10, 0);
 
         Board board = new Board()
-                .withPlayerAt(PlayerId.PLAYER_1, new Position(0, 3)); // Player 1 at row 0
+                .withPlayerAt(PlayerId.PLAYER_1, new Position(8, 3)); // Player 1 at row 8
 
         GameState state = new GameState(board, List.of(player1, player2));
 
@@ -71,13 +71,13 @@ class QuoridorWinCheckerTest {
     }
 
     @Test
-    void player2WinsAtRow8() {
+    void player2WinsAtRow0() {
         // Arrange
-        Player player1 = new Player(PlayerId.PLAYER_1, "Alice", 10, 0);
-        Player player2 = new Player(PlayerId.PLAYER_2, "Bob", 10, 8);
+        Player player1 = new Player(PlayerId.PLAYER_1, "Alice", 10, 8);
+        Player player2 = new Player(PlayerId.PLAYER_2, "Bob", 10, 0);
 
         Board board = new Board()
-                .withPlayerAt(PlayerId.PLAYER_2, new Position(8, 6)); // Player 2 at row 8
+                .withPlayerAt(PlayerId.PLAYER_2, new Position(0, 6)); // Player 2 at row 0
 
         GameState state = new GameState(board, List.of(player1, player2));
 
