@@ -21,4 +21,15 @@ public class QuoridorGameRules implements GameRules {
         }
         throw new IllegalArgumentException("Unknown player: " + playerId);
     }
+
+    @Override
+    public int getGoalRow(PlayerId playerId) {
+        if  (playerId==PlayerId.PLAYER_1) {
+            return 8;
+        }
+        if (playerId==PlayerId.PLAYER_2) {
+            return 0;
+        }
+        throw new IllegalArgumentException("Unknown player: " + playerId);
+    }
 }

@@ -55,4 +55,28 @@ class GameRulesTest {
         // Assert
         assertEquals(new Position(4, 8), startPosition);
     }
+
+    @Test
+    void getGoalRowForPlayer1() {
+        // Arrange
+        GameRules rules = new QuoridorGameRules();
+
+        // Act
+        int goalRow = rules.getGoalRow(PlayerId.PLAYER_1);
+
+        // Assert
+        assertEquals(8, goalRow);  // Player 1 starts at row 0, must reach row 8
+    }
+
+    @Test
+    void getGoalRowForPlayer2() {
+        // Arrange
+        GameRules rules = new QuoridorGameRules();
+
+        // Act
+        int goalRow = rules.getGoalRow(PlayerId.PLAYER_2);
+
+        // Assert
+        assertEquals(0, goalRow);  // Player 2 starts at row 8, must reach row 0
+    }
 }
