@@ -10,7 +10,7 @@ public class QuoridorWinChecker implements WinChecker {
     @Override
     public boolean isWin(GameState state, PlayerId playerId) {
         // Get player's current position from the board
-        Position currentPosition = state.board().playerPosition(playerId);
+        Position currentPosition = state.getPlayerPosition(playerId);
 
         // Get player's goal row from their player data
         int goalRow = state.getPlayer(playerId).goalRow();
