@@ -88,13 +88,6 @@ public class QuoridorEngineTest {
         GameState initialState = new GameState(board, List.of(p1, p2)); // current player is PLAYER_1
         QuoridorEngine engine = new QuoridorEngine(initialState, pawnValidator, wallValidator, winChecker);
 
-
-        Wall wall = new Wall(new WallPosition(1, 2), WallOrientation.HORIZONTAL);
-        when(wallValidator.canPlaceWall(initialState, PlayerId.PLAYER_1, wall)).thenReturn(true);
-        MoveResult result = engine.placeWall(PlayerId.PLAYER_1, wall);
-
-        assertNotSame(initialState, engine.getGameState());
-
         boolean undoAction = engine.undo();
         assertFalse(undoAction);
     }

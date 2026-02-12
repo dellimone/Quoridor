@@ -32,6 +32,10 @@ public record GameState(
                 .orElseThrow();
     }
 
+    public Position getPlayerPosition(PlayerId playerId) {
+        return board.playerPosition(playerId);
+    }
+
     public GameState withNextTurn() {
         int nextIndex = (currentPlayerIndex + 1) % players.size();
         return new GameState(board, players, nextIndex);
