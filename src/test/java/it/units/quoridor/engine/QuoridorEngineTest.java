@@ -174,5 +174,42 @@ public class QuoridorEngineTest {
         // assert P1 went back to 10 walls remaining
         assertEquals(10, engine.getGameState().getPlayer(PlayerId.PLAYER_1).wallsRemaining());
     }
+
+    // 24. history should be cleared after a reset
+    @Test
+    void clearHistoryAfterReset() {
+        // test setup
+        Player p1 = new Player(PlayerId.PLAYER_1, "P1", 10, 8); // p1 has no walls
+        Player p2 = new Player(PlayerId.PLAYER_2, "P2", 10, 0);
+        Board board = new Board()
+                .withPlayerAt(PlayerId.PLAYER_1, new Position(0, 4))
+                .withPlayerAt(PlayerId.PLAYER_2, new Position(8, 4));
+
+        GameState initialState = new GameState(board, List.of(p1, p2)); // current player is PLAYER_1
+        QuoridorEngine engine = new QuoridorEngine(initialState, pawnValidator, wallValidator, winChecker);
+
+        // make a valid wall placement
+        Wall wall = new Wall(new WallPosition(1, 2), WallOrientation.HORIZONTAL);
+        when(wallValidator.canPlaceWall(initialState, PlayerId.PLAYER_1, wall)).thenReturn(true);
+        engine.placeWall(PlayerId.PLAYER_1, wall);
+
+        // assert the state actually changed
+        assertNotSame(initialState, engine.getGameState());
+        assertEquals(9, engine.getGameState().getPlayer(PlayerId.PLAYER_1).wallsRemaining());
+        // also assert walls changed
+
+        // reset game
+        engine.reset();
+
+        // try undo last wall action
+        boolean undoAction = engine.undo();
+        assertFalse(undoAction);
+
+        // we check that we actually went back to the initialState
+        assertSame(initialState, engine.getGameState());
+
+        // assert P1 went back to 10 walls remaining
+        assertEquals(10, engine.getGameState().getPlayer(PlayerId.PLAYER_1).wallsRemaining());
+    }
 }
 

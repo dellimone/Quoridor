@@ -64,6 +64,7 @@ public class QuoridorEngine implements GameEngine {
         this.state = initialState;
         this.gameOver = false;
         this.winner = null;
+        this.history.clear();
     }
 
 
