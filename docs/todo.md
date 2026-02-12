@@ -171,10 +171,10 @@ For the _walls_ part:
 - [x] Player 2 wins at row 8
 
 ### GameRules
-- [ ] Create GameRules interface
-- [ ] Create QuoridorGameRules implementation
-- [ ] Get start position for Player 1 in 2-player (8,4)
-- [ ] Get start position for Player 2 in 2-player (0,4)
+- [x] Create GameRules interface
+- [x] Create QuoridorGameRules implementation
+- [x] Get start position for Player 1 in 2-player (8,4)
+- [x] Get start position for Player 2 in 2-player (0,4)
 - [ ] Get start positions for 4-player game
 - [ ] Get goal row for Player 1 (row 0)
 - [ ] Get goal row for Player 2 (row 8)
