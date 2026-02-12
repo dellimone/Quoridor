@@ -173,15 +173,14 @@ For the _walls_ part:
 ### GameRules
 - [x] Create GameRules interface
 - [x] Create QuoridorGameRules implementation
-- [x] Get start position for Player 1 in 2-player (8,4)
-- [x] Get start position for Player 2 in 2-player (0,4)
+- [x] Get start position for Player 1 in 2-player (0,4)
+- [x] Get start position for Player 2 in 2-player (8,4)
 - [x] Get start positions for 4-player game
-- [x] Get goal row for Player 1 (row 0)
-- [x] Get goal row for Player 2 (row 8)
+- [x] Get goal row for Player 1 (row 8)
+- [x] Get goal row for Player 2 (row 0)
 - [x] Get initial wall count for 2-player (10 each)
 - [x] Get initial wall count for 4-player (5 each)
-- [ ] Get next player in 2-player (P1 → P2 → P1)
-- [ ] Get next player in 4-player (P1 → P2 → P3 → P4 → P1)
+- [ ] **DISCUSS**: Get next player (already handled by GameState.withNextTurn())
 
 ### PathFinder
 - [ ] Create PathFinder interface
