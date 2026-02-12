@@ -74,5 +74,29 @@ public class QuoridorEngineTest {
         // and we should we back to the initial state
         assertEquals(initialState, engine.getGameState());
     }
+
+    // 20. undo on new engine returns false
+    @Test
+    void undoNewGame() {
+        // test setup
+        Player p1 = new Player(PlayerId.PLAYER_1, "P1", 10, 8); // p1 has no walls
+        Player p2 = new Player(PlayerId.PLAYER_2, "P2", 10, 0);
+        Board board = new Board()
+                .withPlayerAt(PlayerId.PLAYER_1, new Position(0, 4))
+                .withPlayerAt(PlayerId.PLAYER_2, new Position(8, 4));
+
+        GameState initialState = new GameState(board, List.of(p1, p2)); // current player is PLAYER_1
+        QuoridorEngine engine = new QuoridorEngine(initialState, pawnValidator, wallValidator, winChecker);
+
+
+        Wall wall = new Wall(new WallPosition(1, 2), WallOrientation.HORIZONTAL);
+        when(wallValidator.canPlaceWall(initialState, PlayerId.PLAYER_1, wall)).thenReturn(true);
+        MoveResult result = engine.placeWall(PlayerId.PLAYER_1, wall);
+
+        assertNotSame(initialState, engine.getGameState());
+
+        boolean undoAction = engine.undo();
+        assertFalse(undoAction);
+    }
 }
 

@@ -10,7 +10,7 @@ public interface GameEngine {
     MoveResult placeWall(PlayerId player, Wall wall);
 
     void reset();
-    void undo();
+    boolean undo();
     boolean isGameOver();
     PlayerId getWinner();
 }

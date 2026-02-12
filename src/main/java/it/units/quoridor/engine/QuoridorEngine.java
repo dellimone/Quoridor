@@ -2,12 +2,24 @@ package it.units.quoridor.engine;
 
 import it.units.quoridor.domain.*;
 
+import java.util.ArrayDeque;
+import java.util.Deque;
+
+
 public class QuoridorEngine implements GameEngine {
+
+    // immutable and private snapshot (for the undo)
+    private record EngineSnapshot(
+            GameState state,
+            boolean gameOver,
+            PlayerId winner
+    ) {}
 
     private final PawnMoveValidator pawnValidator;
     private final WallPlacementValidator wallValidator;
     private final WinChecker winChecker;
 
+    private final Deque<EngineSnapshot> history = new ArrayDeque<>(); //snapshot history
     private final GameState initialState;
     private GameState state;
 
@@ -54,10 +66,12 @@ public class QuoridorEngine implements GameEngine {
         this.winner = null;
     }
 
+
     @Override
-    public void undo() {
-        // TODO
+    public boolean undo() {
+        return false;
     }
+
 
     @Override
     public MoveResult movePawn(PlayerId player, Direction direction) {
@@ -97,6 +111,7 @@ public class QuoridorEngine implements GameEngine {
 
         return MoveResult.OK;
     }
+
 
     @Override
     public MoveResult placeWall(PlayerId player, Wall wall) {
