@@ -160,3 +160,36 @@ For the _walls_ part:
 - [ ] Invalid wall placements are rejected and state unchanged (as with pawn!)
 - [ ] Valid wall placements should advance the turn 
 - [ ] Valid wall placements should consume a wall
+---
+
+## Logic Layer
+
+### WinChecker
+- [x] Player at goal row has won
+- [x] Player not at goal row has not won
+- [x] Player 1 wins at row 0
+- [x] Player 2 wins at row 8
+
+### GameRules
+- [x] Create GameRules interface
+- [x] Create QuoridorGameRules implementation
+- [x] Get start position for Player 1 in 2-player (0,4)
+- [x] Get start position for Player 2 in 2-player (8,4)
+- [x] Get start positions for 4-player game
+- [x] Get goal row for Player 1 (row 8)
+- [x] Get goal row for Player 2 (row 0)
+- [x] Get initial wall count for 2-player (10 each)
+- [x] Get initial wall count for 4-player (5 each)
+- [ ] **DISCUSS**: Get next player (already handled by GameState.withNextTurn())
+
+### PathFinder
+- [ ] Create PathFinder interface
+- [ ] Create BfsPathFinder implementation
+- [ ] Path exists on empty board from (8,4) to row 0
+- [ ] Path exists when already at goal row
+- [ ] Path exists with single non-blocking wall
+- [ ] Path exists with multiple walls requiring detour
+- [ ] No path when completely blocked
+- [ ] Path exists from corner to opposite side
+- [ ] BFS respects wall blockages
+- [ ] BFS handles board edges correctly
