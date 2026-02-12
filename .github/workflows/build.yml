@@ -2,7 +2,7 @@ name: CI
 
 on:
   push:
-    branches: [main, master, domain-objects, game-engine]
+    branches: [main, master, domain-objects, game-engine, logic-layer]
   pull_request:
     branches: [main, master]
 
