@@ -17,13 +17,13 @@ public class QuoridorGameRules implements GameRules {
 
     @Override
     public int getGoalRow(PlayerId playerId) {
-        if  (playerId==PlayerId.PLAYER_1) {
-            return 8;
-        }
-        if (playerId==PlayerId.PLAYER_2) {
-            return 0;
-        }
-        throw new IllegalArgumentException("Unknown player: " + playerId);
+        return switch (playerId) {
+            case PLAYER_1 -> 8;
+            case PLAYER_2 -> 0;
+            case PLAYER_3, PLAYER_4 -> throw new UnsupportedOperationException(
+                "4-player goals not yet implemented (requires column goals)"
+            );
+        };
     }
 
     @Override
