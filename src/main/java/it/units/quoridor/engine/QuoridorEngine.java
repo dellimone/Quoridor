@@ -74,7 +74,9 @@ public class QuoridorEngine implements GameEngine {
         Board newBoard = state.board().withPlayerAt(player, nextPosition);
 
         // need to change state if move was valid
-        state = new GameState(newBoard, state.players(), state.currentPlayerIndex()).withNextTurn();
+        state = state.withBoard(newBoard)
+                .withNextTurn();
+
 
         // check if the next state is a win
         if (winChecker.isWin(state, player)) {
@@ -109,10 +111,12 @@ public class QuoridorEngine implements GameEngine {
             return MoveResult.INVALID;
         }
 
+        Player updatedPlayer = state.currentPlayer().useWall(); // update player after wall used
         Board newBoard = state.board().addWall(wall);
-        state.currentPlayer().useWall(); // consume a wall from current player
 
-        state = new GameState(newBoard, state.players(), state.currentPlayerIndex()).withNextTurn();
+        state = state.withBoard(newBoard)
+                .withUpdatedPlayer(updatedPlayer)
+                .withNextTurn();
 
         return MoveResult.OK;
     }
