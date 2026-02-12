@@ -45,8 +45,13 @@ public class QuoridorEngine implements GameEngine {
 
 
     @Override
-    public void newGame(){
+    public void reset(){
+        // TODO
+    }
 
+    @Override
+    public void undo() {
+        // TODO
     }
 
     @Override
