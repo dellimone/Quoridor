@@ -165,10 +165,10 @@ For the _walls_ part:
 ## Logic Layer
 
 ### WinChecker
-- [ ] Player at goal row has won
-- [ ] Player not at goal row has not won
-- [ ] Player 1 wins at row 0
-- [ ] Player 2 wins at row 8
+- [x] Player at goal row has won
+- [x] Player not at goal row has not won
+- [x] Player 1 wins at row 0
+- [x] Player 2 wins at row 8
 
 ### GameRules
 - [ ] Create GameRules interface
