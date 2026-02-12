@@ -150,15 +150,15 @@ public class QuoridorEngine implements GameEngine {
             return MoveResult.INVALID;
         }
 
-        // we save a snapshot in the history before moving on
-        saveSnapshot();
-
         // calls the wall validator to check
         boolean valid = wallValidator.canPlaceWall(state, player, wall);
 
         if (!valid) {
             return MoveResult.INVALID;
         }
+
+        // we save a snapshot in the history before moving on
+        saveSnapshot();
 
         Player updatedPlayer = state.currentPlayer().useWall(); // update player after wall used
         Board newBoard = state.board().addWall(wall);
