@@ -543,6 +543,42 @@ public class QuoridorEngineTest {
     }
 
     // 19. reset game on demand
+    @Test
+    void resetGameOnDemand() {
+        // test setup
+        Player p1 = new Player(PlayerId.PLAYER_1, "P1", 10, 8); // p1 has no walls
+        Player p2 = new Player(PlayerId.PLAYER_2, "P2", 10, 0);
+        Board board = new Board()
+                .withPlayerAt(PlayerId.PLAYER_1, new Position(0, 4))
+                .withPlayerAt(PlayerId.PLAYER_2, new Position(8, 4));
+
+        GameState initialState = new GameState(board, List.of(p1, p2)); // current player is PLAYER_1
+        QuoridorEngine engine = new QuoridorEngine(initialState, pawnValidator, wallValidator, winChecker);
+
+
+        // we do some actions (two valid moves)
+        Wall wall = new Wall(new WallPosition(1, 2), WallOrientation.HORIZONTAL);
+        when(wallValidator.canPlaceWall(initialState, PlayerId.PLAYER_1, wall)).thenReturn(true);
+        MoveResult move1 = engine.placeWall(PlayerId.PLAYER_1, wall);
+
+        // check if current state changed
+        GameState oldGameState = engine.getGameState();
+        assertNotSame(initialState, oldGameState);
+
+
+        when(pawnValidator.canMovePawn(any(GameState.class), eq(PlayerId.PLAYER_2), eq(Direction.EAST))).thenReturn(true);
+        MoveResult move2 = engine.movePawn(PlayerId.PLAYER_2, Direction.EAST);
+
+        // check if current state changed
+        assertNotSame(oldGameState, engine.getGameState());
+
+        // now we reset
+        engine.reset();
+
+        // and we should we back to the initial state
+        assertEquals(initialState, engine.getGameState());
+
+    }
 
 }
 

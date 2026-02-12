@@ -7,6 +7,8 @@ public class QuoridorEngine implements GameEngine {
     private final PawnMoveValidator pawnValidator;
     private final WallPlacementValidator wallValidator;
     private final WinChecker winChecker;
+
+    private final GameState initialState;
     private GameState state;
 
     private boolean gameOver = false;
@@ -14,6 +16,7 @@ public class QuoridorEngine implements GameEngine {
 
 
     public QuoridorEngine(GameState initialState, PawnMoveValidator pawnValidator, WallPlacementValidator wallValidator, WinChecker winChecker) {
+        this.initialState = initialState;
         this.state = initialState;
         this.pawnValidator = pawnValidator;
         this.wallValidator = wallValidator;
@@ -46,7 +49,9 @@ public class QuoridorEngine implements GameEngine {
 
     @Override
     public void reset(){
-        // TODO
+        this.state = initialState;
+        this.gameOver = false;
+        this.winner = null;
     }
 
     @Override
