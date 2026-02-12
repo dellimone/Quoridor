@@ -32,4 +32,15 @@ public class QuoridorGameRules implements GameRules {
         }
         throw new IllegalArgumentException("Unknown player: " + playerId);
     }
+
+    @Override
+    public int getInitialWallCount(PlayerCount playerCount) {
+        if (playerCount == PlayerCount.TWO_PLAYERS){
+            return 10;
+        }
+        if  (playerCount == PlayerCount.FOUR_PLAYERS){
+            return 5;
+        }
+        throw  new IllegalArgumentException("Unknown PlayerCount: " + playerCount);
+    }
 }

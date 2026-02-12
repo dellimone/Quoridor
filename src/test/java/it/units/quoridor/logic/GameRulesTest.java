@@ -79,4 +79,28 @@ class GameRulesTest {
         // Assert
         assertEquals(0, goalRow);  // Player 2 starts at row 8, must reach row 0
     }
+
+    @Test
+    void getInitialWallCountFor2PlayerGame() {
+        // Arrange
+        GameRules rules = new QuoridorGameRules();
+
+        // Act
+        int wallCount = rules.getInitialWallCount(PlayerCount.TWO_PLAYERS);
+
+        // Assert
+        assertEquals(10, wallCount);  // 2-player: 10 walls each
+    }
+
+    @Test
+    void getInitialWallCountFor4PlayerGame() {
+        // Arrange
+        GameRules rules = new QuoridorGameRules();
+
+        // Act
+        int wallCount = rules.getInitialWallCount(PlayerCount.FOUR_PLAYERS);
+
+        // Assert
+        assertEquals(5, wallCount);  // 4-player: 5 walls each
+    }
 }

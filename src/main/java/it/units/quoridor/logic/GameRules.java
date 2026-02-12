@@ -7,4 +7,6 @@ public interface GameRules {
     Position getStartPosition(PlayerId playerId);
 
     int getGoalRow(PlayerId playerId);
+
+    int getInitialWallCount(PlayerCount playerCount);
 }
