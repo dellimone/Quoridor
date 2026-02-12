@@ -67,8 +67,26 @@ public class QuoridorEngine implements GameEngine {
     }
 
 
+    private void saveSnapshot() {
+        history.push(new EngineSnapshot(state, gameOver, winner));
+    }
+
+    private void restoreStateFromSnapshot(EngineSnapshot snapshot) {
+        this.state = snapshot.state;
+        this.gameOver = snapshot.gameOver;
+        this.winner = snapshot.winner;
+    }
+
     @Override
     public boolean undo() {
+
+        if (!history.isEmpty()) {
+            EngineSnapshot lastSnapshot = history.pop(); // obtain the last snapshot
+            restoreStateFromSnapshot(lastSnapshot);
+
+            return true;
+        }
+
         return false;
     }
 
@@ -92,6 +110,9 @@ public class QuoridorEngine implements GameEngine {
         if (!valid) {
             return MoveResult.INVALID;
         }
+
+        // we save a snapshot in the history before moving on
+        saveSnapshot();
 
         // we need to update the board with the new position
         Position nextPosition = state.board().playerPosition(player).move(direction);
@@ -128,6 +149,9 @@ public class QuoridorEngine implements GameEngine {
         if (state.currentPlayer().wallsRemaining() == 0) {
             return MoveResult.INVALID;
         }
+
+        // we save a snapshot in the history before moving on
+        saveSnapshot();
 
         // calls the wall validator to check
         boolean valid = wallValidator.canPlaceWall(state, player, wall);

@@ -162,3 +162,14 @@ For the _walls_ part:
 - [X] Valid wall placements should update the board status
 - [X] Valid wall placements should consume a wall
 - [ ] Player with no walls remaining CANNOT place a wall
+
+ResetGame tests:
+- [X] reset() should restore initial state and change the flags
+- [ ] reset() should clear history
+
+Undo tests:
+- [X] if we have no history (game has just started anew) we return false
+- [X] after a valid pawn move, calling undo should return true (because we have a history)
+- [X] after a valid pawn move, calling undo should bring the gamestate back to the previous "valid" one
+- [ ] after a valid wall placement, undo should return true and restore walls remaining
+- [ ] after winning pawn move, doing undo should clear the gameOver flag and the winner

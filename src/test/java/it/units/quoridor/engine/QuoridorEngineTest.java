@@ -98,5 +98,54 @@ public class QuoridorEngineTest {
         boolean undoAction = engine.undo();
         assertFalse(undoAction);
     }
+
+    // 21. after valid pawn move, state changes and we save it in the history
+    @Test
+    void undoAfterValidPawnMove() {
+        // test setup
+        Player p1 = new Player(PlayerId.PLAYER_1, "P1", 10, 8); // p1 has no walls
+        Player p2 = new Player(PlayerId.PLAYER_2, "P2", 10, 0);
+        Board board = new Board()
+                .withPlayerAt(PlayerId.PLAYER_1, new Position(0, 4))
+                .withPlayerAt(PlayerId.PLAYER_2, new Position(8, 4));
+
+        GameState initialState = new GameState(board, List.of(p1, p2)); // current player is PLAYER_1
+        QuoridorEngine engine = new QuoridorEngine(initialState, pawnValidator, wallValidator, winChecker);
+
+
+        when(pawnValidator.canMovePawn(any(GameState.class), eq(PlayerId.PLAYER_1), eq(Direction.EAST))).thenReturn(true);
+        MoveResult result = engine.movePawn(PlayerId.PLAYER_1, Direction.EAST);
+
+        assertNotSame(initialState, engine.getGameState());
+
+        boolean undoAction = engine.undo();
+        assertTrue(undoAction);
+    }
+
+    // 22. after valid pawn move, state changes; if we do undo(), we go back to the initial state
+    @Test
+    void undoAfterValidPawnMove_restorePreviousState() {
+        // test setup
+        Player p1 = new Player(PlayerId.PLAYER_1, "P1", 10, 8); // p1 has no walls
+        Player p2 = new Player(PlayerId.PLAYER_2, "P2", 10, 0);
+        Board board = new Board()
+                .withPlayerAt(PlayerId.PLAYER_1, new Position(0, 4))
+                .withPlayerAt(PlayerId.PLAYER_2, new Position(8, 4));
+
+        GameState initialState = new GameState(board, List.of(p1, p2)); // current player is PLAYER_1
+        QuoridorEngine engine = new QuoridorEngine(initialState, pawnValidator, wallValidator, winChecker);
+
+
+        when(pawnValidator.canMovePawn(any(GameState.class), eq(PlayerId.PLAYER_1), eq(Direction.EAST))).thenReturn(true);
+        MoveResult result = engine.movePawn(PlayerId.PLAYER_1, Direction.EAST);
+
+        assertNotSame(initialState, engine.getGameState());
+
+        boolean undoAction = engine.undo();
+        assertTrue(undoAction);
+
+        // we check that we actually went back to the previous state
+        assertSame(initialState, engine.getGameState());
+    }
 }
 
