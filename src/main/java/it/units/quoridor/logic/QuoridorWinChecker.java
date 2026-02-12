@@ -13,6 +13,7 @@ public class QuoridorWinChecker implements WinChecker {
         Position currentPosition = state.getPlayerPosition(playerId);
 
         // Get player's goal row from their player data
+        //TODO: extract goal row from Player and move it to Rules
         int goalRow = state.getPlayer(playerId).goalRow();
 
         // Player wins when their current row equals their goal row
