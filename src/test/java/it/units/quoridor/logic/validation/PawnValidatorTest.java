@@ -41,7 +41,7 @@ public class PawnValidatorTest {
         assertTrue(pawnValidator.canMovePawn(initialState, PlayerId.PLAYER_1, Direction.EAST));
     }
 
-    // 2. returns true when proposed square is blocked by walls
+    // 2. returns false when proposed square is blocked by walls
     @Test
     void returnsFalse_occupiedSquareByWall() {
         // create a small example for board
@@ -60,5 +60,42 @@ public class PawnValidatorTest {
         GameState currentState = new GameState(newBoard, List.of(p1, p2));
 
         assertFalse(pawnValidator.canMovePawn(currentState, PlayerId.PLAYER_1, Direction.EAST));
+    }
+
+
+    // 3. returns true when proposed square is occupied by another player but the one behind is free
+    @Test
+    void returnsTrue_proposedSquareOccupiedBehindFree() {
+        // create a small example for board
+        Player p1 = new Player(PlayerId.PLAYER_1, "P1", 10, 8);
+        Player p2 = new Player(PlayerId.PLAYER_2, "P2", 10, 0);
+
+        Board board = new Board()
+                .withPlayerAt(PlayerId.PLAYER_1, new Position(1, 4))
+                .withPlayerAt(PlayerId.PLAYER_2, new Position(0, 4));
+
+        GameState initialState = new GameState(board, List.of(p1, p2));
+
+        assertTrue(pawnValidator.canMovePawn(initialState, PlayerId.PLAYER_1, Direction.SOUTH));
+    }
+
+
+    // 4. returns false when proposed square is occupied by another player but the one behind is blocked by a wall
+    @Test
+    void returnsFalse_proposedSquareOccupiedBehindWall() {
+        // create a small example for board
+        Player p1 = new Player(PlayerId.PLAYER_1, "P1", 10, 8);
+        Player p2 = new Player(PlayerId.PLAYER_2, "P2", 10, 0);
+        WallPosition wallPosition = new WallPosition(0,4);
+        Wall wall = new Wall(wallPosition, WallOrientation.HORIZONTAL);
+
+        Board board = new Board()
+                .addWall(wall)
+                .withPlayerAt(PlayerId.PLAYER_1, new Position(2, 4))
+                .withPlayerAt(PlayerId.PLAYER_2, new Position(1, 4));
+
+        GameState initialState = new GameState(board, List.of(p1, p2));
+
+        assertFalse(pawnValidator.canMovePawn(initialState, PlayerId.PLAYER_1, Direction.SOUTH));
     }
 }
