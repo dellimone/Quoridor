@@ -129,7 +129,7 @@ public class QuoridorEngine implements GameEngine {
             return preconditionCheck;
         }
 
-        if (state.currentPlayer().wallsRemaining() == 0) {
+        if (state.currentPlayerWallsRemaining() == 0) {
             return MoveResult.failure("No walls remaining");
         }
 

@@ -41,6 +41,10 @@ public record GameState(
         return board.playerPosition(playerId);
     }
 
+    public int currentPlayerWallsRemaining() {
+        return currentPlayer().wallsRemaining();
+    }
+
     public GameState withNextTurn() {
         int nextIndex = (currentPlayerIndex + 1) % players.size();
         return new GameState(board, players, nextIndex, status, winner);

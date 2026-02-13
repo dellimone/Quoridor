@@ -423,4 +423,55 @@ class GameStateTest {
         assertEquals(new Position(0, 4), newState.getPlayerPosition(PlayerId.PLAYER_1));
         assertEquals(new Position(8, 4), newState.getPlayerPosition(PlayerId.PLAYER_2));
     }
+
+    // Tests for helper methods (Law of Demeter)
+
+    @Test
+    void currentPlayerWallsRemainingReturnsCurrentPlayerWallCount() {
+        Board board = new Board();
+        Player player1 = new Player(PlayerId.PLAYER_1, "Alice", 10, 8);
+        Player player2 = new Player(PlayerId.PLAYER_2, "Bob", 7, 0);
+        List<Player> players = List.of(player1, player2);
+        GameState gameState = new GameState(board, players);
+
+        // Current player is PLAYER_1
+        assertEquals(10, gameState.currentPlayerWallsRemaining());
+    }
+
+    @Test
+    void currentPlayerWallsRemainingReflectsTurnChanges() {
+        Board board = new Board();
+        Player player1 = new Player(PlayerId.PLAYER_1, "Alice", 10, 8);
+        Player player2 = new Player(PlayerId.PLAYER_2, "Bob", 7, 0);
+        List<Player> players = List.of(player1, player2);
+        GameState gameState = new GameState(board, players);
+
+        // Current player is PLAYER_1
+        assertEquals(10, gameState.currentPlayerWallsRemaining());
+
+        // Advance turn to PLAYER_2
+        GameState nextState = gameState.withNextTurn();
+        assertEquals(7, nextState.currentPlayerWallsRemaining());
+    }
+
+    @Test
+    void currentPlayerWallsRemainingReflectsWallUsage() {
+        Board board = new Board()
+                .withPlayerAt(PlayerId.PLAYER_1, new Position(0, 4))
+                .withPlayerAt(PlayerId.PLAYER_2, new Position(8, 4));
+        Player player1 = new Player(PlayerId.PLAYER_1, "Alice", 10, 8);
+        Player player2 = new Player(PlayerId.PLAYER_2, "Bob", 10, 0);
+        List<Player> players = List.of(player1, player2);
+        GameState gameState = new GameState(board, players);
+
+        Wall wall = new Wall(new WallPosition(3, 3), WallOrientation.HORIZONTAL);
+        GameState newState = gameState.withWallPlaced(PlayerId.PLAYER_1, wall);
+
+        // Turn advanced to PLAYER_2, but let's check PLAYER_1's walls via the state
+        // Actually, current player is now PLAYER_2 (10 walls)
+        assertEquals(10, newState.currentPlayerWallsRemaining());
+
+        // Can verify via direct player check that PLAYER_1 has 9
+        assertEquals(9, newState.getPlayer(PlayerId.PLAYER_1).wallsRemaining());
+    }
 }
