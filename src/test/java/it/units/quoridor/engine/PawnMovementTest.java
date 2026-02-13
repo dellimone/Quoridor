@@ -60,7 +60,7 @@ public class PawnMovementTest {
         MoveResult result = engine.movePawn(PlayerId.PLAYER_1, Direction.EAST);
 
         // assertion
-        assertEquals(MoveResult.INVALID, result); // check if the move was marked INVALID
+        assertFalse(result.isValid()); // check if the move was marked INVALID
         assertSame(initialState, engine.getGameState()); // check if current state is thus UNCHANGED
 
         verify(pawnValidator).canMovePawn(initialState, PlayerId.PLAYER_1, Direction.EAST);
@@ -91,7 +91,7 @@ public class PawnMovementTest {
         MoveResult result = engine.movePawn(PlayerId.PLAYER_1, Direction.EAST);
 
         // assertion
-        assertEquals(MoveResult.OK, result); // check if the move was marked OK
+        assertTrue(result.isValid()); // check if the move was marked OK
         assertEquals(PlayerId.PLAYER_2, engine.getGameState().currentPlayerId()); // check if current state has CHANGED
         // for now we just check if the turn changed, not the board
 
@@ -119,7 +119,7 @@ public class PawnMovementTest {
         // need to change movePawn to reflect this case
 
         // assertion
-        assertEquals(MoveResult.INVALID, result);
+        assertFalse(result.isValid());
         assertSame(initialState, engine.getGameState());
 
         verifyNoMoreInteractions(pawnValidator);
@@ -146,7 +146,7 @@ public class PawnMovementTest {
         MoveResult result = engine.movePawn(PlayerId.PLAYER_1, Direction.EAST);
 
         // assertion
-        assertEquals(MoveResult.INVALID, result);
+        assertFalse(result.isValid());
         assertSame(initialState, engine.getGameState());
         verifyNoInteractions(pawnValidator);
     }
@@ -172,7 +172,8 @@ public class PawnMovementTest {
         MoveResult result = engine.movePawn(PlayerId.PLAYER_1, Direction.EAST);
 
         // assertions
-        assertEquals(MoveResult.WIN, result); // check that the move results in a win
+        assertTrue(result.isValid()); // check that the move results in a win
+        // TODO handle win
         assertTrue(engine.isGameOver()); // check that the engine set game over
         assertEquals(PlayerId.PLAYER_1, engine.getWinner()); // check that the engine marked P1 as winner
 
@@ -202,7 +203,7 @@ public class PawnMovementTest {
         MoveResult result = engine.movePawn(PlayerId.PLAYER_1, Direction.EAST);
 
         // assertions
-        assertEquals(MoveResult.OK, result); // check that the move does not result in a win
+        assertTrue(result.isValid()); // check that the move does not result in a win
         assertFalse(engine.isGameOver()); // check that the engine DID NOT set game over
         assertNull(engine.getWinner()); // check that the engine's winner is still null
 

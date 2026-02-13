@@ -67,7 +67,7 @@ public class WallPlacementTest {
         MoveResult result = engine.placeWall(PlayerId.PLAYER_1, wall);
 
         // assertions
-        assertEquals(MoveResult.INVALID, result);
+        assertFalse(result.isValid());
         assertSame(initialState, engine.getGameState());
 
         verify(wallValidator).canPlaceWall(initialState, PlayerId.PLAYER_1, wall);
@@ -96,7 +96,7 @@ public class WallPlacementTest {
         MoveResult result = engine.placeWall(PlayerId.PLAYER_1, wall);
 
         // assertions
-        assertSame(MoveResult.OK, result);
+        assertTrue(result.isValid());
 
         GameState nextState = engine.getGameState();
         assertEquals(PlayerId.PLAYER_2, nextState.currentPlayerId());
@@ -126,7 +126,7 @@ public class WallPlacementTest {
         MoveResult result = engine.placeWall(PlayerId.PLAYER_2, wall);
 
         // assertions
-        assertSame(MoveResult.INVALID, result);
+        assertFalse(result.isValid());
         assertEquals(initialState, engine.getGameState());
 
         // wall validator SHOULD NOT be called at all
@@ -154,7 +154,7 @@ public class WallPlacementTest {
         MoveResult result = engine.placeWall(PlayerId.PLAYER_1, wall);
 
         // assertions
-        assertSame(MoveResult.INVALID, result);
+        assertFalse(result.isValid());
         assertTrue(engine.isGameOver()); // we should not change the "game over" mark
 
         // wall validator SHOULD NOT be called at all
@@ -183,7 +183,7 @@ public class WallPlacementTest {
         MoveResult result = engine.placeWall(PlayerId.PLAYER_1, wall);
 
         // assertions
-        assertSame(MoveResult.OK, result);
+        assertTrue(result.isValid());
 
         GameState nextState = engine.getGameState();
         Board newBoard = engine.getGameState().board();
@@ -217,7 +217,7 @@ public class WallPlacementTest {
 
         int currentWalls = p1.wallsRemaining();
         MoveResult result = engine.placeWall(PlayerId.PLAYER_1, wall);
-        assertEquals(MoveResult.OK, result);
+        assertTrue(result.isValid());
 
         // because now the new player lives inside the new GameState
         Player updatedP1 = engine.getGameState().getPlayer(PlayerId.PLAYER_1);
@@ -254,7 +254,7 @@ public class WallPlacementTest {
         MoveResult result = engine.placeWall(PlayerId.PLAYER_1, wall);
         int updatedWalls = p1.wallsRemaining();
 
-        assertEquals(MoveResult.INVALID, result);
+        assertFalse(result.isValid());
         assertEquals(currentWalls, updatedWalls);
         assertEquals(initialState, engine.getGameState());
         // we should have the same number of walls and the state should not have changed
@@ -283,7 +283,7 @@ public class WallPlacementTest {
         MoveResult result = engine.placeWall(PlayerId.PLAYER_1, wall);
 
         // assertions
-        assertEquals(MoveResult.INVALID, result);
+        assertFalse(result.isValid());
         assertEquals(initialState, engine.getGameState()); // state should not have changed
 
         verifyNoInteractions(wallValidator);

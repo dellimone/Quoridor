@@ -116,19 +116,19 @@ public class QuoridorEngine implements GameEngine {
 
         // if the game has ended, every move is marked invalid
         if (gameOver) {
-            return MoveResult.INVALID;
+            return MoveResult.failure("Game is over");
         }
 
         // if the "not current"-player tries to make a move, we mark it directly as invalid
         if (!player.equals(state.currentPlayerId())) {
-            return MoveResult.INVALID;
+            return MoveResult.failure("Not your turn");
         }
 
         // check move validity
         boolean valid = pawnValidator.canMovePawn(state, player, direction);
 
         if (!valid) {
-            return MoveResult.INVALID;
+            return MoveResult.failure("Invalid pawn move");
         }
 
         // we save a snapshot in the history before moving on
@@ -147,10 +147,10 @@ public class QuoridorEngine implements GameEngine {
         if (winChecker.isWin(state, player)) {
             gameOver = true;
             winner = player;
-            return MoveResult.WIN;
+            return MoveResult.success();
         }
 
-        return MoveResult.OK;
+        return MoveResult.isWin();
     }
 
 
@@ -158,23 +158,23 @@ public class QuoridorEngine implements GameEngine {
     public MoveResult placeWall(PlayerId player, Wall wall) {
 
         if (gameOver) {
-            return MoveResult.INVALID;
+            return MoveResult.failure("Game is over");
         }
 
         if (player != state.currentPlayerId()) {
-            return MoveResult.INVALID;
+            return MoveResult.failure("Not your turn");
         }
 
         // if a player has no walls remaining, the move is invalid
         if (state.currentPlayer().wallsRemaining() == 0) {
-            return MoveResult.INVALID;
+            return MoveResult.failure("No walls remaining");
         }
 
         // calls the wall validator to check
         boolean valid = wallValidator.canPlaceWall(state, player, wall);
 
         if (!valid) {
-            return MoveResult.INVALID;
+            return MoveResult.failure("Impossible to place wall here");
         }
 
         // we save a snapshot in the history before moving on
@@ -187,6 +187,6 @@ public class QuoridorEngine implements GameEngine {
                 .withUpdatedPlayer(updatedPlayer)
                 .withNextTurn();
 
-        return MoveResult.OK;
+        return MoveResult.success();
     }
 }
