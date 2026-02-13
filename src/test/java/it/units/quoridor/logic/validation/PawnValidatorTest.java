@@ -98,4 +98,23 @@ public class PawnValidatorTest {
 
         assertFalse(pawnValidator.canMovePawn(initialState, PlayerId.PLAYER_1, Direction.SOUTH));
     }
+
+    // 5. returns false when proposed square is occupied by another player but the one behind is blocked by a player
+    @Test
+    void returnsFalse_proposedSquareOccupiedBehindAnotherPlayer() {
+        // create a small example for board
+        Player p1 = new Player(PlayerId.PLAYER_1, "P1", 10, 8);
+        Player p2 = new Player(PlayerId.PLAYER_2, "P2", 10, 0);
+        Player p3 = new Player(PlayerId.PLAYER_3, "P3", 10, 0);
+
+        Board board = new Board()
+                .withPlayerAt(PlayerId.PLAYER_1, new Position(2, 4))
+                .withPlayerAt(PlayerId.PLAYER_2, new Position(1, 4))
+                .withPlayerAt(PlayerId.PLAYER_3, new Position(0, 4));
+
+        GameState initialState = new GameState(board, List.of(p1, p2, p3));
+
+        assertFalse(pawnValidator.canMovePawn(initialState, PlayerId.PLAYER_1, Direction.SOUTH));
+    }
+
 }

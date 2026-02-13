@@ -37,6 +37,13 @@ public class RulesPawnMoveValidator implements PawnMoveValidator{
             return false; // no jump
         }
 
+        // - if behind the player there is another player
+        Position behindPosition = proposedPosition.move(direction);
+
+        if (playerPositions.containsValue(behindPosition)) {
+            return false; // no jump
+        }
+
         return true;
     }
 }
