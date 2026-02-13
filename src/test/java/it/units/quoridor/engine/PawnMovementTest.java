@@ -231,7 +231,7 @@ public class PawnMovementTest {
         Position desiredPosition = currentPosition.move(Direction.EAST);
 
         Board desiredBoardState = initialState.board().withPlayerAt(PlayerId.PLAYER_1, desiredPosition);
-        GameState expectedGameState = new GameState(desiredBoardState, initialState.players(), initialState.currentPlayerIndex()).withNextTurn();
+        GameState expectedGameState = new GameState(desiredBoardState, initialState.players(), initialState.currentPlayerIndex(), GameStatus.IN_PROGRESS, null).withNextTurn();
 
         // how the board SHOULD be after the move
         when(winChecker.isWin(expectedGameState, PlayerId.PLAYER_1)).thenReturn(false);
