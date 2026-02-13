@@ -111,21 +111,9 @@ public class QuoridorEngine implements GameEngine {
             return MoveResult.failure("Invalid pawn move");
         }
 
-        // we save a snapshot in the history before moving on
         saveSnapshot();
+        state = state.withPawnMoved(playerId, direction);
 
-        // we need to update the board with the new position
-        // TODO: feature envy
-        Position nextPosition = state.board().playerPosition(playerId).move(direction);
-        // TODO: feature envy
-        Board newBoard = state.board().withPlayerAt(playerId, nextPosition);
-
-        // need to change state if move was valid
-        state = state.withBoard(newBoard)
-                .withNextTurn();
-
-
-        // check if the next state is a win
         if (winChecker.isWin(state, playerId)) {
             state = state.withGameFinished(playerId);
         }
@@ -141,28 +129,16 @@ public class QuoridorEngine implements GameEngine {
             return preconditionCheck;
         }
 
-        // if a player has no walls remaining, the move is invalid
-        // TODO: feature envy
         if (state.currentPlayer().wallsRemaining() == 0) {
             return MoveResult.failure("No walls remaining");
         }
 
-        // calls the wall validator to check
-        boolean valid = wallValidator.canPlaceWall(state, player, wall);
-
-        if (!valid) {
+        if (!wallValidator.canPlaceWall(state, player, wall)) {
             return MoveResult.failure("Impossible to place wall here");
         }
 
-        // we save a snapshot in the history before moving on
         saveSnapshot();
-        // TODO: feature envy
-        Player updatedPlayer = state.currentPlayer().useWall(); // update player after wall used
-        Board newBoard = state.board().addWall(wall);
-
-        state = state.withBoard(newBoard)
-                .withUpdatedPlayer(updatedPlayer)
-                .withNextTurn();
+        state = state.withWallPlaced(player, wall);
 
         return MoveResult.success();
     }
