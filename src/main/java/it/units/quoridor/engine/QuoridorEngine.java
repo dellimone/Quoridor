@@ -85,18 +85,23 @@ public class QuoridorEngine implements GameEngine {
         return false;
     }
 
-    // TODO: movePawn and PlaceWall share the same check at the beginning, not DRY
-    @Override
-    public MoveResult movePawn(PlayerId playerId, Direction direction) {
-
-        // if game is ended the move is invalid
+    private MoveResult validateTurnPreconditions(PlayerId playerId) {
         if (state.isGameOver()) {
             return MoveResult.failure("Game is over");
         }
 
-        // if not player turn the move is invalid
         if (!playerId.equals(state.currentPlayerId())) {
             return MoveResult.failure("Not your turn");
+        }
+
+        return null; // Preconditions valid
+    }
+
+    @Override
+    public MoveResult movePawn(PlayerId playerId, Direction direction) {
+        MoveResult preconditionCheck = validateTurnPreconditions(playerId);
+        if (preconditionCheck != null) {
+            return preconditionCheck;
         }
 
         // check player movement validity
@@ -131,13 +136,9 @@ public class QuoridorEngine implements GameEngine {
 
     @Override
     public MoveResult placeWall(PlayerId player, Wall wall) {
-
-        if (state.isGameOver()) {
-            return MoveResult.failure("Game is over");
-        }
-
-        if (player != state.currentPlayerId()) {
-            return MoveResult.failure("Not your turn");
+        MoveResult preconditionCheck = validateTurnPreconditions(player);
+        if (preconditionCheck != null) {
+            return preconditionCheck;
         }
 
         // if a player has no walls remaining, the move is invalid
