@@ -5,6 +5,7 @@ import it.units.quoridor.domain.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 public class RulesPawnMoveValidator implements PawnMoveValidator{
 
@@ -12,7 +13,13 @@ public class RulesPawnMoveValidator implements PawnMoveValidator{
 
         Board currentBoard = state.board();
         Position currentPosition = state.getPlayerPosition(player);
-        Position proposedPosition = currentPosition.move(direction);
+        Optional<Position> maybePosition = currentPosition.tryMove(direction);
+
+        if (maybePosition.isEmpty()) {
+            return false;
+        }
+
+        Position proposedPosition = maybePosition.get();
 
         // we have to return true if the square in the proposed direction is free (from walls and players)
         if (currentBoard.isEdgeBlocked(currentPosition, direction)) {
@@ -40,8 +47,15 @@ public class RulesPawnMoveValidator implements PawnMoveValidator{
             return false; // no jump
         }
 
+        Optional<Position> maybeBehindPosition = proposedPosition.tryMove(direction);
+
+        if (maybeBehindPosition.isEmpty()) {
+            return false;
+        }
+
+        Position behindPosition = maybeBehindPosition.get();
         // - if behind the player there is another player
-        Position behindPosition = proposedPosition.move(direction);
+
         return !playerPositions.containsValue(behindPosition); // no jump
     }
 }
