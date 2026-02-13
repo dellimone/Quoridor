@@ -31,19 +31,17 @@ public class RulesPawnMoveValidator implements PawnMoveValidator{
             return true;
         }
 
-        // JUMP mechanic:
-        // - if behind the player there is a wall
+        // else jump mechanics
+        return canJump(currentBoard, proposedPosition, playerPositions, direction);
+    }
+
+    boolean canJump(Board currentBoard, Position proposedPosition, Map<PlayerId, Position> playerPositions, Direction direction) {
         if (currentBoard.isEdgeBlocked(proposedPosition, direction)) {
             return false; // no jump
         }
 
         // - if behind the player there is another player
         Position behindPosition = proposedPosition.move(direction);
-
-        if (playerPositions.containsValue(behindPosition)) {
-            return false; // no jump
-        }
-
-        return true;
+        return !playerPositions.containsValue(behindPosition); // no jump
     }
 }

@@ -71,8 +71,8 @@ public class PawnValidatorTest {
         Player p2 = new Player(PlayerId.PLAYER_2, "P2", 10, 0);
 
         Board board = new Board()
-                .withPlayerAt(PlayerId.PLAYER_1, new Position(1, 4))
-                .withPlayerAt(PlayerId.PLAYER_2, new Position(0, 4));
+                .withPlayerAt(PlayerId.PLAYER_1, new Position(2, 4))
+                .withPlayerAt(PlayerId.PLAYER_2, new Position(1, 4));
 
         GameState initialState = new GameState(board, List.of(p1, p2));
 
