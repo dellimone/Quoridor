@@ -291,4 +291,136 @@ class GameStateTest {
         assertEquals(PlayerId.PLAYER_1, nextTurn.winner());
         assertEquals(PlayerId.PLAYER_2, nextTurn.currentPlayerId()); // Turn advanced
     }
+
+    // Tests for withPawnMoved transformation
+
+    @Test
+    void withPawnMovedUpdatesPlayerPosition() {
+        Board board = new Board()
+                .withPlayerAt(PlayerId.PLAYER_1, new Position(0, 4))
+                .withPlayerAt(PlayerId.PLAYER_2, new Position(8, 4));
+        Player player1 = new Player(PlayerId.PLAYER_1, "Alice", 10, 8);
+        Player player2 = new Player(PlayerId.PLAYER_2, "Bob", 10, 0);
+        List<Player> players = List.of(player1, player2);
+        GameState gameState = new GameState(board, players);
+
+        GameState newState = gameState.withPawnMoved(PlayerId.PLAYER_1, Direction.NORTH);
+
+        // Player should be moved
+        assertEquals(new Position(1, 4), newState.getPlayerPosition(PlayerId.PLAYER_1));
+        // Other player unchanged
+        assertEquals(new Position(8, 4), newState.getPlayerPosition(PlayerId.PLAYER_2));
+    }
+
+    @Test
+    void withPawnMovedAdvancesTurn() {
+        Board board = new Board()
+                .withPlayerAt(PlayerId.PLAYER_1, new Position(0, 4))
+                .withPlayerAt(PlayerId.PLAYER_2, new Position(8, 4));
+        Player player1 = new Player(PlayerId.PLAYER_1, "Alice", 10, 8);
+        Player player2 = new Player(PlayerId.PLAYER_2, "Bob", 10, 0);
+        List<Player> players = List.of(player1, player2);
+        GameState gameState = new GameState(board, players);
+
+        GameState newState = gameState.withPawnMoved(PlayerId.PLAYER_1, Direction.EAST);
+
+        // Turn should advance
+        assertEquals(PlayerId.PLAYER_1, gameState.currentPlayerId()); // Original unchanged
+        assertEquals(PlayerId.PLAYER_2, newState.currentPlayerId()); // New state has next player
+    }
+
+    @Test
+    void withPawnMovedPreservesPlayers() {
+        Board board = new Board()
+                .withPlayerAt(PlayerId.PLAYER_1, new Position(0, 4))
+                .withPlayerAt(PlayerId.PLAYER_2, new Position(8, 4));
+        Player player1 = new Player(PlayerId.PLAYER_1, "Alice", 10, 8);
+        Player player2 = new Player(PlayerId.PLAYER_2, "Bob", 10, 0);
+        List<Player> players = List.of(player1, player2);
+        GameState gameState = new GameState(board, players);
+
+        GameState newState = gameState.withPawnMoved(PlayerId.PLAYER_1, Direction.NORTH);
+
+        // Players should be unchanged (walls, names, etc.)
+        assertEquals(10, newState.getPlayer(PlayerId.PLAYER_1).wallsRemaining());
+        assertEquals(10, newState.getPlayer(PlayerId.PLAYER_2).wallsRemaining());
+        assertEquals("Alice", newState.getPlayer(PlayerId.PLAYER_1).name());
+    }
+
+    // Tests for withWallPlaced transformation
+
+    @Test
+    void withWallPlacedAddsWallToBoard() {
+        Board board = new Board()
+                .withPlayerAt(PlayerId.PLAYER_1, new Position(0, 4))
+                .withPlayerAt(PlayerId.PLAYER_2, new Position(8, 4));
+        Player player1 = new Player(PlayerId.PLAYER_1, "Alice", 10, 8);
+        Player player2 = new Player(PlayerId.PLAYER_2, "Bob", 10, 0);
+        List<Player> players = List.of(player1, player2);
+        GameState gameState = new GameState(board, players);
+
+        Wall wall = new Wall(new WallPosition(3, 3), WallOrientation.HORIZONTAL);
+        GameState newState = gameState.withWallPlaced(PlayerId.PLAYER_1, wall);
+
+        // Wall should be added
+        assertTrue(newState.board().walls().contains(wall));
+        // Original unchanged
+        assertFalse(gameState.board().walls().contains(wall));
+    }
+
+    @Test
+    void withWallPlacedDecrementsPlayerWalls() {
+        Board board = new Board()
+                .withPlayerAt(PlayerId.PLAYER_1, new Position(0, 4))
+                .withPlayerAt(PlayerId.PLAYER_2, new Position(8, 4));
+        Player player1 = new Player(PlayerId.PLAYER_1, "Alice", 10, 8);
+        Player player2 = new Player(PlayerId.PLAYER_2, "Bob", 10, 0);
+        List<Player> players = List.of(player1, player2);
+        GameState gameState = new GameState(board, players);
+
+        Wall wall = new Wall(new WallPosition(3, 3), WallOrientation.HORIZONTAL);
+        GameState newState = gameState.withWallPlaced(PlayerId.PLAYER_1, wall);
+
+        // Player 1 should have one less wall
+        assertEquals(10, gameState.getPlayer(PlayerId.PLAYER_1).wallsRemaining()); // Original unchanged
+        assertEquals(9, newState.getPlayer(PlayerId.PLAYER_1).wallsRemaining()); // Decremented
+        // Player 2 unchanged
+        assertEquals(10, newState.getPlayer(PlayerId.PLAYER_2).wallsRemaining());
+    }
+
+    @Test
+    void withWallPlacedAdvancesTurn() {
+        Board board = new Board()
+                .withPlayerAt(PlayerId.PLAYER_1, new Position(0, 4))
+                .withPlayerAt(PlayerId.PLAYER_2, new Position(8, 4));
+        Player player1 = new Player(PlayerId.PLAYER_1, "Alice", 10, 8);
+        Player player2 = new Player(PlayerId.PLAYER_2, "Bob", 10, 0);
+        List<Player> players = List.of(player1, player2);
+        GameState gameState = new GameState(board, players);
+
+        Wall wall = new Wall(new WallPosition(3, 3), WallOrientation.HORIZONTAL);
+        GameState newState = gameState.withWallPlaced(PlayerId.PLAYER_1, wall);
+
+        // Turn should advance
+        assertEquals(PlayerId.PLAYER_1, gameState.currentPlayerId()); // Original unchanged
+        assertEquals(PlayerId.PLAYER_2, newState.currentPlayerId()); // New state has next player
+    }
+
+    @Test
+    void withWallPlacedPreservesPlayerPositions() {
+        Board board = new Board()
+                .withPlayerAt(PlayerId.PLAYER_1, new Position(0, 4))
+                .withPlayerAt(PlayerId.PLAYER_2, new Position(8, 4));
+        Player player1 = new Player(PlayerId.PLAYER_1, "Alice", 10, 8);
+        Player player2 = new Player(PlayerId.PLAYER_2, "Bob", 10, 0);
+        List<Player> players = List.of(player1, player2);
+        GameState gameState = new GameState(board, players);
+
+        Wall wall = new Wall(new WallPosition(3, 3), WallOrientation.HORIZONTAL);
+        GameState newState = gameState.withWallPlaced(PlayerId.PLAYER_1, wall);
+
+        // Player positions should be unchanged
+        assertEquals(new Position(0, 4), newState.getPlayerPosition(PlayerId.PLAYER_1));
+        assertEquals(new Position(8, 4), newState.getPlayerPosition(PlayerId.PLAYER_2));
+    }
 }

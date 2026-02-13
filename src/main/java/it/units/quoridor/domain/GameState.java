@@ -72,4 +72,21 @@ public record GameState(
         return new GameState(board, players, currentPlayerIndex,
                 GameStatus.IN_PROGRESS, null);
     }
+
+    public GameState withPawnMoved(PlayerId playerId, Direction direction) {
+        Position currentPos = board.playerPosition(playerId);
+        Position newPos = currentPos.move(direction);
+        Board newBoard = board.withPlayerAt(playerId, newPos);
+
+        return this.withBoard(newBoard).withNextTurn();
+    }
+
+    public GameState withWallPlaced(PlayerId playerId, Wall wall) {
+        Board newBoard = board.addWall(wall);
+        Player updatedPlayer = getPlayer(playerId).useWall();
+
+        return this.withBoard(newBoard)
+                   .withUpdatedPlayer(updatedPlayer)
+                   .withNextTurn();
+    }
 }
