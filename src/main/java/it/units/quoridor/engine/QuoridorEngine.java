@@ -28,6 +28,8 @@ public class QuoridorEngine implements GameEngine {
         this.pawnValidator = pawnValidator;
         this.wallValidator = wallValidator;
         this.winChecker = winChecker;
+
+        newGame();  // Initialize engine to ready state
     }
 
     public void newGame() {

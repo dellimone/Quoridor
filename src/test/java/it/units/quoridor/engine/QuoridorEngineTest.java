@@ -26,10 +26,9 @@ public class QuoridorEngineTest {
     // 1. we want to test whether the GameEngine handles the board correctly -> initial state set correctly
     @Test
     void engineExposesInitialGameState() {
-        // Create engine with rules
+        // Create engine with rules (automatically initialized)
         GameRules rules = new QuoridorGameRules();
         QuoridorEngine engine = new QuoridorEngine(rules, pawnValidator, wallValidator, winChecker);
-        engine.newGame();
 
         GameState actual = engine.getGameState();
 
@@ -46,7 +45,6 @@ public class QuoridorEngineTest {
         // Create engine with rules
         GameRules rules = new QuoridorGameRules();
         QuoridorEngine engine = new QuoridorEngine(rules, pawnValidator, wallValidator, winChecker);
-        engine.newGame();
 
         GameState initialState = engine.getGameState();
 
@@ -78,7 +76,6 @@ public class QuoridorEngineTest {
         // Create engine with rules
         GameRules rules = new QuoridorGameRules();
         QuoridorEngine engine = new QuoridorEngine(rules, pawnValidator, wallValidator, winChecker);
-        engine.newGame();
 
         boolean undoAction = engine.undo();
         assertFalse(undoAction);
@@ -90,7 +87,6 @@ public class QuoridorEngineTest {
         // Create engine with rules
         GameRules rules = new QuoridorGameRules();
         QuoridorEngine engine = new QuoridorEngine(rules, pawnValidator, wallValidator, winChecker);
-        engine.newGame();
 
         GameState initialState = engine.getGameState();
 
@@ -109,7 +105,6 @@ public class QuoridorEngineTest {
         // Create engine with rules
         GameRules rules = new QuoridorGameRules();
         QuoridorEngine engine = new QuoridorEngine(rules, pawnValidator, wallValidator, winChecker);
-        engine.newGame();
 
         GameState initialState = engine.getGameState();
 
@@ -131,7 +126,6 @@ public class QuoridorEngineTest {
         // Create engine with rules
         GameRules rules = new QuoridorGameRules();
         QuoridorEngine engine = new QuoridorEngine(rules, pawnValidator, wallValidator, winChecker);
-        engine.newGame();
 
         GameState initialState = engine.getGameState();
 
@@ -161,7 +155,6 @@ public class QuoridorEngineTest {
         // Create engine with rules
         GameRules rules = new QuoridorGameRules();
         QuoridorEngine engine = new QuoridorEngine(rules, pawnValidator, wallValidator, winChecker);
-        engine.newGame();
 
         GameState initialState = engine.getGameState();
 
@@ -201,7 +194,6 @@ public class QuoridorEngineTest {
         );
 
         // When: Starting a new game
-        engine.newGame();
 
         // Then: GameState should match the rules
         GameState state = engine.getGameState();

@@ -28,7 +28,6 @@ public class WallPlacementTest {
         // Create engine with rules
         GameRules rules = new QuoridorGameRules();
         QuoridorEngine engine = new QuoridorEngine(rules, pawnValidator, wallValidator, winChecker);
-        engine.newGame();
 
         // define a new wall
         Wall wall = new Wall(new WallPosition(1, 2), WallOrientation.HORIZONTAL);
@@ -47,7 +46,6 @@ public class WallPlacementTest {
         // Create engine with rules
         GameRules rules = new QuoridorGameRules();
         QuoridorEngine engine = new QuoridorEngine(rules, pawnValidator, wallValidator, winChecker);
-        engine.newGame();
 
         GameState initialState = engine.getGameState();
 
@@ -73,7 +71,6 @@ public class WallPlacementTest {
         // Create engine with rules
         GameRules rules = new QuoridorGameRules();
         QuoridorEngine engine = new QuoridorEngine(rules, pawnValidator, wallValidator, winChecker);
-        engine.newGame();
 
         // define a new wall
         Wall wall = new Wall(new WallPosition(1, 2), WallOrientation.HORIZONTAL);
@@ -99,7 +96,6 @@ public class WallPlacementTest {
         // Create engine with rules
         GameRules rules = new QuoridorGameRules();
         QuoridorEngine engine = new QuoridorEngine(rules, pawnValidator, wallValidator, winChecker);
-        engine.newGame();
 
         GameState initialState = engine.getGameState();
 
@@ -122,7 +118,6 @@ public class WallPlacementTest {
         // Create engine with rules
         GameRules rules = new QuoridorGameRules();
         QuoridorEngine engine = new QuoridorEngine(rules, pawnValidator, wallValidator, winChecker);
-        engine.newGame();
 
         // Simulate a winning move to trigger game over
         when(pawnValidator.canMovePawn(any(GameState.class), eq(PlayerId.PLAYER_1), eq(Direction.NORTH))).thenReturn(true);
@@ -150,7 +145,6 @@ public class WallPlacementTest {
         // Create engine with rules
         GameRules rules = new QuoridorGameRules();
         QuoridorEngine engine = new QuoridorEngine(rules, pawnValidator, wallValidator, winChecker);
-        engine.newGame();
 
         Board initialBoard = engine.getGameState().board();
 
@@ -181,7 +175,6 @@ public class WallPlacementTest {
         // Create engine with rules
         GameRules rules = new QuoridorGameRules();
         QuoridorEngine engine = new QuoridorEngine(rules, pawnValidator, wallValidator, winChecker);
-        engine.newGame();
 
         int currentWalls = engine.getGameState().getPlayer(PlayerId.PLAYER_1).wallsRemaining();
 
@@ -208,7 +201,6 @@ public class WallPlacementTest {
         // Create engine with rules
         GameRules rules = new QuoridorGameRules();
         QuoridorEngine engine = new QuoridorEngine(rules, pawnValidator, wallValidator, winChecker);
-        engine.newGame();
 
         GameState initialState = engine.getGameState();
         int currentWalls = initialState.getPlayer(PlayerId.PLAYER_1).wallsRemaining();
@@ -237,7 +229,6 @@ public class WallPlacementTest {
         // Create engine with rules
         GameRules rules = new QuoridorGameRules();
         QuoridorEngine engine = new QuoridorEngine(rules, pawnValidator, wallValidator, winChecker);
-        engine.newGame();
 
         // Use up all walls for PLAYER_1 by manually updating the state
         GameState stateWithNoWalls = engine.getGameState()

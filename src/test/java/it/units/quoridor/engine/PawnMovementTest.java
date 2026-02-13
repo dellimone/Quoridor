@@ -28,7 +28,6 @@ public class PawnMovementTest {
         // Create engine with rules
         GameRules rules = new QuoridorGameRules();
         QuoridorEngine engine = new QuoridorEngine(rules, pawnValidator, wallValidator, winChecker);
-        engine.newGame();
 
         // assume a player proposed an action: "Move Pawn EAST"
         engine.movePawn(PlayerId.PLAYER_1, Direction.EAST);
@@ -46,7 +45,6 @@ public class PawnMovementTest {
         // Create engine with rules
         GameRules rules = new QuoridorGameRules();
         QuoridorEngine engine = new QuoridorEngine(rules, pawnValidator, wallValidator, winChecker);
-        engine.newGame();
 
         GameState initialState = engine.getGameState();
 
@@ -73,7 +71,6 @@ public class PawnMovementTest {
         // Create engine with rules
         GameRules rules = new QuoridorGameRules();
         QuoridorEngine engine = new QuoridorEngine(rules, pawnValidator, wallValidator, winChecker);
-        engine.newGame();
 
         // now for the Mockito setup: when we ask if moving EAST was valid, validator returns true
         when(pawnValidator.canMovePawn(any(GameState.class), eq(PlayerId.PLAYER_1), eq(Direction.EAST))).thenReturn(true);
@@ -98,7 +95,6 @@ public class PawnMovementTest {
         // Create engine with rules
         GameRules rules = new QuoridorGameRules();
         QuoridorEngine engine = new QuoridorEngine(rules, pawnValidator, wallValidator, winChecker);
-        engine.newGame();
 
         GameState initialState = engine.getGameState();
 
@@ -120,7 +116,6 @@ public class PawnMovementTest {
         // Create engine with rules
         GameRules rules = new QuoridorGameRules();
         QuoridorEngine engine = new QuoridorEngine(rules, pawnValidator, wallValidator, winChecker);
-        engine.newGame();
 
         // Simulate a winning move to trigger game over
         when(pawnValidator.canMovePawn(any(GameState.class), eq(PlayerId.PLAYER_1), eq(Direction.EAST))).thenReturn(true);
@@ -145,7 +140,6 @@ public class PawnMovementTest {
         // Create engine with rules
         GameRules rules = new QuoridorGameRules();
         QuoridorEngine engine = new QuoridorEngine(rules, pawnValidator, wallValidator, winChecker);
-        engine.newGame();
 
         // the validator should just check the validity of the move, the winChecker whether that move leads to a win
         when(pawnValidator.canMovePawn(any(GameState.class), eq(PlayerId.PLAYER_1), eq(Direction.EAST))).thenReturn(true);
@@ -170,7 +164,6 @@ public class PawnMovementTest {
         // Create engine with rules
         GameRules rules = new QuoridorGameRules();
         QuoridorEngine engine = new QuoridorEngine(rules, pawnValidator, wallValidator, winChecker);
-        engine.newGame();
 
         // the validator should just check the validity of the move, the winChecker whether that move leads to a win
         when(pawnValidator.canMovePawn(any(GameState.class), eq(PlayerId.PLAYER_1), eq(Direction.EAST))).thenReturn(true);
@@ -193,7 +186,6 @@ public class PawnMovementTest {
         // Create engine with rules
         GameRules rules = new QuoridorGameRules();
         QuoridorEngine engine = new QuoridorEngine(rules, pawnValidator, wallValidator, winChecker);
-        engine.newGame();
 
         GameState initialState = engine.getGameState();
 
