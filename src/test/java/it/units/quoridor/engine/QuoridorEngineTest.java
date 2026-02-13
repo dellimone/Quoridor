@@ -2,6 +2,8 @@ package it.units.quoridor.engine;
 
 import it.units.quoridor.domain.*;
 import it.units.quoridor.domain.GameState;
+import it.units.quoridor.logic.rules.GameRules;
+import it.units.quoridor.logic.rules.QuoridorGameRules;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
@@ -210,6 +212,40 @@ public class QuoridorEngineTest {
 
         // assert P1 went back to 10 walls remaining
         assertEquals(10, engine.getGameState().getPlayer(PlayerId.PLAYER_1).wallsRemaining());
+    }
+
+    // Test for new constructor + newGame() refactoring
+    @Test
+    void newGameCreatesInitialStateFromRules() {
+        // Given: GameRules that define a 2-player setup
+        GameRules rules = new QuoridorGameRules();
+        QuoridorEngine engine = new QuoridorEngine(
+            rules,
+            pawnValidator,
+            wallValidator,
+            winChecker
+        );
+
+        // When: Starting a new game
+        engine.newGame();
+
+        // Then: GameState should match the rules
+        GameState state = engine.getGameState();
+
+        // Players should be at start positions per rules
+        assertEquals(new Position(0, 4), state.getPlayerPosition(PlayerId.PLAYER_1));
+        assertEquals(new Position(8, 4), state.getPlayerPosition(PlayerId.PLAYER_2));
+
+        // Players should have correct wall count (10 for 2-player)
+        assertEquals(10, state.getPlayer(PlayerId.PLAYER_1).wallsRemaining());
+        assertEquals(10, state.getPlayer(PlayerId.PLAYER_2).wallsRemaining());
+
+        // Game should be in progress
+        assertEquals(GameStatus.IN_PROGRESS, state.status());
+        assertFalse(state.isGameOver());
+
+        // Current player should be PLAYER_1
+        assertEquals(PlayerId.PLAYER_1, state.currentPlayerId());
     }
 }
 
