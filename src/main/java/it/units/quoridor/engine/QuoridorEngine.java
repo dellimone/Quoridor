@@ -11,16 +11,14 @@ import java.util.List;
 
 public class QuoridorEngine implements GameEngine {
 
-    private GameRules rules;  // Temporarily non-final until old constructor is removed
+    private final GameRules rules;
     private final PawnMoveValidator pawnValidator;
     private final WallPlacementValidator wallValidator;
     private final WinChecker winChecker;
 
     private final Deque<GameState> history = new ArrayDeque<>();
-    private GameState initialState;  // Temporarily non-final until old constructor is removed
     private GameState state;
 
-    // New constructor - takes GameRules instead of initial state
     public QuoridorEngine(
             GameRules rules,
             PawnMoveValidator pawnValidator,
@@ -30,7 +28,6 @@ public class QuoridorEngine implements GameEngine {
         this.pawnValidator = pawnValidator;
         this.wallValidator = wallValidator;
         this.winChecker = winChecker;
-        this.initialState = null; // Will be removed in future refactoring
     }
 
     public void newGame() {
@@ -50,19 +47,6 @@ public class QuoridorEngine implements GameEngine {
         this.history.clear();
     }
 
-    // OLD constructor - will be removed after tests are updated
-    QuoridorEngine(
-            GameState initialState,
-            PawnMoveValidator pawnValidator,
-            WallPlacementValidator wallValidator,
-            WinChecker winChecker) {
-        this.rules = null;  // Not used in old constructor
-        this.initialState = initialState;
-        this.state = initialState;
-        this.pawnValidator = pawnValidator;
-        this.wallValidator = wallValidator;
-        this.winChecker = winChecker;
-    }
 
     @Override
     public GameState getGameState() {
@@ -84,9 +68,7 @@ public class QuoridorEngine implements GameEngine {
 
     @Override
     public void reset(){
-        // TODO: for resetting the state we should use newGame()
-        this.state = initialState;
-        this.history.clear();
+        newGame();
     }
 
 
