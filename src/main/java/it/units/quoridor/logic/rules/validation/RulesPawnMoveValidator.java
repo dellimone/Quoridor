@@ -37,8 +37,7 @@ public class RulesPawnMoveValidator implements PawnMoveValidator{
         if (occupantPlayer == null) {
             return true;
         }
-
-        // else jump mechanics
+        // we first try to jump
         return canJump(currentBoard, proposedPosition, playerPositions, direction);
     }
 
