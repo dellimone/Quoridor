@@ -2,6 +2,8 @@ package it.units.quoridor.engine;
 
 import it.units.quoridor.domain.*;
 import it.units.quoridor.domain.GameState;
+import it.units.quoridor.logic.rules.validation.PawnMoveValidator;
+import it.units.quoridor.logic.rules.validation.WallPlacementValidator;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
@@ -15,9 +17,11 @@ import static org.mockito.Mockito.*;
 @ExtendWith(MockitoExtension.class)
 public class QuoridorEngineTest {
 
-    @Mock PawnMoveValidator pawnValidator;
+    @Mock
+    PawnMoveValidator pawnValidator;
 
-    @Mock WallPlacementValidator wallValidator;
+    @Mock
+    WallPlacementValidator wallValidator;
 
     @Mock WinChecker winChecker; // will be implemented later
 

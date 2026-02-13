@@ -1,4 +1,4 @@
-package it.units.quoridor.engine;
+package it.units.quoridor.logic.rules.validation;
 
 import it.units.quoridor.domain.*;
 

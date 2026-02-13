@@ -1,6 +1,8 @@
 package it.units.quoridor.engine;
 
 import it.units.quoridor.domain.*;
+import it.units.quoridor.logic.rules.validation.PawnMoveValidator;
+import it.units.quoridor.logic.rules.validation.WallPlacementValidator;
 
 public class QuoridorEngine implements GameEngine {
 

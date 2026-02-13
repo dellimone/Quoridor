@@ -193,3 +193,11 @@ For the _walls_ part:
 - [ ] Path exists from corner to opposite side
 - [ ] BFS respects wall blockages
 - [ ] BFS handles board edges correctly
+
+### Validator
+For the pawn part:
+
+- [ ] If proposed square is free, validator returns true
+- [ ] If proposed square is blocked by wall, validator returns false
+- [ ] If proposed is blocked by opponent pawn and the square behind it is free, validator returns true
+- [ ] If proposed is blocked by opponent pawn, the square behind it is blocked but the diagonals are free, validator returns true
