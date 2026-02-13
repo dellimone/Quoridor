@@ -143,10 +143,10 @@ public class WallPlacementTest {
                 .withPlayerAt(PlayerId.PLAYER_1, new Position(0, 4))
                 .withPlayerAt(PlayerId.PLAYER_2, new Position(8, 4));
 
-        GameState initialState = new GameState(board, List.of(p1, p2)); // current player is PLAYER_1
+        // Create a game state that is already finished
+        GameState initialState = new GameState(board, List.of(p1, p2))
+                .withGameFinished(PlayerId.PLAYER_1);
         QuoridorEngine engine = new QuoridorEngine(initialState, pawnValidator, wallValidator, winChecker);
-
-        engine.endGame(PlayerId.PLAYER_1); // set a winner (thus, end the game)
 
         // define a new wall
         Wall wall = new Wall(new WallPosition(1, 2), WallOrientation.HORIZONTAL);

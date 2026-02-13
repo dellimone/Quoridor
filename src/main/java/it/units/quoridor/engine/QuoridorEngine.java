@@ -11,26 +11,20 @@ import java.util.List;
 
 public class QuoridorEngine implements GameEngine {
 
-    // immutable and private snapshot (for the undo)
-    private record EngineSnapshot(
-            GameState state,
-            boolean gameOver,
-            PlayerId winner
-    ) {}
-
     private final PawnMoveValidator pawnValidator;
     private final WallPlacementValidator wallValidator;
     private final WinChecker winChecker;
 
-    private final Deque<EngineSnapshot> history = new ArrayDeque<>(); //snapshot history
+    private final Deque<GameState> history = new ArrayDeque<>();
     private final GameState initialState;
     private GameState state;
 
-    private boolean gameOver = false;
-    private PlayerId winner = null;
-
     // we make this package private (for the tests already implemented, for now)
-    QuoridorEngine(GameState initialState, PawnMoveValidator pawnValidator, WallPlacementValidator wallValidator, WinChecker winChecker) {
+    QuoridorEngine(
+            GameState initialState,
+            PawnMoveValidator pawnValidator,
+            WallPlacementValidator wallValidator,
+            WinChecker winChecker) {
         this.initialState = initialState;
         this.state = initialState;
         this.pawnValidator = pawnValidator;
@@ -58,76 +52,58 @@ public class QuoridorEngine implements GameEngine {
     public GameState getGameState() {
         return state;
     }
-    
-    
-    public void endGame(PlayerId winner) {
-        this.gameOver = true;
-        this.winner = winner;
-    }
 
 
     @Override
     public boolean isGameOver() {
-        return gameOver;
+        return state.isGameOver();
     }
 
 
     @Override
     public PlayerId getWinner() {
-        return winner;
+        return state.winner();
     }
 
 
     @Override
     public void reset(){
         this.state = initialState;
-        this.gameOver = false;
-        this.winner = null;
         this.history.clear();
     }
 
 
     private void saveSnapshot() {
-        history.push(new EngineSnapshot(state, gameOver, winner));
-    }
-
-    private void restoreStateFromSnapshot(EngineSnapshot snapshot) {
-        this.state = snapshot.state;
-        this.gameOver = snapshot.gameOver;
-        this.winner = snapshot.winner;
+        history.push(state);
     }
 
     @Override
     public boolean undo() {
-
         if (!history.isEmpty()) {
-            EngineSnapshot lastSnapshot = history.pop(); // obtain the last snapshot
-            restoreStateFromSnapshot(lastSnapshot);
-
+            state = history.pop();
             return true;
         }
-
         return false;
     }
 
 
     @Override
-    public MoveResult movePawn(PlayerId player, Direction direction) {
+    public MoveResult movePawn(PlayerId playerId, Direction direction) {
 
         // if the game has ended, every move is marked invalid
-        if (gameOver) {
+        if (state.isGameOver()) {
             return MoveResult.failure("Game is over");
         }
 
         // if the "not current"-player tries to make a move, we mark it directly as invalid
-        if (!player.equals(state.currentPlayerId())) {
+        if (!playerId.equals(state.currentPlayerId())) {
             return MoveResult.failure("Not your turn");
         }
 
         // check move validity
-        boolean valid = pawnValidator.canMovePawn(state, player, direction);
+        boolean isValidMove = pawnValidator.canMovePawn(state, playerId, direction);
 
-        if (!valid) {
+        if (!isValidMove) {
             return MoveResult.failure("Invalid pawn move");
         }
 
@@ -135,8 +111,8 @@ public class QuoridorEngine implements GameEngine {
         saveSnapshot();
 
         // we need to update the board with the new position
-        Position nextPosition = state.board().playerPosition(player).move(direction);
-        Board newBoard = state.board().withPlayerAt(player, nextPosition);
+        Position nextPosition = state.board().playerPosition(playerId).move(direction);
+        Board newBoard = state.board().withPlayerAt(playerId, nextPosition);
 
         // need to change state if move was valid
         state = state.withBoard(newBoard)
@@ -144,20 +120,18 @@ public class QuoridorEngine implements GameEngine {
 
 
         // check if the next state is a win
-        if (winChecker.isWin(state, player)) {
-            gameOver = true;
-            winner = player;
-            return MoveResult.success();
+        if (winChecker.isWin(state, playerId)) {
+            state = state.withGameFinished(playerId);
         }
 
-        return MoveResult.isWin();
+        return MoveResult.success();
     }
 
 
     @Override
     public MoveResult placeWall(PlayerId player, Wall wall) {
 
-        if (gameOver) {
+        if (state.isGameOver()) {
             return MoveResult.failure("Game is over");
         }
 

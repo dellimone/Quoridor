@@ -135,12 +135,10 @@ public class PawnMovementTest {
         Player p1 = new Player(PlayerId.PLAYER_1, "P1", 10, 8);
         Player p2 = new Player(PlayerId.PLAYER_2, "P2", 10, 0);
 
-        GameState initialState = new GameState(board, List.of(p1, p2)); // current player is PLAYER_1
+        // Create a game state that is already finished
+        GameState initialState = new GameState(board, List.of(p1, p2))
+                .withGameFinished(PlayerId.PLAYER_1);
         QuoridorEngine engine = new QuoridorEngine(initialState, pawnValidator, wallValidator, winChecker);
-
-        // we need the engine to signal "game ended":
-        engine.endGame(PlayerId.PLAYER_1);
-        // modifications are needed in GameEngine
 
         // try to make a move
         MoveResult result = engine.movePawn(PlayerId.PLAYER_1, Direction.EAST);
