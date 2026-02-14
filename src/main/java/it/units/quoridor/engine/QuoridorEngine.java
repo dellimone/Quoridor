@@ -124,10 +124,9 @@ public class QuoridorEngine implements GameEngine {
 
     // for the controller for the highlights
     @Override
-    public Set<Position> legalPawnDestinationsForPlayer() {
-        if (state.isGameOver()) return Set.of(); // or emptySet()
-        PlayerId p = state.currentPlayerId();
-        return pawnMoveGenerator.legalDestinations(state, p);
+    public Set<Position> legalPawnDestinationsForPlayer(PlayerId player) {
+        if (state.isGameOver()) return Set.of();
+        return pawnMoveGenerator.legalDestinations(state, player);
     }
 
     @Override
