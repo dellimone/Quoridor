@@ -85,6 +85,13 @@ public record GameState(
         return this.withBoard(newBoard).withNextTurn();
     }
 
+    // for jumps and diagonals
+    public GameState withPawnMovedTo(PlayerId playerId, Position destination) {
+        Board newBoard = board.withPlayerAt(playerId, destination);
+        return this.withBoard(newBoard).withNextTurn();
+    }
+
+
     public GameState withWallPlaced(PlayerId playerId, Wall wall) {
         Board newBoard = board.addWall(wall);
         Player updatedPlayer = getPlayer(playerId).useWall();

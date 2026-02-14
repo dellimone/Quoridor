@@ -1,5 +1,8 @@
-package it.units.quoridor.engine;
+package it.units.quoridor.engine.pawn;
 import it.units.quoridor.domain.*;
+import it.units.quoridor.engine.MoveResult;
+import it.units.quoridor.engine.QuoridorEngine;
+import it.units.quoridor.engine.WinChecker;
 import it.units.quoridor.logic.rules.GameRules;
 import it.units.quoridor.logic.rules.QuoridorGameRules;
 import it.units.quoridor.logic.validation.PawnMoveValidator;
@@ -20,7 +23,8 @@ public class PawnMovementTest {
     PawnMoveValidator pawnValidator;
     @Mock
     WallPlacementValidator wallValidator;
-    @Mock WinChecker winChecker; // will be implemented later
+    @Mock
+    WinChecker winChecker; // will be implemented later
 
     // PAWN MOVES ORCHESTRATION
     // 2. When we call the engine on a move, the validator should check whether the move is valid and return the result

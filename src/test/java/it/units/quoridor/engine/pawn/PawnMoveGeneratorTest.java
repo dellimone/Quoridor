@@ -1,17 +1,13 @@
-package it.units.quoridor.engine;
+package it.units.quoridor.engine.pawn;
 import it.units.quoridor.domain.*;
 import it.units.quoridor.domain.GameState;
-import it.units.quoridor.logic.rules.GameRules;
-import it.units.quoridor.logic.rules.QuoridorGameRules;
 
 
 import it.units.quoridor.logic.validation.PawnMoveValidator;
 import it.units.quoridor.logic.validation.RulesPawnMoveValidator;
-import it.units.quoridor.logic.validation.WallPlacementValidator;
 import it.units.quoridor.engine.moves.PawnMoveGenerator;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 
