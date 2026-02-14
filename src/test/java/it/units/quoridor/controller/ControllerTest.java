@@ -169,6 +169,7 @@ class ControllerTest {
         when(gameState.board()).thenReturn(board);
         when(gameState.currentPlayerId()).thenReturn(PlayerId.PLAYER_1);
         when(gameState.players()).thenReturn(List.of(player1, player2));
+        when(gameState.isGameOver()).thenReturn(false);
 
         when(player1.id()).thenReturn(PlayerId.PLAYER_1);
         when(player1.name()).thenReturn("Player 1");
@@ -189,6 +190,34 @@ class ControllerTest {
         verify(gameView).updatePlayerInfo(any(List.class));
         verify(gameView).renderBoard(any());
         verify(gameView).setCurrentPlayer(PlayerId.PLAYER_1);
+        verify(gameView).setUndoEnabled(true);  // Game in progress, undo should be enabled
+    }
+
+    @Test
+    void updateViewWhenGameOverShouldDisableUndo() {
+        // Arrange
+        GameState gameState = mock(GameState.class);
+        Board board = mock(Board.class);
+        Player player = mock(Player.class);
+
+        when(gameEngine.getGameState()).thenReturn(gameState);
+        when(gameState.board()).thenReturn(board);
+        when(gameState.currentPlayerId()).thenReturn(PlayerId.PLAYER_1);
+        when(gameState.players()).thenReturn(List.of(player));
+        when(gameState.isGameOver()).thenReturn(true);  // Game is over
+
+        when(player.id()).thenReturn(PlayerId.PLAYER_1);
+        when(player.name()).thenReturn("Player 1");
+        when(player.wallsRemaining()).thenReturn(10);
+
+        when(board.playerPosition(PlayerId.PLAYER_1)).thenReturn(new Position(0, 4));
+        when(board.walls()).thenReturn(Collections.emptySet());
+
+        // Act
+        controller.updateView();
+
+        // Assert - undo should be disabled when game is over
+        verify(gameView).setUndoEnabled(false);
     }
 
 

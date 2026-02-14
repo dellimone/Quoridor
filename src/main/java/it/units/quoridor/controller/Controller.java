@@ -197,5 +197,8 @@ public class Controller implements ViewListener {
 
         // Update the current player
         view.setCurrentPlayer(gameState.currentPlayerId());
+
+        // Update undo button state (disable if game over)
+        view.setUndoEnabled(!gameState.isGameOver());
     }
 }
