@@ -116,8 +116,13 @@ public class Controller implements ViewListener {
 
     @Override
     public void onUndo() {
-        // engine.undo();
-        updateView();
+        boolean success = engine.undo();
+        if (success) {
+            updateView();
+            view.showMessage("Move undone");
+        } else {
+            view.showError("Nothing to undo");
+        }
     }
 
     @Override

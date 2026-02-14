@@ -147,27 +147,6 @@ class ControllerTest {
     }
 
     @Test
-    void onUndoTest() {
-        GameState gameState = mock(GameState.class);
-        Board board = mock(Board.class);
-        Player player = mock(Player.class);
-
-        when(gameEngine.getGameState()).thenReturn(gameState);
-        when(gameState.board()).thenReturn(board);
-        when(gameState.currentPlayer()).thenReturn(player);
-        when(player.id()).thenReturn(PlayerId.PLAYER_1);
-
-        when(gameState.players()).thenReturn(Collections.emptyList());
-        when(board.walls()).thenReturn(Collections.emptySet());
-
-        controller.onUndo();
-
-        // verify(gameEngine).undo();
-
-        verify(gameView).renderBoard(any());
-    }
-
-    @Test
     void onQuitTest() {
         GameState gameState = mock(GameState.class);
         Board board = mock(Board.class);
@@ -238,6 +217,41 @@ class ControllerTest {
         verify(gameView).renderBoard(any(BoardViewModel.class));
         verify(gameView).setUndoEnabled(false);  // No history at start
         verify(gameView).showMessage("New game started!");
+    }
+
+    @Test
+    void onUndoWithHistoryShouldRestoreStateAndShowMessage() {
+        // Arrange
+        GameState gameState = mock(GameState.class);
+        Board board = mock(Board.class);
+
+        when(gameEngine.getGameState()).thenReturn(gameState);
+        when(gameState.board()).thenReturn(board);
+        when(gameState.players()).thenReturn(List.of());
+        when(board.walls()).thenReturn(Collections.emptySet());
+        when(gameEngine.undo()).thenReturn(true);  // Undo successful
+
+        // Act
+        controller.onUndo();
+
+        // Assert
+        verify(gameEngine).undo();
+        verify(gameView).renderBoard(any(BoardViewModel.class));
+        verify(gameView).showMessage("Move undone");
+    }
+
+    @Test
+    void onUndoWithoutHistoryShouldShowError() {
+        // Arrange
+        when(gameEngine.undo()).thenReturn(false);  // No history to undo
+
+        // Act
+        controller.onUndo();
+
+        // Assert
+        verify(gameEngine).undo();
+        verify(gameView).showError("Nothing to undo");
+        verify(gameView, never()).renderBoard(any());
     }
 
 }
