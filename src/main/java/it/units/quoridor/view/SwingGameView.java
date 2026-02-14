@@ -87,6 +87,22 @@ public class SwingGameView extends JFrame implements GameView {
         layeredPane.add(overlay, JLayeredPane.MODAL_LAYER);
         overlay.setVisible(false);
 
+        // Make layers resize with the window
+        layeredPane.addComponentListener(new java.awt.event.ComponentAdapter() {
+            @Override
+            public void componentResized(java.awt.event.ComponentEvent e) {
+                int width = layeredPane.getWidth();
+                int height = layeredPane.getHeight();
+
+                // Force board to resize (it has a fixed preferred size)
+                boardPanel.setBounds(0, 0, width, height);
+                boardPanel.setSize(width, height);
+                boardPanel.revalidate();
+
+                overlay.setBounds(0, 0, width, height);
+            }
+        });
+
         add(layeredPane, BorderLayout.CENTER);
 
         // Player info on right
