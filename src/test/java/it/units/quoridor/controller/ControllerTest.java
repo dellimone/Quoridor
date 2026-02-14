@@ -368,6 +368,22 @@ class ControllerTest {
 
         Position domainMove = new Position(0, 4);
         Set<Position> domainMoves = Set.of(domainMove);
+
+        when(gameEngine.legalPawnDestinationsForPlayer(PlayerId.PLAYER_1)).thenReturn(domainMoves);
+
+        controller.updateHighlights(gameState);
+
+        ArgumentCaptor<Set<Position>>  captor = ArgumentCaptor.forClass(Set.class);
+        verify(gameView).highlightValidMoves(captor.capture());
+
+        Set<Position> movesToView = captor.getValue();
+
+        Position expectedViewMove = new Position(8, 4);
+
+        assertTrue(movesToView.contains(expectedViewMove),
+                "La posizione dovrebbe essere convertita da (1,4) a (7,4)" + movesToView);
+
+        assertEquals(1, movesToView.size());
     }
 
 }

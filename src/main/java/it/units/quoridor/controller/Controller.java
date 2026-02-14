@@ -198,7 +198,7 @@ public class Controller implements ViewListener {
         }
 
         PlayerId currentPlayer = gameState.currentPlayerId();
-        Set<Position> domainMoves = moveGenerator.legalDestinations(gameState, currentPlayer);
+        Set<Position> domainMoves = engine.legalPawnDestinationsForPlayer(currentPlayer);
 
         Set<Position> highMoves = new HashSet<>();
 
