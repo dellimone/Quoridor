@@ -61,6 +61,11 @@ public interface GameView {
      */
     void showGameOver(PlayerId winner);
 
+    /**
+     * Hide any overlays (victory, welcome screens, etc.)
+     */
+    void hideOverlays();
+
     // === State ===
 
     /**
