@@ -24,6 +24,7 @@ import static org.mockito.Mockito.*;
 @ExtendWith(MockitoExtension.class)
 public class PawnMoveGeneratorTest {
 
+    // unit tests
     // 0. ensure generator obeys the validator
     @Test
     void noDestinations_whenValidatorRejects() {
@@ -47,12 +48,14 @@ public class PawnMoveGeneratorTest {
         assertTrue(result.isEmpty());
     }
 
+
+    // actual integration tests: generator + validator
+    private final PawnMoveValidator validator = new RulesPawnMoveValidator();
+    private final PawnMoveGenerator generator = new PawnMoveGenerator(validator);
+
     // 1. if we have a "normal" adjacent move, resolveDestination returns the adjacent square
     @Test
     void returnsAdjacentDestination_onNormalMove() {
-
-        PawnMoveValidator validator = new RulesPawnMoveValidator();
-        PawnMoveGenerator generator = new PawnMoveGenerator(validator);
 
         Player p1 = new Player(PlayerId.PLAYER_1, "P1", 10, 8);
         Player p2 = new Player(PlayerId.PLAYER_2, "P2", 10, 0);
@@ -68,4 +71,22 @@ public class PawnMoveGeneratorTest {
         assertTrue(result.isPresent()); // assert that the generator actually generated a position
         assertEquals(new Position(0, 5), result.get()); // assert that we actually moved EAST from (0,4) -> (0,5)
     }
+
+    // 2. when the move is blocked by a wall, generator should return empty
+    @Test void generatorReturnsEmpty_directionBlockedByWall() {
+        Player p1 = new Player(PlayerId.PLAYER_1, "P1", 10, 8);
+        Player p2 = new Player(PlayerId.PLAYER_2, "P2", 10, 0);
+
+        Board board = new Board()
+                .addWall(new Wall(new WallPosition(0,4), WallOrientation.VERTICAL))
+                .withPlayerAt(PlayerId.PLAYER_1, new Position(0, 4))
+                .withPlayerAt(PlayerId.PLAYER_2, new Position(8, 4));
+
+        GameState initialState = new GameState(board, List.of(p1, p2));
+
+        Optional<Position> result = generator.resolveDestination(initialState, PlayerId.PLAYER_1, Direction.EAST);
+
+        assertTrue(result.isEmpty()); // assert that the generator found no valid positions
+    }
+
 }
