@@ -5,10 +5,12 @@ import it.units.quoridor.engine.GameEngine;
 import it.units.quoridor.engine.MoveResult;
 import it.units.quoridor.view.BoardViewModel;
 import it.units.quoridor.view.GameView;
+import it.units.quoridor.view.PlayerViewModel;
 import it.units.quoridor.view.ViewListener;
 
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -181,6 +183,17 @@ public class Controller implements ViewListener {
         BoardViewModel viewModel = new BoardViewModel(viewPosition, viewWalls);
         // Update the current view
         view.renderBoard(viewModel);
+
+        // Update player info panel
+        List<PlayerViewModel> playerViewModels = gameState.players().stream()
+                .map(p -> new PlayerViewModel(
+                        p.id(),
+                        p.name(),
+                        p.wallsRemaining(),
+                        p.id().equals(gameState.currentPlayerId())
+                ))
+                .toList();
+        view.updatePlayerInfo(playerViewModels);
 
         // Update the current player
         view.setCurrentPlayer(gameState.currentPlayerId());

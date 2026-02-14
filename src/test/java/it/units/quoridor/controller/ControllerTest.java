@@ -157,6 +157,40 @@ class ControllerTest {
         // or extracting the exit logic to make it testable
     }
 
+    @Test
+    void updateViewShouldCallUpdatePlayerInfo() {
+        // Arrange
+        GameState gameState = mock(GameState.class);
+        Board board = mock(Board.class);
+        Player player1 = mock(Player.class);
+        Player player2 = mock(Player.class);
+
+        when(gameEngine.getGameState()).thenReturn(gameState);
+        when(gameState.board()).thenReturn(board);
+        when(gameState.currentPlayerId()).thenReturn(PlayerId.PLAYER_1);
+        when(gameState.players()).thenReturn(List.of(player1, player2));
+
+        when(player1.id()).thenReturn(PlayerId.PLAYER_1);
+        when(player1.name()).thenReturn("Player 1");
+        when(player1.wallsRemaining()).thenReturn(10);
+
+        when(player2.id()).thenReturn(PlayerId.PLAYER_2);
+        when(player2.name()).thenReturn("Player 2");
+        when(player2.wallsRemaining()).thenReturn(9);
+
+        when(board.playerPosition(PlayerId.PLAYER_1)).thenReturn(new Position(0, 4));
+        when(board.playerPosition(PlayerId.PLAYER_2)).thenReturn(new Position(8, 4));
+        when(board.walls()).thenReturn(Collections.emptySet());
+
+        // Act
+        controller.updateView();
+
+        // Assert - should call updatePlayerInfo with player view models
+        verify(gameView).updatePlayerInfo(any(List.class));
+        verify(gameView).renderBoard(any());
+        verify(gameView).setCurrentPlayer(PlayerId.PLAYER_1);
+    }
+
 
     @Test
     void winningMoveShouldCallShowGameOver() {
