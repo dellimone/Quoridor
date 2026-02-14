@@ -19,29 +19,36 @@ public class PawnMoveGenerator {
 
     // if the player moves in said direction, where to they end up
     public Optional<Position> resolveDestination(GameState state, PlayerId playerId, Direction direction) {
-
-        // first: rule legality (includes jump possibility)
         if (!pawnValidator.canMovePawn(state, playerId, direction)) {
             return Optional.empty();
-        } // if validator says no, STOP
+        }
 
         Board board = state.board();
         Position from = state.getPlayerPosition(playerId);
 
-        // compute the adjacent square
         Optional<Position> maybeAdj = from.tryMove(direction);
-        if (maybeAdj.isEmpty()) return Optional.empty(); // defensive
-
+        if (maybeAdj.isEmpty()) return Optional.empty();
         Position adj = maybeAdj.get();
 
-        // normal step - move one square forward
         if (board.occupantAt(adj).isEmpty()) {
             return Optional.of(adj);
         }
 
-        // jump
-        return adj.tryMove(direction);
+        // jump destination must exist and be actually reachable (no wall behind)
+        Optional<Position> maybeBehind = adj.tryMove(direction);
+        if (maybeBehind.isEmpty()) return Optional.empty();
+        Position behind = maybeBehind.get();
+
+        if (board.isEdgeBlocked(adj, direction) || board.isEdgeBlocked(behind, direction.opposite())) {
+            return Optional.empty();
+        }
+        if (board.occupantAt(behind).isPresent()) {
+            return Optional.empty();
+        }
+
+        return Optional.of(behind);
     }
+
 
     public boolean isLegalDestination(GameState state, PlayerId playerId, Position target) {
         Position from = state.getPlayerPosition(playerId);
