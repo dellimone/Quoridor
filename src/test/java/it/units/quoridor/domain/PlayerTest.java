@@ -42,8 +42,10 @@ class PlayerTest {
     @Test
     void useWallDecreaseRemainingWalls(){
         Player player = new Player(PlayerId.PLAYER_1, "Alice", 10, 0);
-        player.useWall();
-        assertEquals(9, player.wallsRemaining());
+
+        // since now player is immutable
+        Player updatedPlayer = player.useWall();
+        assertEquals(9, updatedPlayer.wallsRemaining());
     }
 
     @Test
