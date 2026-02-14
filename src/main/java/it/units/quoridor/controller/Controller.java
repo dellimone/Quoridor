@@ -127,9 +127,7 @@ public class Controller implements ViewListener {
 
     @Override
     public void onQuit() {
-        // engine.quit();
-        updateView();
-        // System.exit(0);
+        System.exit(0);
     }
 
     // Method to calculate if the cell clicked is adjacent to the current position // not private to enable test
