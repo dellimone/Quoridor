@@ -1,17 +1,117 @@
 package it.units;
 
-//TIP To <b>Run</b> code, press <shortcut actionId="Run"/> or
-// click the <icon src="AllIcons.Actions.Execute"/> icon in the gutter.
+import it.units.quoridor.controller.Controller;
+import it.units.quoridor.domain.*;
+import it.units.quoridor.engine.*;
+import it.units.quoridor.logic.pathFinder.BfsPathFinder;
+import it.units.quoridor.logic.pathFinder.PathFinder;
+import it.units.quoridor.logic.rules.GameRules;
+import it.units.quoridor.logic.rules.QuoridorGameRules;
+import it.units.quoridor.logic.rules.QuoridorWinChecker;
+import it.units.quoridor.view.SwingGameView;
+
+import javax.swing.SwingUtilities;
+
+/**
+ * Main entry point for the Quoridor game application.
+ * Wires up all components using dependency injection.
+ */
 public class Main {
     public static void main(String[] args) {
-        //TIP Press <shortcut actionId="ShowIntentionActions"/> with your caret at the highlighted text
-        // to see how IntelliJ IDEA suggests fixing it.
-        System.out.printf("Hello and welcome!");
+        SwingUtilities.invokeLater(() -> {
+            // 1. Create stateless logic components
+            PathFinder pathFinder = new BfsPathFinder();
+            GameRules rules = new QuoridorGameRules();
+            WinChecker winChecker = new QuoridorWinChecker();
 
-        for (int i = 1; i <= 5; i++) {
-            //TIP Press <shortcut actionId="Debug"/> to start debugging your code. We have set one <icon src="AllIcons.Debugger.Db_set_breakpoint"/> breakpoint
-            // for you, but you can always add more by pressing <shortcut actionId="ToggleLineBreakpoint"/>.
-            System.out.println("i = " + i);
-        }
+            // 2. Create validators as lambdas (temporary implementations)
+            PawnMoveValidator pawnValidator = createPawnValidator();
+            WallPlacementValidator wallValidator = createWallValidator(pathFinder, rules);
+
+            // 3. Create engine (auto-initializes via newGame() in constructor)
+            QuoridorEngine engine = new QuoridorEngine(
+                    rules,
+                    pawnValidator,
+                    wallValidator,
+                    winChecker
+            );
+
+            // 4. Create view
+            SwingGameView view = new SwingGameView();
+
+            // 5. Create controller (wires engine + view together)
+            new Controller(engine, view);
+
+            // 6. Show window
+            view.setVisible(true);
+        });
+    }
+
+    /**
+     * Creates a simplified pawn move validator.
+     * Checks: bounds, wall blocking, but NO jump logic yet.
+     */
+    private static PawnMoveValidator createPawnValidator() {
+        return (state, playerId, direction) -> {
+            try {
+                Position current = state.getPlayerPosition(playerId);
+
+                if (state.board().isEdgeBlocked(current, direction)) {
+                    return false;
+                }
+
+                Position target = current.move(direction);
+
+
+                return true;
+            } catch (IllegalArgumentException e) {
+                return false;
+            }
+        };
+    }
+
+    /**
+     * Creates a wall placement validator.
+     * Checks: overlap, path blocking using BFS.
+     */
+    private static WallPlacementValidator createWallValidator(PathFinder pathFinder, GameRules rules) {
+        return (state, playerId, wall) -> {
+            if (state.board().walls().contains(wall)) {
+                return false;
+            }
+
+            WallOrientation perpendicular = wall.orientation() == WallOrientation.HORIZONTAL
+                    ? WallOrientation.VERTICAL
+                    : WallOrientation.HORIZONTAL;
+            Wall perpendicularWall = new Wall(wall.position(), perpendicular);
+            if (state.board().walls().contains(perpendicularWall)) {
+                return false;
+            }
+
+            Board tempBoard = state.board().addWall(wall);
+
+            for (Player player : state.players()) {
+                Position playerPos = tempBoard.playerPosition(player.id());
+                int goalRow = player.goalRow();
+
+                boolean hasPath = false;
+                for (int col = 0; col <= 8; col++) {
+                    try {
+                        Position goalPos = new Position(goalRow, col);
+                        if (pathFinder.pathExists(tempBoard, playerPos, goalPos)) {
+                            hasPath = true;
+                            break;
+                        }
+                    } catch (IllegalArgumentException e) {
+                    }
+                }
+
+                if (!hasPath) {
+                    return false;
+                }
+            }
+
+            return true;
+        };
     }
 }
