@@ -349,6 +349,7 @@ public class BoardPanel extends JPanel {
             newCell = new Position(cellRow, cellCol);
         }
 
+
         // Update hover state if changed
         if ((newWall != null && !newWall.equals(hoveredWall)) ||
                 (newCell != null && !newCell.equals(hoveredCell)) ||

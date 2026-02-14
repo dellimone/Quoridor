@@ -5,12 +5,14 @@ import it.units.quoridor.engine.GameEngine;
 import it.units.quoridor.engine.MoveResult;
 import it.units.quoridor.view.BoardViewModel;
 import it.units.quoridor.view.GameView;
+import it.units.quoridor.view.PlayerViewModel;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Set;
 
 import static org.mockito.Mockito.*;
 import static org.junit.jupiter.api.Assertions.*;
@@ -65,34 +67,15 @@ class ControllerTest {
         when(gameState.board()).thenReturn(board);
         when(gameState.currentPlayer()).thenReturn(player);
         when(gameState.currentPlayerId()).thenReturn(PlayerId.PLAYER_1);
-
         when(player.id()).thenReturn(PlayerId.PLAYER_1);
 
         when(board.playerPosition(PlayerId.PLAYER_1)).thenReturn(new Position(0,0));
-        when(gameEngine.movePawn(any(PlayerId.class), any(Direction.class))).thenReturn(MoveResult.success());
+
+        when(gameEngine.movePawn(any(PlayerId.class), any(Position.class))).thenReturn(MoveResult.success());
 
         controller.onCellClicked(7, 0);
 
-        verify(gameEngine).movePawn(PlayerId.PLAYER_1, Direction.NORTH);
-    }
-
-    @Test
-    void controlAdjacentTest() {
-        assertTrue(controller.isAdjacent(new Position(0,0), new Position(0,1)));
-        assertTrue(controller.isAdjacent(new Position(1,0), new Position(0,0)));
-        assertFalse(controller.isAdjacent(new Position(0,0), new Position(1,1)));
-    }
-
-    @Test
-    void controlDirectionTest() {
-        Direction north = controller.calculateDirection(new Position(0,0), new Position(1,0));
-        Direction east = controller.calculateDirection(new Position(0,0), new Position(0,1));
-        Direction south = controller.calculateDirection(new Position(1,0), new Position(0,0));
-        Direction west = controller.calculateDirection(new Position(0,1), new Position(0,0));
-        assertEquals(Direction.NORTH, north);
-        assertEquals(Direction.EAST, east);
-        assertEquals(Direction.SOUTH, south);
-        assertEquals(Direction.WEST, west);
+        verify(gameEngine).movePawn(eq(PlayerId.PLAYER_1), eq(new Position(1, 0)));
     }
 
     @Test
@@ -122,6 +105,74 @@ class ControllerTest {
         Position viewPosition = captureModel.playerPositions().get(PlayerId.PLAYER_1);
 
         assertEquals(new Position(8,0), viewPosition);
+    }
+
+    @Test
+    void renderBoardTest() {
+
+        GameState gameState = mock(GameState.class);
+        Board board = mock(Board.class);
+        Player player = mock(Player.class);
+
+        when(gameEngine.getGameState()).thenReturn(gameState);
+        when(gameState.board()).thenReturn(board);
+        when(gameState.currentPlayer()).thenReturn(player);
+        when(gameState.currentPlayerId()).thenReturn(PlayerId.PLAYER_1);
+
+        when(gameState.players()).thenReturn(List.of(player));
+        when(player.id()).thenReturn(PlayerId.PLAYER_1);
+
+        when(board.playerPosition(PlayerId.PLAYER_1)).thenReturn(new Position(0,0));
+        when(board.walls()).thenReturn(Collections.emptySet());
+
+        controller.updateGameBoard(gameState);
+
+        ArgumentCaptor<BoardViewModel> captor = ArgumentCaptor.forClass(BoardViewModel.class);
+        verify(gameView).renderBoard(captor.capture());
+
+        BoardViewModel boardViewModel = captor.getValue();
+        assertEquals(new Position(8,0), boardViewModel.playerPositions().get(PlayerId.PLAYER_1));
+    }
+
+    @Test
+    void updateInfoPanelTest() {
+
+        GameState gameState = mock(GameState.class);
+        Player p1 = mock(Player.class);
+        Player p2 = mock(Player.class);
+
+        when(gameState.players()).thenReturn(List.of(p1, p2));
+        when(gameState.currentPlayerId()).thenReturn(PlayerId.PLAYER_1);
+
+        when(p1.id()).thenReturn(PlayerId.PLAYER_1);
+        when(p1.name()).thenReturn("Marco");
+        when(p1.wallsRemaining()).thenReturn(10);
+
+        when(p2.id()).thenReturn(PlayerId.PLAYER_2);
+        when(p2.name()).thenReturn("Luca");
+        when(p2.wallsRemaining()).thenReturn(10);
+
+        controller.updateInfoPanel(gameState);
+
+        ArgumentCaptor<List<PlayerViewModel>> captor = ArgumentCaptor.forClass(List.class);
+        verify(gameView).updatePlayerInfo(captor.capture());
+
+        List<PlayerViewModel> result = captor.getValue();
+
+        // Controllo numero giocatori
+        assertEquals(2, result.size());
+
+        PlayerViewModel marco = result.get(0);
+        assertEquals("Marco", marco.name());
+        assertEquals(10, marco.wallsRemaining());
+        assertTrue(marco.isCurrentPlayer(), "Alice dovrebbe essere il giocatore attivo");
+
+        PlayerViewModel luca = result.get(1);
+        assertEquals("Luca", luca.name());
+        assertEquals(10, luca.wallsRemaining());
+        assertFalse(luca.isCurrentPlayer(), "Bob NON dovrebbe essere il giocatore attivo");
+
+        verify(gameView, never()).renderBoard(any());
     }
 
     @Test
@@ -239,7 +290,7 @@ class ControllerTest {
         when(board.walls()).thenReturn(Collections.emptySet());
 
         // Mock a WINNING move (isValid=true, isWin=true)
-        when(gameEngine.movePawn(any(PlayerId.class), any(Direction.class)))
+        when(gameEngine.movePawn(any(PlayerId.class), any(Position.class)))
                 .thenReturn(MoveResult.win());
 
         // Act - click adjacent cell to trigger winning move
@@ -305,6 +356,34 @@ class ControllerTest {
         verify(gameEngine).undo();
         verify(gameView).showError("Nothing to undo");
         verify(gameView, never()).renderBoard(any());
+    }
+
+    @Test
+    void updateHighlightTest() {
+
+        GameState gameState = mock(GameState.class);
+
+        when(gameState.isGameOver()).thenReturn(false);
+        when(gameState.currentPlayerId()).thenReturn(PlayerId.PLAYER_1);
+
+        Position domainMove = new Position(0, 4);
+        Set<Position> domainMoves = Set.of(domainMove);
+
+        when(gameEngine.legalPawnDestinationsForPlayer(PlayerId.PLAYER_1)).thenReturn(domainMoves);
+
+        controller.updateHighlights(gameState);
+
+        ArgumentCaptor<Set<Position>>  captor = ArgumentCaptor.forClass(Set.class);
+        verify(gameView).highlightValidMoves(captor.capture());
+
+        Set<Position> movesToView = captor.getValue();
+
+        Position expectedViewMove = new Position(8, 4);
+
+        assertTrue(movesToView.contains(expectedViewMove),
+                "La posizione dovrebbe essere convertita da (1,4) a (7,4)" + movesToView);
+
+        assertEquals(1, movesToView.size());
     }
 
 }

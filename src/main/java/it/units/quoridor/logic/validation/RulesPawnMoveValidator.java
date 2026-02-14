@@ -1,10 +1,7 @@
-package it.units.quoridor.logic.rules.validation;
+package it.units.quoridor.logic.validation;
 
 import it.units.quoridor.domain.*;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 
 public class RulesPawnMoveValidator implements PawnMoveValidator{
@@ -26,18 +23,21 @@ public class RulesPawnMoveValidator implements PawnMoveValidator{
     }
 
 
-    boolean canJump(Board currentBoard, Position proposedPosition, Direction direction) {
-        if (currentBoard.isEdgeBlocked(proposedPosition, direction)) {
-            return false; // no jump
+    boolean canJump(Board board, Position occupiedAdj, Direction dir) {
+        // behind square must exist
+        Optional<Position> maybeBehind = occupiedAdj.tryMove(dir);
+        if (maybeBehind.isEmpty()) return false;
+
+        Position behind = maybeBehind.get();
+
+        // the edge between occupiedAdj <-> behind must not be blocked
+        if (board.isEdgeBlocked(occupiedAdj, dir) || board.isEdgeBlocked(behind, dir.opposite())) {
+            return false;
         }
 
-        // try to see if the behind position is free from walls and players
-        Optional<Position> maybeBehindPosition = proposedPosition.tryMove(direction);
-        if (maybeBehindPosition.isEmpty()) { return false; }
-
-        // - if behind the player there is another player
-        Position behindPosition = maybeBehindPosition.get();
-        return currentBoard.occupantAt(behindPosition).isEmpty();
+        // behind must be free
+        return board.occupantAt(behind).isEmpty();
     }
+
 
 }

@@ -3,6 +3,9 @@ package it.units.quoridor.controller;
 import it.units.quoridor.domain.*;
 import it.units.quoridor.engine.GameEngine;
 import it.units.quoridor.engine.MoveResult;
+import it.units.quoridor.engine.moves.PawnMoveGenerator;
+import it.units.quoridor.logic.validation.PawnMoveValidator;
+import it.units.quoridor.logic.validation.RulesPawnMoveValidator;
 import it.units.quoridor.view.BoardViewModel;
 import it.units.quoridor.view.GameView;
 import it.units.quoridor.view.PlayerViewModel;
@@ -54,7 +57,6 @@ public class Controller implements ViewListener {
         // Actual context of the game
         GameState gameState = engine.getGameState();
         Player currentPlayer = gameState.currentPlayer();
-        Position currentPosition = gameState.board().playerPosition(currentPlayer.id());
 
         // Change of coordinates
         int row = MAX_ROW_INDEX -  row_e;
@@ -62,23 +64,15 @@ public class Controller implements ViewListener {
         // Target position for the engine
         Position targetPosition = new Position(row, col);
 
-        // Check if the current position and the target position are adjacent
-        if (isAdjacent(currentPosition, targetPosition)) {
+        MoveResult moveResult = engine.movePawn(currentPlayer.id(), targetPosition);
 
-            Direction direction = calculateDirection(currentPosition, targetPosition);      // Calculate the direction
-            MoveResult moveResult = engine.movePawn(currentPlayer.id(), direction);         // Check the rules of the game
-
-            // Update the view and check for victory
-            if (moveResult.isValid()) {
-                updateView();
-                if (moveResult.isWin()) {
-                    view.showGameOver(currentPlayer.id());
-                }
-            } else {
-                view.showError(moveResult.message());
+        if (moveResult.isValid()) {
+            updateView();
+            if (moveResult.isWin()) {
+                view.showGameOver(currentPlayer.id());
             }
         } else {
-            view.showError("Can only move to adjacent cells");
+            view.showError(moveResult.message());
         }
     }
 
@@ -132,21 +126,6 @@ public class Controller implements ViewListener {
         System.exit(0);
     }
 
-    // Method to calculate if the cell clicked is adjacent to the current position // not private to enable test
-    boolean isAdjacent(Position curPos, Position target) {
-        int dRow = Math.abs(curPos.row() - target.row());
-        int dCol = Math.abs(curPos.col() - target.col());
-        return (dRow + dCol) == 1;
-    }
-
-    // Method to convert the coordinates into direction // not private to enable test
-    Direction calculateDirection(Position curPos, Position target) {
-        if (curPos.row() < target.row()) return Direction.NORTH;
-        if (curPos.row() > target.row()) return Direction.SOUTH;
-        if (curPos.col() < target.col()) return Direction.EAST;
-        return Direction.WEST;
-    }
-
     /**
      * Synchronize the view with the game engine
      * Read from the state, convert the coordinates and pass to the View
@@ -157,6 +136,18 @@ public class Controller implements ViewListener {
         GameState gameState = engine.getGameState();
         if (gameState == null) return;
 
+        updateGameBoard(gameState);
+        updateInfoPanel(gameState);
+        updateHighlights(gameState);
+
+        // Update the current player
+        view.setCurrentPlayer(gameState.currentPlayerId());
+
+        // Update undo button state (disable if game over)
+        view.setUndoEnabled(!gameState.isGameOver());
+    }
+
+    void updateGameBoard(GameState gameState) {
         // Associate each player id and its position
         Map<PlayerId, Position> viewPosition = new HashMap<>();
 
@@ -181,9 +172,12 @@ public class Controller implements ViewListener {
 
         // viewModel contain the data for the view
         BoardViewModel viewModel = new BoardViewModel(viewPosition, viewWalls);
+
         // Update the current view
         view.renderBoard(viewModel);
+    }
 
+    void updateInfoPanel(GameState gameState) {
         // Update player info panel
         List<PlayerViewModel> playerViewModels = gameState.players().stream()
                 .map(p -> new PlayerViewModel(
@@ -194,11 +188,25 @@ public class Controller implements ViewListener {
                 ))
                 .toList();
         view.updatePlayerInfo(playerViewModels);
+    }
 
-        // Update the current player
-        view.setCurrentPlayer(gameState.currentPlayerId());
+    void updateHighlights(GameState gameState) {
 
-        // Update undo button state (disable if game over)
-        view.setUndoEnabled(!gameState.isGameOver());
+        if (gameState.isGameOver()) {
+            view.clearHighlights();
+            return;
+        }
+
+        PlayerId currentPlayer = gameState.currentPlayerId();
+        Set<Position> domainMoves = engine.legalPawnDestinationsForPlayer(currentPlayer);
+
+        Set<Position> highMoves = new HashSet<>();
+
+        for (Position pos: domainMoves) {
+            Position move = new Position(MAX_ROW_INDEX - pos.row(), pos.col());
+            highMoves.add(move);
+        }
+
+        view.highlightValidMoves(highMoves);
     }
 }

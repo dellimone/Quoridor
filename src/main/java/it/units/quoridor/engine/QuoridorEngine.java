@@ -1,13 +1,13 @@
 package it.units.quoridor.engine;
 
 import it.units.quoridor.domain.*;
-import it.units.quoridor.logic.rules.validation.*;
 import it.units.quoridor.logic.rules.*;
 import it.units.quoridor.logic.rules.setup.*;
+import it.units.quoridor.logic.validation.PawnMoveValidator;
+import it.units.quoridor.logic.validation.WallPlacementValidator;
+import it.units.quoridor.engine.moves.PawnMoveGenerator;
 
-import java.util.ArrayDeque;
-import java.util.Deque;
-import java.util.List;
+import java.util.*;
 
 
 public class QuoridorEngine implements GameEngine {
@@ -16,6 +16,7 @@ public class QuoridorEngine implements GameEngine {
     private final PawnMoveValidator pawnValidator;
     private final WallPlacementValidator wallValidator;
     private final WinChecker winChecker;
+    private final PawnMoveGenerator pawnMoveGenerator;
 
     private final Deque<GameState> history = new ArrayDeque<>();
     private GameState state;
@@ -29,6 +30,8 @@ public class QuoridorEngine implements GameEngine {
         this.pawnValidator = pawnValidator;
         this.wallValidator = wallValidator;
         this.winChecker = winChecker;
+
+        this.pawnMoveGenerator = new PawnMoveGenerator(pawnValidator);
 
         newGame();  // Initialize engine to ready state
     }
@@ -49,6 +52,25 @@ public class QuoridorEngine implements GameEngine {
         // Clear history for new game
         this.history.clear();
     }
+
+    // for tests -> package-private:
+    QuoridorEngine(
+            GameRules rules,
+            GameState initialState,
+            PawnMoveValidator pawnValidator,
+            WallPlacementValidator wallValidator,
+            WinChecker winChecker
+    ) {
+        this.rules = rules;
+        this.pawnValidator = pawnValidator;
+        this.wallValidator = wallValidator;
+        this.winChecker = winChecker;
+        this.pawnMoveGenerator = new PawnMoveGenerator(pawnValidator);
+
+        this.state = initialState;
+        this.history.clear();
+    }
+
 
 
     @Override
@@ -100,27 +122,47 @@ public class QuoridorEngine implements GameEngine {
         return null; // Preconditions valid
     }
 
+    // for the controller for the highlights
     @Override
-    public MoveResult movePawn(PlayerId playerId, Direction direction) {
-        MoveResult preconditionCheck = validateTurnPreconditions(playerId);
-        if (preconditionCheck != null) {
-            return preconditionCheck;
-        }
+    public Set<Position> legalPawnDestinationsForPlayer(PlayerId player) {
+        if (state.isGameOver()) return Set.of();
+        return pawnMoveGenerator.legalDestinations(state, player);
+    }
 
-        // check player movement validity
-        boolean isValidMove = pawnValidator.canMovePawn(state, playerId, direction);
+    @Override
+    public MoveResult movePawn(PlayerId playerId, Position target) {
+        MoveResult pre = validateTurnPreconditions(playerId);
+        if (pre != null) return pre;
 
-        if (!isValidMove) {
+        if (!pawnMoveGenerator.isLegalDestination(state, playerId, target)) {
             return MoveResult.failure("Invalid pawn move");
         }
 
         saveSnapshot();
-        state = state.withPawnMoved(playerId, direction);
+        state = state.withPawnMovedTo(playerId, target);
 
         if (winChecker.isWin(state, playerId)) {
             state = state.withGameFinished(playerId);
         }
 
+        return MoveResult.success();
+    }
+
+
+    public MoveResult movePawn(PlayerId playerId, Direction direction) {
+        MoveResult pre = validateTurnPreconditions(playerId);
+        if (pre != null) return pre;
+
+        Optional<Position> dest = pawnMoveGenerator.resolveDestination(state, playerId, direction);
+        if (dest.isEmpty()) return MoveResult.failure("Invalid pawn move");
+
+        // Apply directly, do NOT call core (avoids revalidation)
+        saveSnapshot();
+        state = state.withPawnMovedTo(playerId, dest.get());
+
+        if (winChecker.isWin(state, playerId)) {
+            state = state.withGameFinished(playerId);
+        }
         return MoveResult.success();
     }
 

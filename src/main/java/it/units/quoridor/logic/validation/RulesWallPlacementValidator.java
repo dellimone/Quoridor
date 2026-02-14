@@ -1,4 +1,4 @@
-package it.units.quoridor.logic.rules.validation;
+package it.units.quoridor.logic.validation;
 
 import it.units.quoridor.domain.*;
 import it.units.quoridor.logic.pathFinder.PathFinder;
@@ -20,7 +20,6 @@ public class RulesWallPlacementValidator implements WallPlacementValidator{
     public boolean canPlaceWall(GameState state, PlayerId player, Wall wall) {
 
         Board board = state.board();
-
         Set<BlockedEdge> existingBlocked = board.getAllBlockedEdges();
 
         // compute edges blocked by new all and check if those are already blocked
