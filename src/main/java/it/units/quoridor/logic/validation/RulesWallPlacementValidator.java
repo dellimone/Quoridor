@@ -1,4 +1,4 @@
-package it.units.quoridor.logic.rules.validation;
+package it.units.quoridor.logic.validation;
 
 import it.units.quoridor.domain.*;
 import it.units.quoridor.logic.pathFinder.PathFinder;
