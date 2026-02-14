@@ -126,25 +126,39 @@ public class QuoridorEngine implements GameEngine {
     }
 
     @Override
-    public MoveResult movePawn(PlayerId playerId, Direction direction) {
-        MoveResult preconditionCheck = validateTurnPreconditions(playerId);
-        if (preconditionCheck != null) {
-            return preconditionCheck;
-        }
+    public MoveResult movePawn(PlayerId playerId, Position target) {
+        MoveResult pre = validateTurnPreconditions(playerId);
+        if (pre != null) return pre;
 
-        // check player movement validity
-        Optional<Position> dest = pawnMoveGenerator.resolveDestination(state, playerId, direction);
-        if (dest.isEmpty()) {
+        if (!pawnMoveGenerator.isLegalDestination(state, playerId, target)) {
             return MoveResult.failure("Invalid pawn move");
         }
 
+        saveSnapshot();
+        state = state.withPawnMovedTo(playerId, target);
+
+        if (winChecker.isWin(state, playerId)) {
+            state = state.withGameFinished(playerId);
+        }
+
+        return MoveResult.success();
+    }
+
+
+    public MoveResult movePawn(PlayerId playerId, Direction direction) {
+        MoveResult pre = validateTurnPreconditions(playerId);
+        if (pre != null) return pre;
+
+        Optional<Position> dest = pawnMoveGenerator.resolveDestination(state, playerId, direction);
+        if (dest.isEmpty()) return MoveResult.failure("Invalid pawn move");
+
+        // Apply directly, do NOT call core (avoids revalidation)
         saveSnapshot();
         state = state.withPawnMovedTo(playerId, dest.get());
 
         if (winChecker.isWin(state, playerId)) {
             state = state.withGameFinished(playerId);
         }
-
         return MoveResult.success();
     }
 

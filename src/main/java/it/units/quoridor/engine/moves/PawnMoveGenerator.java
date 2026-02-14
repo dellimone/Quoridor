@@ -43,9 +43,26 @@ public class PawnMoveGenerator {
         return adj.tryMove(direction);
     }
 
+    public boolean isLegalDestination(GameState state, PlayerId playerId, Position target) {
+        Position from = state.getPlayerPosition(playerId);
+
+        for (Direction dir : Direction.values()) {
+            Optional<Position> dest = resolveDestination(state, playerId, dir);
+            if (dest.isPresent() && dest.get().equals(target)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     // for UI
-    // public Set<Position> legalDestinations(GameState state, PlayerId playerId) {
-        // TODO
-    //}
+    public Set<Position> legalDestinations(GameState state, PlayerId playerId) {
+        Set<Position> destinations = new HashSet<>();
+        for (Direction dir : Direction.values()) {
+            resolveDestination(state, playerId, dir).ifPresent(destinations::add);
+        }
+        return destinations;
+    }
+
 
 }

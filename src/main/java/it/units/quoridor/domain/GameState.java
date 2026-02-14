@@ -90,7 +90,7 @@ public record GameState(
         Board newBoard = board.withPlayerAt(playerId, destination);
         return this.withBoard(newBoard).withNextTurn();
     }
-
+    
 
     public GameState withWallPlaced(PlayerId playerId, Wall wall) {
         Board newBoard = board.addWall(wall);
