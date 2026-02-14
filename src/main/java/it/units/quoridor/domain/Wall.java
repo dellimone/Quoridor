@@ -34,5 +34,4 @@ public record Wall(WallPosition position, WallOrientation orientation) {
         return blockedEdges;
     }
 
-
 }

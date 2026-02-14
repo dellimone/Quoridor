@@ -30,6 +30,12 @@ public class RulesWallPlacementValidator implements WallPlacementValidator{
             }
         }
 
+        // check for crossing (same anchor different orientations)
+        boolean crosses = board.walls().stream()
+                .anyMatch(wall1 -> wall1.position().equals(wall.position()) &&
+                        wall1.orientation() != wall.orientation());
+        if (crosses) return false;
+
         return true;
     }
 }

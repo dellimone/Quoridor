@@ -67,6 +67,29 @@ public class WallValidatorTest {
         WallPosition newWallPosition = new WallPosition(3,4);
         Wall newWall = new Wall(wallPosition, WallOrientation.HORIZONTAL);
 
-        assertFalse(wallValidator.canPlaceWall(initialState, PlayerId.PLAYER_1, wall));
+        assertFalse(wallValidator.canPlaceWall(initialState, PlayerId.PLAYER_1, newWall));
+    }
+
+    // 3. validator returns false if two walls cross, meaning they have same anchor but opposite orientation
+    @Test
+    void crossingWalls_returnFalse() {
+        // create a small example for board
+        Player p1 = new Player(PlayerId.PLAYER_1, "P1", 10, 8);
+        Player p2 = new Player(PlayerId.PLAYER_2, "P2", 10, 0);
+
+        WallPosition wallPosition = new WallPosition(3,3);
+        Wall wall = new Wall(wallPosition, WallOrientation.HORIZONTAL);
+
+        Board board = new Board()
+                .addWall(wall)
+                .withPlayerAt(PlayerId.PLAYER_1, new Position(0, 4))
+                .withPlayerAt(PlayerId.PLAYER_2, new Position(8, 4));
+
+        GameState initialState = new GameState(board, List.of(p1, p2));
+
+        WallPosition newWallPosition = new WallPosition(3,3);
+        Wall newWall = new Wall(wallPosition, WallOrientation.VERTICAL);
+
+        assertFalse(wallValidator.canPlaceWall(initialState, PlayerId.PLAYER_1, newWall));
     }
 }
