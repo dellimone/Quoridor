@@ -11,46 +11,42 @@ import java.util.List;
 
 public class QuoridorEngine implements GameEngine {
 
-    // immutable and private snapshot (for the undo)
-    private record EngineSnapshot(
-            GameState state,
-            boolean gameOver,
-            PlayerId winner
-    ) {}
-
+    private final GameRules rules;
     private final PawnMoveValidator pawnValidator;
     private final WallPlacementValidator wallValidator;
     private final WinChecker winChecker;
 
-    private final Deque<EngineSnapshot> history = new ArrayDeque<>(); //snapshot history
-    private final GameState initialState;
+    private final Deque<GameState> history = new ArrayDeque<>();
     private GameState state;
 
-    private boolean gameOver = false;
-    private PlayerId winner = null;
-
-    // we make this package private (for the tests already implemented, for now)
-    QuoridorEngine(GameState initialState, PawnMoveValidator pawnValidator, WallPlacementValidator wallValidator, WinChecker winChecker) {
-        this.initialState = initialState;
-        this.state = initialState;
+    public QuoridorEngine(
+            GameRules rules,
+            PawnMoveValidator pawnValidator,
+            WallPlacementValidator wallValidator,
+            WinChecker winChecker) {
+        this.rules = rules;
         this.pawnValidator = pawnValidator;
         this.wallValidator = wallValidator;
         this.winChecker = winChecker;
+
+        newGame();  // Initialize engine to ready state
     }
 
-    // we will leverage a "factory" that will provide our engine with the needed setup
-    public static QuoridorEngine newGame(
-            GameRules rules,
-            PlayerCount playerCount,
-            List<PlayerSpec> specification,
+    public void newGame() {
+        // Create fixed player specs for 2-player game
+        List<PlayerSpec> specs = List.of(
+            new PlayerSpec(PlayerId.PLAYER_1, "Player 1"),
+            new PlayerSpec(PlayerId.PLAYER_2, "Player 2")
+        );
 
-            PawnMoveValidator pawnValidator,
-            WallPlacementValidator wallValidator,
-            WinChecker winChecker
-    ) {
-        GameState initialState = InitialStateFactory.create(rules, playerCount, specification);
+        // Derive PlayerCount from specs size
+        PlayerCount playerCount = PlayerCount.TWO_PLAYERS;
 
-        return new QuoridorEngine(initialState, pawnValidator, wallValidator, winChecker);
+        // Create initial state using factory
+        this.state = InitialStateFactory.create(rules, playerCount, specs);
+
+        // Clear history for new game
+        this.history.clear();
     }
 
 
@@ -58,135 +54,94 @@ public class QuoridorEngine implements GameEngine {
     public GameState getGameState() {
         return state;
     }
-    
-    
-    public void endGame(PlayerId winner) {
-        this.gameOver = true;
-        this.winner = winner;
-    }
 
 
     @Override
     public boolean isGameOver() {
-        return gameOver;
+        return state.isGameOver();
     }
 
 
     @Override
     public PlayerId getWinner() {
-        return winner;
+        return state.winner();
     }
 
 
     @Override
     public void reset(){
-        this.state = initialState;
-        this.gameOver = false;
-        this.winner = null;
-        this.history.clear();
+        newGame();
     }
 
 
     private void saveSnapshot() {
-        history.push(new EngineSnapshot(state, gameOver, winner));
-    }
-
-    private void restoreStateFromSnapshot(EngineSnapshot snapshot) {
-        this.state = snapshot.state;
-        this.gameOver = snapshot.gameOver;
-        this.winner = snapshot.winner;
+        history.push(state);
     }
 
     @Override
     public boolean undo() {
-
         if (!history.isEmpty()) {
-            EngineSnapshot lastSnapshot = history.pop(); // obtain the last snapshot
-            restoreStateFromSnapshot(lastSnapshot);
-
+            state = history.pop();
             return true;
         }
-
         return false;
     }
 
+    private MoveResult validateTurnPreconditions(PlayerId playerId) {
+        if (state.isGameOver()) {
+            return MoveResult.failure("Game is over");
+        }
+
+        if (!playerId.equals(state.currentPlayerId())) {
+            return MoveResult.failure("Not your turn");
+        }
+
+        return null; // Preconditions valid
+    }
 
     @Override
-    public MoveResult movePawn(PlayerId player, Direction direction) {
-
-        // if the game has ended, every move is marked invalid
-        if (gameOver) {
-            return MoveResult.INVALID;
+    public MoveResult movePawn(PlayerId playerId, Direction direction) {
+        MoveResult preconditionCheck = validateTurnPreconditions(playerId);
+        if (preconditionCheck != null) {
+            return preconditionCheck;
         }
 
-        // if the "not current"-player tries to make a move, we mark it directly as invalid
-        if (!player.equals(state.currentPlayerId())) {
-            return MoveResult.INVALID;
+        // check player movement validity
+        boolean isValidMove = pawnValidator.canMovePawn(state, playerId, direction);
+
+        if (!isValidMove) {
+            return MoveResult.failure("Invalid pawn move");
         }
 
-        // check move validity
-        boolean valid = pawnValidator.canMovePawn(state, player, direction);
-
-        if (!valid) {
-            return MoveResult.INVALID;
-        }
-
-        // we save a snapshot in the history before moving on
         saveSnapshot();
+        state = state.withPawnMoved(playerId, direction);
 
-        // we need to update the board with the new position
-        Position nextPosition = state.board().playerPosition(player).move(direction);
-        Board newBoard = state.board().withPlayerAt(player, nextPosition);
-
-        // need to change state if move was valid
-        state = state.withBoard(newBoard)
-                .withNextTurn();
-
-
-        // check if the next state is a win
-        if (winChecker.isWin(state, player)) {
-            gameOver = true;
-            winner = player;
-            return MoveResult.WIN;
+        if (winChecker.isWin(state, playerId)) {
+            state = state.withGameFinished(playerId);
         }
 
-        return MoveResult.OK;
+        return MoveResult.success();
     }
 
 
     @Override
     public MoveResult placeWall(PlayerId player, Wall wall) {
-
-        if (gameOver) {
-            return MoveResult.INVALID;
+        MoveResult preconditionCheck = validateTurnPreconditions(player);
+        if (preconditionCheck != null) {
+            return preconditionCheck;
         }
 
-        if (player != state.currentPlayerId()) {
-            return MoveResult.INVALID;
+        if (state.currentPlayerWallsRemaining() == 0) {
+            return MoveResult.failure("No walls remaining");
         }
 
-        // if a player has no walls remaining, the move is invalid
-        if (state.currentPlayer().wallsRemaining() == 0) {
-            return MoveResult.INVALID;
+        if (!wallValidator.canPlaceWall(state, player, wall)) {
+            return MoveResult.failure("Impossible to place wall here");
         }
 
-        // calls the wall validator to check
-        boolean valid = wallValidator.canPlaceWall(state, player, wall);
-
-        if (!valid) {
-            return MoveResult.INVALID;
-        }
-
-        // we save a snapshot in the history before moving on
         saveSnapshot();
+        state = state.withWallPlaced(player, wall);
 
-        Player updatedPlayer = state.currentPlayer().useWall(); // update player after wall used
-        Board newBoard = state.board().addWall(wall);
-
-        state = state.withBoard(newBoard)
-                .withUpdatedPlayer(updatedPlayer)
-                .withNextTurn();
-
-        return MoveResult.OK;
+        return MoveResult.success();
     }
 }

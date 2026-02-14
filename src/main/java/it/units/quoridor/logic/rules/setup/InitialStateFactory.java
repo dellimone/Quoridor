@@ -44,7 +44,7 @@ public class InitialStateFactory {
 
 
         // create the initial snapshot of the game
-        return new GameState(board, players, 0);
+        return new GameState(board, players, 0, GameStatus.IN_PROGRESS, null);
     }
 
     // we don't want the class to be instantiated
