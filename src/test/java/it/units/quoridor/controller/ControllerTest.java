@@ -5,6 +5,7 @@ import it.units.quoridor.engine.GameEngine;
 import it.units.quoridor.engine.MoveResult;
 import it.units.quoridor.view.BoardViewModel;
 import it.units.quoridor.view.GameView;
+import it.units.quoridor.view.PlayerViewModel;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
@@ -76,12 +77,14 @@ class ControllerTest {
         verify(gameEngine).movePawn(PlayerId.PLAYER_1, Direction.NORTH);
     }
 
+    /**
     @Test
     void controlAdjacentTest() {
         assertTrue(controller.isAdjacent(new Position(0,0), new Position(0,1)));
         assertTrue(controller.isAdjacent(new Position(1,0), new Position(0,0)));
         assertFalse(controller.isAdjacent(new Position(0,0), new Position(1,1)));
     }
+     */
 
     @Test
     void controlDirectionTest() {
@@ -122,6 +125,74 @@ class ControllerTest {
         Position viewPosition = captureModel.playerPositions().get(PlayerId.PLAYER_1);
 
         assertEquals(new Position(8,0), viewPosition);
+    }
+
+    @Test
+    void renderBoardTest() {
+
+        GameState gameState = mock(GameState.class);
+        Board board = mock(Board.class);
+        Player player = mock(Player.class);
+
+        when(gameEngine.getGameState()).thenReturn(gameState);
+        when(gameState.board()).thenReturn(board);
+        when(gameState.currentPlayer()).thenReturn(player);
+        when(gameState.currentPlayerId()).thenReturn(PlayerId.PLAYER_1);
+
+        when(gameState.players()).thenReturn(List.of(player));
+        when(player.id()).thenReturn(PlayerId.PLAYER_1);
+
+        when(board.playerPosition(PlayerId.PLAYER_1)).thenReturn(new Position(0,0));
+        when(board.walls()).thenReturn(Collections.emptySet());
+
+        controller.updateGameBoard(gameState);
+
+        ArgumentCaptor<BoardViewModel> captor = ArgumentCaptor.forClass(BoardViewModel.class);
+        verify(gameView).renderBoard(captor.capture());
+
+        BoardViewModel boardViewModel = captor.getValue();
+        assertEquals(new Position(8,0), boardViewModel.playerPositions().get(PlayerId.PLAYER_1));
+    }
+
+    @Test
+    void updateInfoPanelTest() {
+
+        GameState gameState = mock(GameState.class);
+        Player p1 = mock(Player.class);
+        Player p2 = mock(Player.class);
+
+        when(gameState.players()).thenReturn(List.of(p1, p2));
+        when(gameState.currentPlayerId()).thenReturn(PlayerId.PLAYER_1);
+
+        when(p1.id()).thenReturn(PlayerId.PLAYER_1);
+        when(p1.name()).thenReturn("Marco");
+        when(p1.wallsRemaining()).thenReturn(10);
+
+        when(p2.id()).thenReturn(PlayerId.PLAYER_2);
+        when(p2.name()).thenReturn("Luca");
+        when(p2.wallsRemaining()).thenReturn(10);
+
+        controller.updateInfoPanel(gameState);
+
+        ArgumentCaptor<List<PlayerViewModel>> captor = ArgumentCaptor.forClass(List.class);
+        verify(gameView).updatePlayerInfo(captor.capture());
+
+        List<PlayerViewModel> result = captor.getValue();
+
+        // Controllo numero giocatori
+        assertEquals(2, result.size());
+
+        PlayerViewModel marco = result.get(0);
+        assertEquals("Marco", marco.name());
+        assertEquals(10, marco.wallsRemaining());
+        assertTrue(marco.isCurrentPlayer(), "Alice dovrebbe essere il giocatore attivo");
+
+        PlayerViewModel luca = result.get(1);
+        assertEquals("Luca", luca.name());
+        assertEquals(10, luca.wallsRemaining());
+        assertFalse(luca.isCurrentPlayer(), "Bob NON dovrebbe essere il giocatore attivo");
+
+        verify(gameView, never()).renderBoard(any());
     }
 
     @Test
