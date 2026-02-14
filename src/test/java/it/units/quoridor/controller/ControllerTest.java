@@ -188,4 +188,35 @@ class ControllerTest {
         verify(gameView).renderBoard(any());
     }
 
+
+    @Test
+    void winningMoveShouldCallShowGameOver() {
+        // Arrange
+        GameState gameState = mock(GameState.class);
+        Board board = mock(Board.class);
+        Player player = mock(Player.class);
+
+        when(gameEngine.getGameState()).thenReturn(gameState);
+        when(gameState.board()).thenReturn(board);
+        when(gameState.currentPlayer()).thenReturn(player);
+        when(gameState.currentPlayerId()).thenReturn(PlayerId.PLAYER_1);
+        when(player.id()).thenReturn(PlayerId.PLAYER_1);
+        when(player.name()).thenReturn("Player 1");
+        when(board.playerPosition(PlayerId.PLAYER_1)).thenReturn(new Position(0, 0));
+        when(gameState.players()).thenReturn(List.of(player));
+        when(board.walls()).thenReturn(Collections.emptySet());
+
+        // Mock a WINNING move (isValid=true, isWin=true)
+        when(gameEngine.movePawn(any(PlayerId.class), any(Direction.class)))
+                .thenReturn(MoveResult.win());
+
+        // Act - click adjacent cell to trigger winning move
+        controller.onCellClicked(7, 0);
+
+        // Assert - CRITICAL: should call showGameOver
+        verify(gameView).renderBoard(any(BoardViewModel.class));
+        verify(gameView).showGameOver(PlayerId.PLAYER_1);
+        verify(gameView, never()).showMessage(anyString());
+    }
+
 }

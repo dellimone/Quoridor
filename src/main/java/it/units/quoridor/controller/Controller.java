@@ -64,13 +64,17 @@ public class Controller implements ViewListener {
             Direction direction = calculateDirection(currentPosition, targetPosition);      // Calculate the direction
             MoveResult moveResult = engine.movePawn(currentPlayer.id(), direction);         // Check the rules of the game
 
-            // Update the view and check the victory
+            // Update the view and check for victory
             if (moveResult.isValid()) {
                 updateView();
-            } else if (moveResult.isWin()) {
-                updateView();
-                view.showMessage(currentPlayer.name() + " win!");
+                if (moveResult.isWin()) {
+                    view.showGameOver(currentPlayer.id());
+                }
+            } else {
+                view.showError(moveResult.message());
             }
+        } else {
+            view.showError("Can only move to adjacent cells");
         }
     }
 
