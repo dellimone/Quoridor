@@ -79,7 +79,6 @@ public class PawnValidatorTest {
         assertTrue(pawnValidator.canMovePawn(initialState, PlayerId.PLAYER_1, Direction.SOUTH));
     }
 
-
     // 4. returns false when proposed square is occupied by another player but the one behind is blocked by a wall
     @Test
     void returnsFalse_proposedSquareOccupiedBehindWall() {

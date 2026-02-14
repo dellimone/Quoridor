@@ -197,7 +197,13 @@ For the _walls_ part:
 ### Validator
 For the pawn part:
 
-- [ ] If proposed square is free, validator returns true
-- [ ] If proposed square is blocked by wall, validator returns false
-- [ ] If proposed is blocked by opponent pawn and the square behind it is free, validator returns true
-- [ ] If proposed is blocked by opponent pawn, the square behind it is blocked but the diagonals are free, validator returns true
+- [x] If proposed square is free, validator returns true
+- [x] If proposed square is blocked by wall, validator returns false
+- [x] If proposed is blocked by opponent pawn and the square behind it is free, validator returns true
+- [x] If proposed is blocked by opponent pawn, the square behind it is blocked but the diagonals are free, validator returns true
+- [ ] **FOR NOW** until we implement diagonal moves, if the two above are both false, we return false (for now no diagonal checking)
+
+For the wall part:
+- [X] If a wall is placed where there is space, the validator returns true
+- [X] If a new wall intersect with an existing one, the validator returns false
+- [ ] If a new wall and another _cross_, the validator returns false
