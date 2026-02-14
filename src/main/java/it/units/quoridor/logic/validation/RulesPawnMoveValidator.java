@@ -1,10 +1,7 @@
-package it.units.quoridor.logic.rules.validation;
+package it.units.quoridor.logic.validation;
 
 import it.units.quoridor.domain.*;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 
 public class RulesPawnMoveValidator implements PawnMoveValidator{

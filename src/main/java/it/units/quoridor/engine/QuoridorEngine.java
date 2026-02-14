@@ -1,9 +1,10 @@
 package it.units.quoridor.engine;
 
 import it.units.quoridor.domain.*;
-import it.units.quoridor.logic.rules.validation.*;
 import it.units.quoridor.logic.rules.*;
 import it.units.quoridor.logic.rules.setup.*;
+import it.units.quoridor.logic.validation.PawnMoveValidator;
+import it.units.quoridor.logic.validation.WallPlacementValidator;
 
 import java.util.ArrayDeque;
 import java.util.Deque;

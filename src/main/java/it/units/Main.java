@@ -8,8 +8,8 @@ import it.units.quoridor.logic.pathFinder.PathFinder;
 import it.units.quoridor.logic.rules.GameRules;
 import it.units.quoridor.logic.rules.QuoridorGameRules;
 import it.units.quoridor.logic.rules.QuoridorWinChecker;
-import it.units.quoridor.logic.rules.validation.PawnMoveValidator;
-import it.units.quoridor.logic.rules.validation.WallPlacementValidator;
+import it.units.quoridor.logic.validation.PawnMoveValidator;
+import it.units.quoridor.logic.validation.WallPlacementValidator;
 import it.units.quoridor.view.SwingGameView;
 
 import javax.swing.SwingUtilities;
