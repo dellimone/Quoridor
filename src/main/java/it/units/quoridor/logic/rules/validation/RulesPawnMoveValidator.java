@@ -27,17 +27,15 @@ public class RulesPawnMoveValidator implements PawnMoveValidator{
         }
 
         // we want to find whether a player is already occupying the proposed position
-        Map<PlayerId, Position> playerPositions = currentBoard.playerPositions();
-        PlayerId occupantPlayer = playerPositions.entrySet().stream()
-                .filter(e -> e.getValue().equals(proposedPosition))
-                .map(Map.Entry::getKey)
-                .findFirst().orElse(null); // if yes we return PlayerID else null
+        Optional<PlayerId> occupantPlayer =  currentBoard.occupantAt(proposedPosition); // return Optional
 
-        // if the position is not occupied by anybody just move
-        if (occupantPlayer == null) {
+        // if the position is occupied by nobody
+        if (occupantPlayer.isEmpty()) {
             return true;
         }
         // we first try to jump
+
+        Map<PlayerId, Position> playerPositions = currentBoard.playerPositions();
         return canJump(currentBoard, proposedPosition, playerPositions, direction);
     }
 
@@ -56,5 +54,16 @@ public class RulesPawnMoveValidator implements PawnMoveValidator{
         // - if behind the player there is another player
 
         return !playerPositions.containsValue(behindPosition); // no jump
+    }
+
+    // small helper method to identify whether there is a player in that position
+    private Optional<PlayerId> findOccupantPlayerID(
+            Map<PlayerId, Position> playerPositions,
+            Position position
+    ) {
+        return playerPositions.entrySet().stream()
+                .filter(e -> e.getValue().equals(position))
+                .map(Map.Entry::getKey)
+                .findFirst();
     }
 }
