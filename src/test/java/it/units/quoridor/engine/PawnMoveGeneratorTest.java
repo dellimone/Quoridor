@@ -89,4 +89,55 @@ public class PawnMoveGeneratorTest {
         assertTrue(result.isEmpty()); // assert that the generator found no valid positions
     }
 
+    // 3. jump logic: if the validator allows the jump, then the generator should return the square BEHIND
+    @Test
+    void generatorReturnsResult_jumpAllowed() {
+        Player p1 = new Player(PlayerId.PLAYER_1, "P1", 10, 8);
+        Player p2 = new Player(PlayerId.PLAYER_2, "P2", 10, 0);
+
+        Board board = new Board()
+                .withPlayerAt(PlayerId.PLAYER_1, new Position(0, 4))
+                .withPlayerAt(PlayerId.PLAYER_2, new Position(0, 5));
+
+        GameState initialState = new GameState(board, List.of(p1, p2));
+
+        Optional<Position> result = generator.resolveDestination(initialState, PlayerId.PLAYER_1, Direction.EAST);
+
+        assertTrue(result.isPresent()); // assert that the generator actually generated a position
+        assertEquals(new Position(0, 6), result.get()); // assert that we actually jumped EAST from (0,4) -> (0,6)
+    }
+
+    // 4. generator returns nothing if the pawn tries to go out of bounds
+    @Test
+    void generatorReturnsEmpty_outOfBoundsMove() {
+        Player p1 = new Player(PlayerId.PLAYER_1, "P1", 10, 8);
+        Player p2 = new Player(PlayerId.PLAYER_2, "P2", 10, 0);
+
+        Board board = new Board()
+                .withPlayerAt(PlayerId.PLAYER_1, new Position(0, 4))
+                .withPlayerAt(PlayerId.PLAYER_2, new Position(0, 5));
+
+        GameState initialState = new GameState(board, List.of(p1, p2));
+
+        Optional<Position> result = generator.resolveDestination(initialState, PlayerId.PLAYER_1, Direction.SOUTH);
+
+        assertTrue(result.isEmpty()); // assert that the generator actually generated a position
+    }
+
+    // 5. generator returns nothing if the pawn tries to JUMP out of bounds
+    @Test
+    void generatorReturnsEmpty_jumpOutOfBounds() {
+        Player p1 = new Player(PlayerId.PLAYER_1, "P1", 10, 8);
+        Player p2 = new Player(PlayerId.PLAYER_2, "P2", 10, 0);
+
+        Board board = new Board()
+                .withPlayerAt(PlayerId.PLAYER_1, new Position(0, 7))
+                .withPlayerAt(PlayerId.PLAYER_2, new Position(0, 8));
+
+        GameState initialState = new GameState(board, List.of(p1, p2));
+
+        Optional<Position> result = generator.resolveDestination(initialState, PlayerId.PLAYER_1, Direction.EAST);
+
+        assertTrue(result.isEmpty()); // assert that the generator actually generated a position
+        }
 }
