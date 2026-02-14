@@ -5,10 +5,12 @@ import it.units.quoridor.engine.GameEngine;
 import it.units.quoridor.engine.MoveResult;
 import it.units.quoridor.view.BoardViewModel;
 import it.units.quoridor.view.GameView;
+import it.units.quoridor.view.PlayerViewModel;
 import it.units.quoridor.view.ViewListener;
 
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -33,8 +35,10 @@ public class Controller implements ViewListener {
     // Start a new game
     @Override
     public void onNewGame(int playerCount) {
-        // engine.setup();
+        engine.reset();  // Reset game state and clear history
         updateView();
+        view.setUndoEnabled(false);  // No history at game start
+        view.showMessage("New game started!");
     }
 
     /**
@@ -64,13 +68,17 @@ public class Controller implements ViewListener {
             Direction direction = calculateDirection(currentPosition, targetPosition);      // Calculate the direction
             MoveResult moveResult = engine.movePawn(currentPlayer.id(), direction);         // Check the rules of the game
 
-            // Update the view and check the victory
+            // Update the view and check for victory
             if (moveResult.isValid()) {
                 updateView();
-            } else if (moveResult.isWin()) {
-                updateView();
-                view.showMessage(currentPlayer.name() + " win!");
+                if (moveResult.isWin()) {
+                    view.showGameOver(currentPlayer.id());
+                }
+            } else {
+                view.showError(moveResult.message());
             }
+        } else {
+            view.showError("Can only move to adjacent cells");
         }
     }
 
@@ -110,15 +118,18 @@ public class Controller implements ViewListener {
 
     @Override
     public void onUndo() {
-        // engine.undo();
-        updateView();
+        boolean success = engine.undo();
+        if (success) {
+            updateView();
+            view.showMessage("Move undone");
+        } else {
+            view.showError("Nothing to undo");
+        }
     }
 
     @Override
     public void onQuit() {
-        // engine.quit();
-        updateView();
-        // System.exit(0);
+        System.exit(0);
     }
 
     // Method to calculate if the cell clicked is adjacent to the current position // not private to enable test
@@ -173,7 +184,21 @@ public class Controller implements ViewListener {
         // Update the current view
         view.renderBoard(viewModel);
 
+        // Update player info panel
+        List<PlayerViewModel> playerViewModels = gameState.players().stream()
+                .map(p -> new PlayerViewModel(
+                        p.id(),
+                        p.name(),
+                        p.wallsRemaining(),
+                        p.id().equals(gameState.currentPlayerId())
+                ))
+                .toList();
+        view.updatePlayerInfo(playerViewModels);
+
         // Update the current player
         view.setCurrentPlayer(gameState.currentPlayerId());
+
+        // Update undo button state (disable if game over)
+        view.setUndoEnabled(!gameState.isGameOver());
     }
 }
