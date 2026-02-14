@@ -11,7 +11,7 @@ public interface GameEngine {
     MoveResult movePawn(PlayerId player, Direction direction);
     MoveResult movePawn(PlayerId player, Position position);
     MoveResult placeWall(PlayerId player, Wall wall);
-    Set<Position> legalPawnDestinationsForPlayer();
+    Set<Position> legalPawnDestinationsForPlayer(PlayerId player);
 
     void reset();
     boolean undo();
