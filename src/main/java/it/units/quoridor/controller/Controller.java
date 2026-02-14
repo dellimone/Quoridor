@@ -3,6 +3,9 @@ package it.units.quoridor.controller;
 import it.units.quoridor.domain.*;
 import it.units.quoridor.engine.GameEngine;
 import it.units.quoridor.engine.MoveResult;
+import it.units.quoridor.engine.moves.PawnMoveGenerator;
+import it.units.quoridor.logic.validation.PawnMoveValidator;
+import it.units.quoridor.logic.validation.RulesPawnMoveValidator;
 import it.units.quoridor.view.BoardViewModel;
 import it.units.quoridor.view.GameView;
 import it.units.quoridor.view.PlayerViewModel;
@@ -135,6 +138,7 @@ public class Controller implements ViewListener {
 
         updateGameBoard(gameState);
         updateInfoPanel(gameState);
+        updateHighlights(gameState);
 
         // Update the current player
         view.setCurrentPlayer(gameState.currentPlayerId());
@@ -184,5 +188,25 @@ public class Controller implements ViewListener {
                 ))
                 .toList();
         view.updatePlayerInfo(playerViewModels);
+    }
+
+    void updateHighlights(GameState gameState) {
+
+        if (gameState.isGameOver()) {
+            view.clearHighlights();
+            return;
+        }
+
+        PlayerId currentPlayer = gameState.currentPlayerId();
+        Set<Position> domainMoves = moveGenerator.legalDestinations(gameState, currentPlayer);
+
+        Set<Position> highMoves = new HashSet<>();
+
+        for (Position pos: domainMoves) {
+            Position move = new Position(MAX_ROW_INDEX - pos.row(), pos.col());
+            highMoves.add(move);
+        }
+
+        view.highlightValidMoves(highMoves);
     }
 }

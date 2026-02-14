@@ -12,6 +12,7 @@ import org.mockito.ArgumentCaptor;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Set;
 
 import static org.mockito.Mockito.*;
 import static org.junit.jupiter.api.Assertions.*;
@@ -355,6 +356,18 @@ class ControllerTest {
         verify(gameEngine).undo();
         verify(gameView).showError("Nothing to undo");
         verify(gameView, never()).renderBoard(any());
+    }
+
+    @Test
+    void updateHighlightTest() {
+
+        GameState gameState = mock(GameState.class);
+
+        when(gameState.isGameOver()).thenReturn(false);
+        when(gameState.currentPlayerId()).thenReturn(PlayerId.PLAYER_1);
+
+        Position domainMove = new Position(0, 4);
+        Set<Position> domainMoves = Set.of(domainMove);
     }
 
 }
