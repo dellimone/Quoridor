@@ -1,6 +1,7 @@
 package it.units.quoridor.engine;
 
 import it.units.quoridor.domain.*;
+import it.units.quoridor.logic.rules.validation.*;
 import it.units.quoridor.logic.rules.*;
 import it.units.quoridor.logic.rules.setup.*;
 

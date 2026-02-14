@@ -173,3 +173,19 @@ Undo tests:
 - [X] after a valid pawn move, calling undo should bring the gamestate back to the previous "valid" one
 - [ ] after a valid wall placement, undo should return true and restore walls remaining
 - [ ] after winning pawn move, doing undo should clear the gameOver flag and the winner
+
+
+#### Validator tests
+For pawns:
+- [X] If proposed pawn position is free, validator returns true
+- [X] If proposed pawn position is blocked by a wall, validator should return false
+- [X] If proposed pawn position is blocked by a player and the one behind is free, return true
+- [X] If proposed pawn position is blocked by a player and the one behind is blocked by either a player or a wall return false **UNTIL WE IMPLEMENT DIAGONALS**
+
+For walls:
+- [X] If proposed wall is put is a free position, validator returns true
+- [X] If proposed wall intersect with existing walls, validator returns false
+- [X] If proposed wall _crosses_ (has the same anchor) as an existing wall, validator returns false
+- [X] If proposed wall blocks every possible path of a player to their goalRow, validator returns false
+Walls by definition cannot be place outside the grid.
+
