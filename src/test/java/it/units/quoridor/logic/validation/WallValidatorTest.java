@@ -92,4 +92,29 @@ public class WallValidatorTest {
 
         assertFalse(wallValidator.canPlaceWall(initialState, PlayerId.PLAYER_1, newWall));
     }
+
+    // 4. validator returns false if the new wall blocks all paths (leveraging BFS)
+    @Test
+    void wallBlockingAllPaths_returnFalse() {
+        // create a small example for board
+        Player p1 = new Player(PlayerId.PLAYER_1, "P1", 10, 8);
+        Player p2 = new Player(PlayerId.PLAYER_2, "P2", 10, 0);
+
+        Board board = new Board()
+                .withPlayerAt(PlayerId.PLAYER_1, new Position(0, 4))
+                .withPlayerAt(PlayerId.PLAYER_2, new Position(8, 4));
+
+        for (int c = 0; c <= 6; c++) {
+            board = board.addWall(new Wall(new WallPosition(3, c), WallOrientation.HORIZONTAL));
+        }
+
+        GameState initialState = new GameState(board, List.of(p1, p2));
+
+        // this should block all paths
+        Wall wall = new Wall(new WallPosition(3, 7), WallOrientation.HORIZONTAL);
+
+        assertFalse(wallValidator.canPlaceWall(initialState, PlayerId.PLAYER_1, wall));
+    }
+
+
 }

@@ -36,6 +36,31 @@ public class RulesWallPlacementValidator implements WallPlacementValidator{
                         wall1.orientation() != wall.orientation());
         if (crosses) return false;
 
+        // path constraint: placing a wall must not block all paths to goal row
+        Board withWall = board.addWall(wall);
+
+        // each player must have an open path to goal after wall placement
+        for (Player p : state.players()) {
+            if (!hasPathToGoalRow(withWall, state.getPlayerPosition(p.id()), rules.getGoalRow(p.id()))) {
+                return false;
+            }
+        }
+
         return true;
+    }
+
+    // use the path finder to check reachability to any cell in the goal row
+    private boolean hasPathToGoalRow(Board board, Position playerPosition, int goalRow) {
+
+        for (int col = Position.MIN_COORDINATE; col <= Position.MAX_COORDINATE; col++) {
+            Position target = new Position(goalRow, col);
+
+            // if there is still an open path to goal row validator returns true
+            if (pathFinder.pathExists(board, playerPosition, target)) {
+                return true;
+            }
+        }
+
+        return false;
     }
 }
