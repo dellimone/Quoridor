@@ -13,57 +13,31 @@ public class RulesPawnMoveValidator implements PawnMoveValidator{
 
         Board currentBoard = state.board();
         Position currentPosition = state.getPlayerPosition(player);
-        Optional<Position> maybePosition = currentPosition.tryMove(direction);
 
-        if (maybePosition.isEmpty()) {
-            return false;
-        }
-
-        Position proposedPosition = maybePosition.get();
-
-        // we have to return true if the square in the proposed direction is free (from walls and players)
-        if (currentBoard.isEdgeBlocked(currentPosition, direction)) {
-            return false;
-        }
-
-        // we want to find whether a player is already occupying the proposed position
-        Optional<PlayerId> occupantPlayer =  currentBoard.occupantAt(proposedPosition); // return Optional
-
-        // if the position is occupied by nobody
-        if (occupantPlayer.isEmpty()) {
-            return true;
-        }
-        // we first try to jump
-
-        Map<PlayerId, Position> playerPositions = currentBoard.playerPositions();
-        return canJump(currentBoard, proposedPosition, playerPositions, direction);
+        // we encode all the previous if statement:
+        // try to move the pawn -> first check if the move is valid (inside the board and not blocked by a wall)
+        // then allow if the target square is empty
+        // otherwise allow if jump is possible
+        // if any step fails -> false
+        return currentPosition.tryMove(direction)
+                .filter(to -> !currentBoard.isEdgeBlocked(currentPosition, direction))
+                .map(to -> currentBoard.occupantAt(to).isEmpty() || canJump(currentBoard, to, direction))
+                .orElse(false);
     }
 
-    boolean canJump(Board currentBoard, Position proposedPosition, Map<PlayerId, Position> playerPositions, Direction direction) {
+
+    boolean canJump(Board currentBoard, Position proposedPosition, Direction direction) {
         if (currentBoard.isEdgeBlocked(proposedPosition, direction)) {
             return false; // no jump
         }
 
+        // try to see if the behind position is free from walls and players
         Optional<Position> maybeBehindPosition = proposedPosition.tryMove(direction);
+        if (maybeBehindPosition.isEmpty()) { return false; }
 
-        if (maybeBehindPosition.isEmpty()) {
-            return false;
-        }
-
-        Position behindPosition = maybeBehindPosition.get();
         // - if behind the player there is another player
-
-        return !playerPositions.containsValue(behindPosition); // no jump
+        Position behindPosition = maybeBehindPosition.get();
+        return currentBoard.occupantAt(behindPosition).isEmpty();
     }
 
-    // small helper method to identify whether there is a player in that position
-    private Optional<PlayerId> findOccupantPlayerID(
-            Map<PlayerId, Position> playerPositions,
-            Position position
-    ) {
-        return playerPositions.entrySet().stream()
-                .filter(e -> e.getValue().equals(position))
-                .map(Map.Entry::getKey)
-                .findFirst();
-    }
 }
