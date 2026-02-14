@@ -54,7 +54,6 @@ public class Controller implements ViewListener {
         // Actual context of the game
         GameState gameState = engine.getGameState();
         Player currentPlayer = gameState.currentPlayer();
-        Position currentPosition = gameState.board().playerPosition(currentPlayer.id());
 
         // Change of coordinates
         int row = MAX_ROW_INDEX -  row_e;
@@ -62,23 +61,15 @@ public class Controller implements ViewListener {
         // Target position for the engine
         Position targetPosition = new Position(row, col);
 
-        // Check if the current position and the target position are adjacent
-        if (isAdjacent(currentPosition, targetPosition)) {
+        MoveResult moveResult = engine.movePawn(currentPlayer.id(), targetPosition);
 
-            Direction direction = calculateDirection(currentPosition, targetPosition);      // Calculate the direction
-            MoveResult moveResult = engine.movePawn(currentPlayer.id(), direction);         // Check the rules of the game
-
-            // Update the view and check for victory
-            if (moveResult.isValid()) {
-                updateView();
-                if (moveResult.isWin()) {
-                    view.showGameOver(currentPlayer.id());
-                }
-            } else {
-                view.showError(moveResult.message());
+        if (moveResult.isValid()) {
+            updateView();
+            if (moveResult.isWin()) {
+                view.showGameOver(currentPlayer.id());
             }
         } else {
-            view.showError("Can only move to adjacent cells");
+            view.showError(moveResult.message());
         }
     }
 
@@ -132,21 +123,6 @@ public class Controller implements ViewListener {
         System.exit(0);
     }
 
-    // Method to calculate if the cell clicked is adjacent to the current position // not private to enable test
-    boolean isAdjacent(Position curPos, Position target) {
-        int dRow = Math.abs(curPos.row() - target.row());
-        int dCol = Math.abs(curPos.col() - target.col());
-        return (dRow + dCol) <= 2;
-    }
-
-    // Method to convert the coordinates into direction // not private to enable test
-    Direction calculateDirection(Position curPos, Position target) {
-        if (curPos.row() < target.row()) return Direction.NORTH;
-        if (curPos.row() > target.row()) return Direction.SOUTH;
-        if (curPos.col() < target.col()) return Direction.EAST;
-        return Direction.WEST;
-    }
-
     /**
      * Synchronize the view with the game engine
      * Read from the state, convert the coordinates and pass to the View
@@ -158,7 +134,6 @@ public class Controller implements ViewListener {
         if (gameState == null) return;
 
         updateGameBoard(gameState);
-
         updateInfoPanel(gameState);
 
         // Update the current player

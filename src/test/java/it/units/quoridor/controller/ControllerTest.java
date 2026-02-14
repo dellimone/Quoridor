@@ -66,36 +66,15 @@ class ControllerTest {
         when(gameState.board()).thenReturn(board);
         when(gameState.currentPlayer()).thenReturn(player);
         when(gameState.currentPlayerId()).thenReturn(PlayerId.PLAYER_1);
-
         when(player.id()).thenReturn(PlayerId.PLAYER_1);
 
         when(board.playerPosition(PlayerId.PLAYER_1)).thenReturn(new Position(0,0));
-        when(gameEngine.movePawn(any(PlayerId.class), any(Direction.class))).thenReturn(MoveResult.success());
+
+        when(gameEngine.movePawn(any(PlayerId.class), any(Position.class))).thenReturn(MoveResult.success());
 
         controller.onCellClicked(7, 0);
 
-        verify(gameEngine).movePawn(PlayerId.PLAYER_1, Direction.NORTH);
-    }
-
-    /**
-    @Test
-    void controlAdjacentTest() {
-        assertTrue(controller.isAdjacent(new Position(0,0), new Position(0,1)));
-        assertTrue(controller.isAdjacent(new Position(1,0), new Position(0,0)));
-        assertFalse(controller.isAdjacent(new Position(0,0), new Position(1,1)));
-    }
-     */
-
-    @Test
-    void controlDirectionTest() {
-        Direction north = controller.calculateDirection(new Position(0,0), new Position(1,0));
-        Direction east = controller.calculateDirection(new Position(0,0), new Position(0,1));
-        Direction south = controller.calculateDirection(new Position(1,0), new Position(0,0));
-        Direction west = controller.calculateDirection(new Position(0,1), new Position(0,0));
-        assertEquals(Direction.NORTH, north);
-        assertEquals(Direction.EAST, east);
-        assertEquals(Direction.SOUTH, south);
-        assertEquals(Direction.WEST, west);
+        verify(gameEngine).movePawn(eq(PlayerId.PLAYER_1), eq(new Position(1, 0)));
     }
 
     @Test
@@ -310,7 +289,7 @@ class ControllerTest {
         when(board.walls()).thenReturn(Collections.emptySet());
 
         // Mock a WINNING move (isValid=true, isWin=true)
-        when(gameEngine.movePawn(any(PlayerId.class), any(Direction.class)))
+        when(gameEngine.movePawn(any(PlayerId.class), any(Position.class)))
                 .thenReturn(MoveResult.win());
 
         // Act - click adjacent cell to trigger winning move
