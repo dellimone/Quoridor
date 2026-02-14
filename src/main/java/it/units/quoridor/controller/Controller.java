@@ -33,8 +33,10 @@ public class Controller implements ViewListener {
     // Start a new game
     @Override
     public void onNewGame(int playerCount) {
-        // engine.setup();
+        engine.reset();  // Reset game state and clear history
         updateView();
+        view.setUndoEnabled(false);  // No history at game start
+        view.showMessage("New game started!");
     }
 
     /**

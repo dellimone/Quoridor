@@ -219,4 +219,25 @@ class ControllerTest {
         verify(gameView, never()).showMessage(anyString());
     }
 
+    @Test
+    void onNewGameShouldResetEngineAndDisableUndo() {
+        // Arrange
+        GameState gameState = mock(GameState.class);
+        Board board = mock(Board.class);
+
+        when(gameEngine.getGameState()).thenReturn(gameState);
+        when(gameState.board()).thenReturn(board);
+        when(gameState.players()).thenReturn(List.of());
+        when(board.walls()).thenReturn(Collections.emptySet());
+
+        // Act
+        controller.onNewGame(2);
+
+        // Assert - verify all expected behavior
+        verify(gameEngine).reset();  // Must call engine.reset()!
+        verify(gameView).renderBoard(any(BoardViewModel.class));
+        verify(gameView).setUndoEnabled(false);  // No history at start
+        verify(gameView).showMessage("New game started!");
+    }
+
 }
