@@ -7,10 +7,7 @@ import it.units.quoridor.logic.validation.PawnMoveValidator;
 import it.units.quoridor.logic.validation.WallPlacementValidator;
 import it.units.quoridor.engine.moves.PawnMoveGenerator;
 
-import java.util.ArrayDeque;
-import java.util.Deque;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 
 public class QuoridorEngine implements GameEngine {
@@ -123,6 +120,14 @@ public class QuoridorEngine implements GameEngine {
         }
 
         return null; // Preconditions valid
+    }
+
+    // for the controller for the highlights
+    @Override
+    public Set<Position> legalPawnDestinationsForPlayer() {
+        if (state.isGameOver()) return Set.of(); // or emptySet()
+        PlayerId p = state.currentPlayerId();
+        return pawnMoveGenerator.legalDestinations(state, p);
     }
 
     @Override
