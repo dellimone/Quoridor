@@ -1,5 +1,8 @@
 package it.units.quoridor.domain;
 
+
+import java.util.Optional;
+
 /**
  * Represent a valid position on the 9x9 Quoridor board.
  *
@@ -26,4 +29,20 @@ public record Position(int row, int col) {
     public Position move(Direction direction) {
         return new Position(row + direction.rowDelta(), col + direction.colDelta());
     }
+
+
+    // needed for the validator since move throws an exception (out of boundary movement should return false)
+    public Optional<Position> tryMove(Direction direction) {
+        int newRow = row + direction.rowDelta();
+        int newCol = col + direction.colDelta();
+
+        if (newRow < MIN_COORDINATE || newRow > MAX_COORDINATE
+                || newCol < MIN_COORDINATE || newCol > MAX_COORDINATE) {
+            return Optional.empty();
+        }
+
+        // if it was valid, it will construct a new position and returns it inside an optional
+        return Optional.of(new Position(newRow, newCol));
+    }
+
 }

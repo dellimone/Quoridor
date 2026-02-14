@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import java.util.Optional;
 
 public record Board(
         Set<Wall> walls,
@@ -25,6 +26,15 @@ public record Board(
 
         return new Board(walls, newPlayerPositions);
     }
+
+    // helper function for validator
+    public Optional<PlayerId> occupantAt(Position position) {
+        return playerPositions().entrySet().stream()
+                .filter(e -> e.getValue().equals(position))
+                .map(Map.Entry::getKey)
+                .findFirst();
+    }
+
 
     public Position playerPosition(PlayerId playerId) {
         return playerPositions.get(playerId);

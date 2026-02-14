@@ -4,10 +4,15 @@ import it.units.quoridor.domain.*;
 import it.units.quoridor.domain.GameState;
 import it.units.quoridor.logic.rules.GameRules;
 import it.units.quoridor.logic.rules.QuoridorGameRules;
+
+
+import it.units.quoridor.logic.rules.validation.PawnMoveValidator;
+import it.units.quoridor.logic.rules.validation.WallPlacementValidator;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+
 
 import java.util.List;
 
@@ -18,8 +23,10 @@ import static org.mockito.Mockito.*;
 public class QuoridorEngineTest {
 
     // needed mocks
-    @Mock PawnMoveValidator pawnValidator;
-    @Mock WallPlacementValidator wallValidator;
+    @Mock
+    PawnMoveValidator pawnValidator;
+    @Mock
+    WallPlacementValidator wallValidator;
     @Mock WinChecker winChecker; // will be implemented later
 
 

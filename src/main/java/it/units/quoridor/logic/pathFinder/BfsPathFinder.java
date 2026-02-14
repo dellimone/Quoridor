@@ -30,24 +30,26 @@ public class BfsPathFinder implements PathFinder {
 
             // Explore all four directions
             for (Direction dir : Direction.values()) {
-                // Check if wall blocks this direction
-                if (!board.isEdgeBlocked(current, dir)) {
-                    try {
-                        // Try to move in this direction
-                        Position next = current.move(dir);
 
-                        // If not visited, add to queue
-                        if (!visited.contains(next)) {
-                            visited.add(next);
-                            queue.offer(next);
-                        }
-                    } catch (IllegalArgumentException e) {
-                        // Move would go off board - skip this direction
-                    }
+                // If wall blocks movement, skip
+                if (board.isEdgeBlocked(current, dir)) {
+                    continue;
+                }
+
+                // instead of throwing an exception, we use the implemented tryMove()
+                Optional<Position> maybeNext = current.tryMove(dir);
+                if (maybeNext.isEmpty()) {
+                    continue; // off board
+                }
+
+                Position next = maybeNext.get();
+
+                if (!visited.contains(next)) {
+                    visited.add(next);
+                    queue.offer(next);
                 }
             }
         }
-
         // Exhausted all possibilities - no path found
         return false;
     }
