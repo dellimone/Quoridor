@@ -69,10 +69,10 @@ public class Controller implements ViewListener {
         if (moveResult.isValid()) {
             updateView();
             if (moveResult.isWin()) {
-                view.showGameOver(currentPlayer.id());
+                view.showMessage("Game Over - " + currentPlayer.name() + " wins!");
             }
         } else {
-            view.showError(moveResult.message());
+            view.showMessage(moveResult.message());
         }
     }
 
@@ -117,7 +117,7 @@ public class Controller implements ViewListener {
             updateView();
             view.showMessage("Move undone");
         } else {
-            view.showError("Nothing to undo");
+            view.showMessage("Nothing to undo");
         }
     }
 

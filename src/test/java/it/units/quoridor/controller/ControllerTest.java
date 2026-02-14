@@ -296,10 +296,9 @@ class ControllerTest {
         // Act - click adjacent cell to trigger winning move
         controller.onCellClicked(7, 0);
 
-        // Assert - CRITICAL: should call showGameOver
+        // Assert - CRITICAL: should show win message
         verify(gameView).renderBoard(any(BoardViewModel.class));
-        verify(gameView).showGameOver(PlayerId.PLAYER_1);
-        verify(gameView, never()).showMessage(anyString());
+        verify(gameView).showMessage("Game Over - Player 1 wins!");
     }
 
     @Test
@@ -354,7 +353,7 @@ class ControllerTest {
 
         // Assert
         verify(gameEngine).undo();
-        verify(gameView).showError("Nothing to undo");
+        verify(gameView).showMessage("Nothing to undo");
         verify(gameView, never()).renderBoard(any());
     }
 
