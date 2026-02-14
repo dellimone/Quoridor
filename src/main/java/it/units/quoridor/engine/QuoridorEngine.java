@@ -1,84 +1,147 @@
 package it.units.quoridor.engine;
 
 import it.units.quoridor.domain.*;
+import it.units.quoridor.logic.rules.*;
+import it.units.quoridor.logic.rules.setup.*;
+
+import java.util.ArrayDeque;
+import java.util.Deque;
+import java.util.List;
+
 
 public class QuoridorEngine implements GameEngine {
 
+    private final GameRules rules;
     private final PawnMoveValidator pawnValidator;
     private final WallPlacementValidator wallValidator;
     private final WinChecker winChecker;
+
+    private final Deque<GameState> history = new ArrayDeque<>();
     private GameState state;
 
-    private boolean gameOver = false;
-    private PlayerId winner = null;
-
-
-    public QuoridorEngine(GameState initialState, PawnMoveValidator pawnValidator, WallPlacementValidator wallValidator, WinChecker winChecker) {
-        this.state = initialState;
+    public QuoridorEngine(
+            GameRules rules,
+            PawnMoveValidator pawnValidator,
+            WallPlacementValidator wallValidator,
+            WinChecker winChecker) {
+        this.rules = rules;
         this.pawnValidator = pawnValidator;
         this.wallValidator = wallValidator;
         this.winChecker = winChecker;
+
+        newGame();  // Initialize engine to ready state
     }
+
+    public void newGame() {
+        // Create fixed player specs for 2-player game
+        List<PlayerSpec> specs = List.of(
+            new PlayerSpec(PlayerId.PLAYER_1, "Player 1"),
+            new PlayerSpec(PlayerId.PLAYER_2, "Player 2")
+        );
+
+        // Derive PlayerCount from specs size
+        PlayerCount playerCount = PlayerCount.TWO_PLAYERS;
+
+        // Create initial state using factory
+        this.state = InitialStateFactory.create(rules, playerCount, specs);
+
+        // Clear history for new game
+        this.history.clear();
+    }
+
 
     @Override
     public GameState getGameState() {
         return state;
     }
-    
-    
-    public void endGame(PlayerId winner) {
-        this.gameOver = true;
-        this.winner = winner;
-    }
 
 
     @Override
     public boolean isGameOver() {
-        return gameOver;
+        return state.isGameOver();
     }
 
 
     @Override
     public PlayerId getWinner() {
-        return winner;
+        return state.winner();
     }
 
 
     @Override
-    public MoveResult movePawn(PlayerId player, Direction direction) {
+    public void reset(){
+        newGame();
+    }
 
-        // if the game has ended, every move is marked invalid
-        if (gameOver) {
-            return MoveResult.INVALID;
-        }
 
-        // if the "not current"-player tries to make a move, we mark it directly as invalid
-        if (!player.equals(state.currentPlayerId())) {
-            return MoveResult.INVALID;
-        }
-
-        // check move validity
-        boolean valid = pawnValidator.canMovePawn(state, player, direction);
-
-        if (!valid) {
-            return MoveResult.INVALID;
-        }
-
-        // need to change state if move was valid
-        state = state.withNextTurn();
-
-        // check if the next state is a win
-        if (winChecker.isWin(state, player)) {
-            gameOver = true;
-            winner = player;
-            return MoveResult.WIN;
-        }
-
-        return MoveResult.OK;
+    private void saveSnapshot() {
+        history.push(state);
     }
 
     @Override
-    public MoveResult placeWall(PlayerId player, WallPosition pos, WallOrientation orientation) {
-        return MoveResult.OK;
+    public boolean undo() {
+        if (!history.isEmpty()) {
+            state = history.pop();
+            return true;
+        }
+        return false;
+    }
+
+    private MoveResult validateTurnPreconditions(PlayerId playerId) {
+        if (state.isGameOver()) {
+            return MoveResult.failure("Game is over");
+        }
+
+        if (!playerId.equals(state.currentPlayerId())) {
+            return MoveResult.failure("Not your turn");
+        }
+
+        return null; // Preconditions valid
+    }
+
+    @Override
+    public MoveResult movePawn(PlayerId playerId, Direction direction) {
+        MoveResult preconditionCheck = validateTurnPreconditions(playerId);
+        if (preconditionCheck != null) {
+            return preconditionCheck;
+        }
+
+        // check player movement validity
+        boolean isValidMove = pawnValidator.canMovePawn(state, playerId, direction);
+
+        if (!isValidMove) {
+            return MoveResult.failure("Invalid pawn move");
+        }
+
+        saveSnapshot();
+        state = state.withPawnMoved(playerId, direction);
+
+        if (winChecker.isWin(state, playerId)) {
+            state = state.withGameFinished(playerId);
+        }
+
+        return MoveResult.success();
+    }
+
+
+    @Override
+    public MoveResult placeWall(PlayerId player, Wall wall) {
+        MoveResult preconditionCheck = validateTurnPreconditions(player);
+        if (preconditionCheck != null) {
+            return preconditionCheck;
+        }
+
+        if (state.currentPlayerWallsRemaining() == 0) {
+            return MoveResult.failure("No walls remaining");
+        }
+
+        if (!wallValidator.canPlaceWall(state, player, wall)) {
+            return MoveResult.failure("Impossible to place wall here");
+        }
+
+        saveSnapshot();
+        state = state.withWallPlaced(player, wall);
+
+        return MoveResult.success();
     }
 }

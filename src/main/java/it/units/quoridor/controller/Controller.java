@@ -65,9 +65,9 @@ public class Controller implements ViewListener {
             MoveResult moveResult = engine.movePawn(currentPlayer.id(), direction);         // Check the rules of the game
 
             // Update the view and check the victory
-            if (moveResult == MoveResult.OK) {
+            if (moveResult.isValid()) {
                 updateView();
-            } else if (moveResult == MoveResult.WIN) {
+            } else if (moveResult.isWin()) {
                 updateView();
                 view.showMessage(currentPlayer.name() + " win!");
             }
@@ -92,15 +92,15 @@ public class Controller implements ViewListener {
             // Change of the coordinates for the engine
             // The wall lives in the intersection -> 8x8 grid
             WallPosition wallPosition = new WallPosition(MAX_WALL_INDEX - row, col);
-
+            Wall wall  = new Wall(wallPosition, orientation);
             // Ask the engine to place the wall
             // Control if the player has wall to place, if they overlap or block the path
-            MoveResult result = engine.placeWall(currentPlayer.id(), wallPosition, orientation);
+            MoveResult result = engine.placeWall(currentPlayer.id(), wall);
 
             // Check the result
-            if (result == MoveResult.OK) {
+            if (result.isValid()) {
                 updateView();
-            } else if (result == MoveResult.INVALID) {
+            } else {
                 view.showMessage("Invalid Wall Placement");
             }
         } catch (IllegalArgumentException e) {

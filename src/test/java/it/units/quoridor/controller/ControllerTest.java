@@ -2,6 +2,7 @@ package it.units.quoridor.controller;
 
 import it.units.quoridor.domain.*;
 import it.units.quoridor.engine.GameEngine;
+import it.units.quoridor.engine.MoveResult;
 import it.units.quoridor.view.BoardViewModel;
 import it.units.quoridor.view.GameView;
 import org.junit.jupiter.api.BeforeEach;
@@ -68,6 +69,7 @@ class ControllerTest {
         when(player.id()).thenReturn(PlayerId.PLAYER_1);
 
         when(board.playerPosition(PlayerId.PLAYER_1)).thenReturn(new Position(0,0));
+        when(gameEngine.movePawn(any(PlayerId.class), any(Direction.class))).thenReturn(MoveResult.success());
 
         controller.onCellClicked(7, 0);
 
@@ -126,16 +128,22 @@ class ControllerTest {
     void onWallPlacementTest() {
 
         GameState gameState = mock(GameState.class);
+        Board board = mock(Board.class);
         Player player = mock(Player.class);
 
         when(gameEngine.getGameState()).thenReturn(gameState);
+        when(gameState.board()).thenReturn(board);
         when(gameState.currentPlayer()).thenReturn(player);
+        when(gameState.players()).thenReturn(List.of(player));
         when(player.id()).thenReturn(PlayerId.PLAYER_1);
         when(gameState.currentPlayerId()).thenReturn(PlayerId.PLAYER_1);
+        when(board.playerPosition(PlayerId.PLAYER_1)).thenReturn(new Position(0,0));
+        when(board.walls()).thenReturn(Collections.emptySet());
+        when(gameEngine.placeWall(any(PlayerId.class), any(Wall.class))).thenReturn(MoveResult.success());
 
         controller.onWallPlacement(7,0, WallOrientation.HORIZONTAL);
 
-        verify(gameEngine).placeWall(eq(PlayerId.PLAYER_1), eq(new WallPosition(0,0)), eq(WallOrientation.HORIZONTAL));
+        verify(gameEngine).placeWall(eq(PlayerId.PLAYER_1), eq(new Wall(new WallPosition(0,0), WallOrientation.HORIZONTAL)));
     }
 
     @Test

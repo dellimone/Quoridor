@@ -1,44 +1,26 @@
 package it.units.quoridor.domain;
 
-public class Player {
-    private final PlayerId id;
-    private final String name;
-    private int wallsRemaining;
-    private final int goalRow;
-
-    public Player(
-            PlayerId playerId,
-            String name,
-            int startingWalls,
-            int goalRow) {
-        this.id = playerId;
-        this.name = name;
-        this.wallsRemaining = startingWalls;
-        this.goalRow = goalRow;
+public record Player(
+    PlayerId id,
+    String name,
+    int wallsRemaining,
+    int goalRow
+){
+    public Player {
+        if (wallsRemaining < 0) throw new IllegalArgumentException("wallsRemaining must be >= 0");
     }
 
-    public PlayerId id() {
-        return id;
-    }
-
-    public String name() {
-        return name;
-    }
-
-    public int wallsRemaining() {
-        return wallsRemaining;
-    }
-
-    public int goalRow() {
-        return goalRow;
-    }
-
-    public void useWall() {
-        if (this.wallsRemaining > 0) {
-            this.wallsRemaining--;
+    // instead of mutating, we return a new player
+    public Player useWall() {
+        if (wallsRemaining <= 0) {
+            throw new IllegalStateException("no walls remaining");
         }
-        else  {
-            throw new IllegalStateException("No walls remaining");
-        }
+
+        return new Player(id, name, wallsRemaining-1, goalRow);
+    }
+
+    public Player withWallsRemaining(int walls) {
+        if (walls < 0) throw new IllegalArgumentException("wallsRemaining must be >= 0");
+        return new Player(id, name, walls, goalRow);
     }
 }
