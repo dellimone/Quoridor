@@ -2,7 +2,9 @@ package it.units.quoridor.logic.validation;
 
 import it.units.quoridor.domain.*;
 
+import java.util.Arrays;
 import java.util.Optional;
+import java.util.stream.Stream;
 
 public class RulesPawnMoveValidator implements PawnMoveValidator{
 
@@ -22,6 +24,39 @@ public class RulesPawnMoveValidator implements PawnMoveValidator{
                 .orElse(false);
     }
 
+    @Override
+    public boolean canMovePawn(GameState state, PlayerId player, Position target) {
+        return legalTargets(state, player).anyMatch(target::equals);
+    }
+
+    // for now: step or straight jump in the 4 cardinal directions
+    Stream<Position> legalTargets(GameState state, PlayerId player) {
+        Board board = state.board();
+        Position from = state.getPlayerPosition(player);
+
+        return Arrays.stream(Direction.values())
+                .map(dir -> resolveCardinalDestination(board, from, dir))
+                .flatMap(Optional::stream);
+    }
+
+    private Optional<Position> resolveCardinalDestination(Board board, Position from, Direction dir) {
+        // step candidate must exist and not be blocked by a wall
+        Optional<Position> maybeAdj = from.tryMove(dir)
+                .filter(adj -> !board.isEdgeBlocked(from, dir));
+
+        if (maybeAdj.isEmpty()) return Optional.empty();
+        Position adj = maybeAdj.get();
+
+        // normal step
+        if (board.occupantAt(adj).isEmpty()) {
+            return Optional.of(adj);
+        }
+
+        // straight jump
+        return canJump(board, adj, dir)
+                ? adj.tryMove(dir)
+                : Optional.empty();
+    }
 
     boolean canJump(Board board, Position occupiedAdj, Direction dir) {
         // behind square must exist
