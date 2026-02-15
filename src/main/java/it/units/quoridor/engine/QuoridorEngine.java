@@ -187,4 +187,23 @@ public class QuoridorEngine implements GameEngine {
 
         return MoveResult.success();
     }
+
+
+    // USED FOR TESTING METHODS
+
+    static QuoridorEngine forTesting(GameRules rules, PawnMoveValidator pv, WallPlacementValidator wv,
+                                     WinChecker wc, GameState initialState) {
+        QuoridorEngine e = new QuoridorEngine(rules, pv, wv, wc);
+        e.state = initialState;
+        e.history.clear();
+        return e;
+    }
+
+    void setStateForTesting(GameState state) {
+        this.state = state;
+        this.history.clear();
+    }
+
+
+
 }

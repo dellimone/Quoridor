@@ -161,18 +161,18 @@ For the _walls_ part:
 - [X] Valid wall placements should advance the turn 
 - [X] Valid wall placements should update the board status
 - [X] Valid wall placements should consume a wall
-- [ ] Player with no walls remaining CANNOT place a wall
+- [X] Player with no walls remaining CANNOT place a wall
 
 ResetGame tests:
 - [X] reset() should restore initial state and change the flags
-- [ ] reset() should clear history
+- [X] reset() should clear history
 
 Undo tests:
 - [X] if we have no history (game has just started anew) we return false
 - [X] after a valid pawn move, calling undo should return true (because we have a history)
 - [X] after a valid pawn move, calling undo should bring the gamestate back to the previous "valid" one
-- [ ] after a valid wall placement, undo should return true and restore walls remaining
-- [ ] after winning pawn move, doing undo should clear the gameOver flag and the winner
+- [X] after a valid wall placement, undo should return true and restore walls remaining
+- [X] after winning pawn move, doing undo should clear the gameOver flag and the winner
 
 
 #### Validator tests
@@ -196,3 +196,9 @@ For walls:
 - [X] If proposed wall blocks every possible path of a player to their goalRow, validator returns false
 Walls by definition cannot be place outside the grid.
 
+
+
+#### Integration tests
+- [ ] No exception should be thrown when pawns are at corners
+- [ ] Diagonal jump has to become a possibility when straight jump is not accessible
+- [ ] Diagonal jump option should not be available when straight jump is
