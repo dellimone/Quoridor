@@ -2,7 +2,7 @@ name: CI
 
 on:
   push:
-    branches: [main, master, controller-refactoring, validator, jump-mechanic]
+    branches: [main, master, controller-refactoring, validator, diagonal-implementation]
   pull_request:
     branches: [main, master]
 
