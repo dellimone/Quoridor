@@ -18,6 +18,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 
+import java.lang.classfile.instruction.NewMultiArrayInstruction;
 import java.util.List;
 import java.util.Set;
 
@@ -135,4 +136,93 @@ public class QuoridorEngineIntegrationTest {
     }
 
     // 6. diagonal jump has to become a possibility when straight jump is not accessible
-}
+    @Test
+    void diagonalMoveAvailable_JumpNotAccessible() {
+        Player p1 = new Player(PlayerId.PLAYER_1, "P1", 10, 8);
+        Player p2 = new Player(PlayerId.PLAYER_2, "P2", 10, 0);
+        Player p3 = new Player(PlayerId.PLAYER_3, "P3", 10, 0);
+
+        Board board = new Board()
+                .withPlayerAt(PlayerId.PLAYER_1, new Position(2, 4))
+                .withPlayerAt(PlayerId.PLAYER_2, new Position(1, 4)) // adjacent SOUTH
+                .withPlayerAt(PlayerId.PLAYER_3, new Position(0, 4)); // jump square occupied by another player
+
+        GameState state = new GameState(board, List.of(p1, p2, p3));
+        QuoridorEngine engine = QuoridorEngine.forTesting(rules, pawnValidator, wallValidator, winChecker, state);
+
+        Set<Position> dest = engine.legalPawnDestinationsForPlayer(PlayerId.PLAYER_1);
+
+        assertFalse(dest.contains(new Position(0, 4)));
+
+        // diagonals around the adjacent pawn should become legal
+        assertTrue(dest.contains(new Position(1, 3)));
+        assertTrue(dest.contains(new Position(1, 5)));
+    }
+
+    // mirror test but with a wall
+    @Test
+    void diagonalMoveAvailable_JumpNotAccessibleWallCase() {
+        Player p1 = new Player(PlayerId.PLAYER_1, "P1", 10, 8);
+        Player p2 = new Player(PlayerId.PLAYER_2, "P2", 10, 0);
+
+        Board board = new Board()
+                .withPlayerAt(PlayerId.PLAYER_1, new Position(2, 4))
+                .withPlayerAt(PlayerId.PLAYER_2, new Position(1, 4)) // adjacent SOUTH
+                .addWall(new Wall(new WallPosition(0, 4), WallOrientation.HORIZONTAL)); // jump square occupied by another player
+
+        GameState state = new GameState(board, List.of(p1, p2));
+        QuoridorEngine engine = QuoridorEngine.forTesting(rules, pawnValidator, wallValidator, winChecker, state);
+
+        Set<Position> dest = engine.legalPawnDestinationsForPlayer(PlayerId.PLAYER_1);
+
+        assertFalse(dest.contains(new Position(0, 4)));
+
+        // diagonals around the adjacent pawn should become legal
+        assertTrue(dest.contains(new Position(1, 3)));
+        assertTrue(dest.contains(new Position(1, 5)));
+    }
+
+    // 7. diagonal moves non available when jumping straight is
+    @Test
+    void diagonalMoveNotAvailable_JumpAccessible() {
+        Player p1 = new Player(PlayerId.PLAYER_1, "P1", 10, 8);
+        Player p2 = new Player(PlayerId.PLAYER_2, "P2", 10, 0);
+
+        Board board = new Board()
+                .withPlayerAt(PlayerId.PLAYER_1, new Position(2, 4))
+                .withPlayerAt(PlayerId.PLAYER_2, new Position(1, 4)); // adjacent SOUTH
+
+        GameState state = new GameState(board, List.of(p1, p2));
+        QuoridorEngine engine = QuoridorEngine.forTesting(rules, pawnValidator, wallValidator, winChecker, state);
+
+        Set<Position> dest = engine.legalPawnDestinationsForPlayer(PlayerId.PLAYER_1);
+
+        assertTrue(dest.contains(new Position(0, 4)));
+
+        // diagonals around the adjacent pawn should become not legal since we have jump
+        assertFalse(dest.contains(new Position(1, 3)));
+        assertFalse(dest.contains(new Position(1, 5)));
+    }
+
+    // 8. diagonal legal moves should update the state
+    @Test
+    void diagonalMoveAvailable_updateState() {
+        Player p1 = new Player(PlayerId.PLAYER_1, "P1", 10, 8);
+        Player p2 = new Player(PlayerId.PLAYER_2, "P2", 10, 0);
+
+        Board board = new Board()
+                .withPlayerAt(PlayerId.PLAYER_1, new Position(2, 4))
+                .withPlayerAt(PlayerId.PLAYER_2, new Position(1, 4)) // adjacent SOUTH
+                .addWall(new Wall(new WallPosition(0, 4), WallOrientation.HORIZONTAL)); // jump square occupied by another player
+
+        GameState state = new GameState(board, List.of(p1, p2));
+        QuoridorEngine engine = QuoridorEngine.forTesting(rules, pawnValidator, wallValidator, winChecker, state);
+
+        MoveResult res = engine.movePawn(PlayerId.PLAYER_1, new Position(1, 3));
+        assertTrue(res.isValid());
+
+        assertEquals(new Position(1, 3), engine.getGameState().getPlayerPosition(PlayerId.PLAYER_1));
+    }
+
+
+    }
