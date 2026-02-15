@@ -26,37 +26,68 @@ public class RulesPawnMoveValidator implements PawnMoveValidator{
 
     @Override
     public boolean canMovePawn(GameState state, PlayerId player, Position target) {
-        return legalTargets(state, player).anyMatch(target::equals);
-    }
-
-    // for now: step or straight jump in the 4 cardinal directions
-    Stream<Position> legalTargets(GameState state, PlayerId player) {
         Board board = state.board();
         Position from = state.getPlayerPosition(player);
 
-        return Arrays.stream(Direction.values())
-                .map(dir -> resolveCardinalDestination(board, from, dir))
-                .flatMap(Optional::stream);
+        int dr = target.row() - from.row();
+        int dc = target.col() - from.col();
+        int manhattan = Math.abs(dr) + Math.abs(dc);
+
+        return switch (manhattan) {
+            // if manhattan distance is 1, then we are stepping in one of the cardinal directions
+            case 1 -> Direction.fromUnitDelta(dr, dc)
+                    .map(dir -> canStep(board, from, dir))
+                    .orElse(false);
+
+            // if target has MD of 2, we can either jump or diagonal
+            case 2 -> canDistance2(board, from, dr, dc, target);
+
+            default -> false;
+        };
     }
 
-    private Optional<Position> resolveCardinalDestination(Board board, Position from, Direction dir) {
-        // step candidate must exist and not be blocked by a wall
-        Optional<Position> maybeAdj = from.tryMove(dir)
-                .filter(adj -> !board.isEdgeBlocked(from, dir));
+    // logic for stepping in one of the cardinal directions: move only if it's free from walls and players
+    private boolean canStep(Board board, Position from, Direction dir) {
+        return from.tryMove(dir)
+                .filter(to -> !board.isEdgeBlocked(from, dir))
+                .filter(to -> board.occupantAt(to).isEmpty())
+                .isPresent();
+    }
 
-        if (maybeAdj.isEmpty()) return Optional.empty();
-        Position adj = maybeAdj.get();
+    // logic for one of the two cases in which MD is 2 -> straight jump
+    private boolean canStraightJump(Board board, Position from, Direction dir) {
+        return from.tryMove(dir)
+                .filter(adj -> !board.isEdgeBlocked(from, dir))
+                .filter(adj -> board.occupantAt(adj).isPresent())
+                .filter(adj -> canJump(board, adj, dir)) // your existing helper
+                .isPresent();
+    }
 
-        // normal step
-        if (board.occupantAt(adj).isEmpty()) {
-            return Optional.of(adj);
+    // another case for MD=2 for later (diagonal jump)
+    private boolean canDiagonalJump(Board board, Position from, Position target) {
+        return false; // implement later
+    }
+
+
+    private boolean canDistance2(Board board, Position from, int dr, int dc, Position target) {
+        // straight jump target: (±2,0) or (0,±2)
+        if ((Math.abs(dr) == 2) ^ (Math.abs(dc) == 2)) { // XOR: exactly one axis has 2
+            int stepDr = Integer.signum(dr);
+            int stepDc = Integer.signum(dc);
+
+            return Direction.fromUnitDelta(stepDr, stepDc)
+                    .map(dir -> canStraightJump(board, from, dir))
+                    .orElse(false);
         }
 
-        // straight jump
-        return canJump(board, adj, dir)
-                ? adj.tryMove(dir)
-                : Optional.empty();
+        // diagonal target: (±1,±1) -> implement later
+        if (Math.abs(dr) == 1 && Math.abs(dc) == 1) {
+            return canDiagonalJump(board, from, target); // placeholder for now
+        }
+
+        return false;
     }
+
 
     boolean canJump(Board board, Position occupiedAdj, Direction dir) {
         // behind square must exist
