@@ -190,7 +190,6 @@ For diagonal testing:
 - [ ] Diagonal is denied if the diagonal is occupied by another player
 
 
-
 For walls:
 - [X] If proposed wall is put is a free position, validator returns true
 - [X] If proposed wall intersect with existing walls, validator returns false

@@ -65,6 +65,9 @@ public class RulesPawnMoveValidator implements PawnMoveValidator{
 
     // another case for MD=2 for later (diagonal jump)
     private boolean canDiagonalJump(Board board, Position from, Position target) {
+
+        if (board.occupantAt(target).isEmpty()) return true;
+
         return false; // implement later
     }
 

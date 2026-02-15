@@ -124,4 +124,21 @@ public class PawnValidatorTest {
         assertFalse(pawnValidator.canMovePawn(initialState, PlayerId.PLAYER_1, Direction.SOUTH));
     }
 
+    // 7. diagonal allowed when jump is blocked by a wall behind BUT side is open
+    @Test
+    void allowedDiagonal_jumpBlocked_sideOpen() {
+        Player p1 = new Player(PlayerId.PLAYER_1, "P1", 10, 8);
+        Player p2 = new Player(PlayerId.PLAYER_2, "P2", 10, 0);
+        WallPosition wallPosition = new WallPosition(1,4);
+        Wall wall = new Wall(wallPosition, WallOrientation.HORIZONTAL);
+
+        Board board = new Board()
+                .addWall(wall)
+                .withPlayerAt(PlayerId.PLAYER_1, new Position(2, 4))
+                .withPlayerAt(PlayerId.PLAYER_2, new Position(1, 4));
+
+        GameState initialState = new GameState(board, List.of(p1, p2));
+        assertTrue(pawnValidator.canMovePawn(initialState, PlayerId.PLAYER_1, new Position(1, 3)));
+
+    }
 }
