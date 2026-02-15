@@ -199,6 +199,6 @@ Walls by definition cannot be place outside the grid.
 
 
 #### Integration tests
-- [ ] No exception should be thrown when pawns are at corners
+- [X] No exception should be thrown when pawns are at corners
 - [ ] Diagonal jump has to become a possibility when straight jump is not accessible
 - [ ] Diagonal jump option should not be available when straight jump is
