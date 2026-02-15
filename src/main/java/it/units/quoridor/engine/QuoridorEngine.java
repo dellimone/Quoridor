@@ -148,7 +148,7 @@ public class QuoridorEngine implements GameEngine {
         return MoveResult.success();
     }
 
-
+    // legacy
     public MoveResult movePawn(PlayerId playerId, Direction direction) {
         MoveResult pre = validateTurnPreconditions(playerId);
         if (pre != null) return pre;

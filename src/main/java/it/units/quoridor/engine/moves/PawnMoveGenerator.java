@@ -17,6 +17,10 @@ public class PawnMoveGenerator {
         this.pawnValidator = pawnValidator;
     }
 
+    public boolean isLegalDestination(GameState state, PlayerId playerId, Position target) {
+        return pawnValidator.canMovePawn(state, playerId, target);
+    }
+
     // if the player moves in said direction, where to they end up
     public Optional<Position> resolveDestination(GameState state, PlayerId playerId, Direction direction) {
         if (!pawnValidator.canMovePawn(state, playerId, direction)) {
@@ -49,27 +53,28 @@ public class PawnMoveGenerator {
         return Optional.of(behind);
     }
 
-
-    public boolean isLegalDestination(GameState state, PlayerId playerId, Position target) {
-        Position from = state.getPlayerPosition(playerId);
-
-        for (Direction dir : Direction.values()) {
-            Optional<Position> dest = resolveDestination(state, playerId, dir);
-            if (dest.isPresent() && dest.get().equals(target)) {
-                return true;
-            }
-        }
-        return false;
-    }
-
     // for UI
     public Set<Position> legalDestinations(GameState state, PlayerId playerId) {
         Set<Position> destinations = new HashSet<>();
+        Position from = state.getPlayerPosition(playerId);
+
+        // cardinal step/jump
         for (Direction dir : Direction.values()) {
             resolveDestination(state, playerId, dir).ifPresent(destinations::add);
         }
+
+        // we need to add support for all diagonals
+        // diagonal candidates (4 max)
+        for (Direction vertical : List.of(Direction.NORTH, Direction.SOUTH)) {
+            for (Direction horizontal : List.of(Direction.EAST, Direction.WEST)) {
+                from.tryMove(vertical)
+                        .flatMap(p -> p.tryMove(horizontal))
+                        .filter(p -> pawnValidator.canMovePawn(state, playerId, p))
+                        .ifPresent(destinations::add);
+            }
+        } // diagonals might be out of bounds, need to be filtered
+
         return destinations;
     }
-
 
 }
