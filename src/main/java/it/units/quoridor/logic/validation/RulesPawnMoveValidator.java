@@ -64,20 +64,32 @@ public class RulesPawnMoveValidator implements PawnMoveValidator{
     }
 
     // another case for MD=2 for later (diagonal jump)
-    private boolean canDiagonalJump(Board board, Position from, Position target) {
+    private boolean canDiagonalJump(Board board, Position from, Position target, int stepDr, int stepDc) {
 
-        if (board.occupantAt(target).isEmpty()) return true;
+        if (board.occupantAt(target).isPresent()) return false;
 
-        return false; // implement later
+        return Direction.fromUnitDelta(stepDr, 0)
+                .flatMap(front -> from.tryMove(front)
+                        .filter(adj -> !board.isEdgeBlocked(from, front))
+                        .filter(adj -> board.occupantAt(adj).isPresent())
+                        .filter(adj -> !canStraightJump(board, from, front))
+                        .flatMap(adj -> Direction.fromUnitDelta(0, stepDc)
+                                .flatMap(side -> adj.tryMove(side)
+                                        .filter(p -> p.equals(target))
+                                        .filter(p -> !board.isEdgeBlocked(adj, side))
+                                )
+                        )
+                )
+                .isPresent();
     }
 
 
     private boolean canDistance2(Board board, Position from, int dr, int dc, Position target) {
+        int stepDr = Integer.signum(dr);
+        int stepDc = Integer.signum(dc);
+
         // straight jump target: (±2,0) or (0,±2)
         if ((Math.abs(dr) == 2) ^ (Math.abs(dc) == 2)) { // XOR: exactly one axis has 2
-            int stepDr = Integer.signum(dr);
-            int stepDc = Integer.signum(dc);
-
             return Direction.fromUnitDelta(stepDr, stepDc)
                     .map(dir -> canStraightJump(board, from, dir))
                     .orElse(false);
@@ -85,7 +97,7 @@ public class RulesPawnMoveValidator implements PawnMoveValidator{
 
         // diagonal target: (±1,±1) -> implement later
         if (Math.abs(dr) == 1 && Math.abs(dc) == 1) {
-            return canDiagonalJump(board, from, target); // placeholder for now
+            return canDiagonalJump(board, from, target, stepDr, stepDc); // placeholder for now
         }
 
         return false;
@@ -107,6 +119,5 @@ public class RulesPawnMoveValidator implements PawnMoveValidator{
         // behind must be free
         return board.occupantAt(behind).isEmpty();
     }
-
 
 }

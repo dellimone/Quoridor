@@ -183,11 +183,10 @@ For pawns:
 - [X] ~~If proposed pawn position is blocked by a player and the one behind is blocked by either a player or a wall return false **UNTIL WE IMPLEMENT DIAGONALS**~~
 
 For diagonal testing:
-- [ ] Diagonal allowed when jump is blocked because of a wall behind BUT side is open
-- [ ] Diagonal is denied if straight jump is not blocked
-- [ ] Diagonal is denied if the adjacent square is empty
-- [ ] Diagonal is denied if the diagonals are blocked by walls
-- [ ] Diagonal is denied if the diagonal is occupied by another player
+- [X] Diagonal allowed when jump is blocked because of a wall behind BUT side is open
+- [X] Diagonal is denied if straight jump is not blocked
+- [X] Diagonal is denied if the diagonals are blocked by walls
+- [X] Diagonal is denied if the diagonal is occupied by another player
 
 
 For walls:
