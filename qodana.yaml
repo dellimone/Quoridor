@@ -1,0 +1,134 @@
+#-------------------------------------------------------------------------------#
+#               Qodana analysis is configured by qodana.yaml file               #
+#             https://www.jetbrains.com/help/qodana/qodana-yaml.html            #
+#-------------------------------------------------------------------------------#
+
+#################################################################################
+#              WARNING: Do not store sensitive information in this file,        #
+#               as its contents will be included in the Qodana report.          #
+#################################################################################
+version: "1.0"
+
+#Specify inspection profile for code analysis
+profile:
+  name: qodana.recommended
+
+#Enable ALL code smell inspections
+include:
+  # Unnecessary Code
+  - name: FieldCanBeLocal
+  - name: UnnecessaryLocalVariable
+  - name: UnusedDeclaration
+  - name: RedundantThrows
+  - name: UnnecessaryModifier
+  - name: UnnecessaryReturn
+  - name: UnnecessarySemicolon
+  - name: UnnecessaryParentheses
+  - name: UnnecessaryBoxing
+  - name: UnnecessaryUnboxing
+  - name: UnnecessaryCallToStringValueOf
+  - name: UnnecessaryToStringCall
+  - name: UnnecessaryThis
+
+  # Code Duplication & Complexity
+  - name: DuplicatedCode
+  - name: MethodLength
+  - name: CyclomaticComplexity
+  - name: SimplifiableIfStatement
+  - name: IfStatementWithIdenticalBranches
+  - name: ChainedMethodCall
+  - name: NestedMethodCall
+  - name: OverlyComplexArithmeticExpression
+  - name: OverlyComplexBooleanExpression
+  - name: OverlyNestedMethod
+
+  # Design Smells
+  - name: ClassWithTooManyMethods
+  - name: GodClass
+  - name: FeatureEnvy
+  - name: DataClass
+  - name: ClassWithTooManyDependencies
+  - name: OverlyComplexClass
+  - name: PublicMethodNotExposedInInterface
+  - name: ProtectedMemberInFinalClass
+  - name: FinalMethodInFinalClass
+  - name: AbstractClassWithoutAbstractMethods
+  - name: InterfaceNeverImplemented
+  - name: ClassOnlyUsedInOnePackage
+
+  # Maintainability Issues
+  - name: MagicNumber
+  - name: HardcodedFileSeparator
+  - name: StringConcatenationInLoop
+  - name: ManualArrayCopy
+  - name: RedundantStringFormatCall
+  - name: ReplaceWithStringBufferAppend
+  - name: SingleCharacterStringConcatenation
+  - name: StringBufferReplaceableByString
+
+  # Code Style & Clarity
+  - name: ConstantConditions
+  - name: SimplifiableConditionalExpression
+  - name: PointlessBooleanExpression
+  - name: NegatedConditionalExpression
+  - name: ConfusingElseBranch
+  - name: ChainedEquality
+
+  # Performance Issues
+  - name: CollectionsMustHaveInitialCapacity
+  - name: ArraysAsListWithZeroOrOneArgument
+  - name: ToArrayCallWithZeroLengthArrayArgument
+  - name: SizeReplaceableByIsEmpty
+
+  # Naming Conventions
+  - name: MethodNameSameAsClassName
+  - name: ConstantNamingConvention
+  - name: LocalVariableNamingConvention
+  - name: ParameterNamingConvention
+  - name: ClassNamingConvention
+
+  # Error-Prone Patterns
+  - name: ObjectEquality
+  - name: StringEquality
+  - name: ComparisonToNaN
+  - name: EqualsWhichDoesntCheckParameterClass
+  - name: SuspiciousNameCombination
+  - name: EqualsHashCodeCalledOnUrl
+
+  # Documentation
+  - name: CommentedOutCode
+
+  # Test Smells - JUnit Issues
+  - name: JUnitMalformedDeclaration
+  - name: TestMethodWithoutAssertion
+  - name: SimplifiableAssertion
+  - name: TestCaseWithNoTestMethods
+  - name: TestCaseWithConstructor
+  - name: TestMethodIsPublicVoidNoArg
+  - name: IgnoredJUnitTest
+
+  # Test Smells - Assertion Issues
+  - name: AssertEqualsBetweenInconvertibleTypes
+  - name: AssertEqualsCalledOnArray
+  - name: MisorderedAssertEqualsArguments
+  - name: AssertionFailureIgnored
+  - name: ExpectedExceptionNeverThrown
+  - name: AssertWithoutMessage
+  - name: ConstantAssertArgument
+
+  # Test Smells - Test Structure
+  - name: EmptyMethod
+  - name: MethodMayBeStatic
+  - name: MultipleTopLevelClassesInFile
+  - name: TestMethodWithIncorrectSignature
+
+exclude:
+  - name: All
+    paths:
+      - java/it/units/quoridor/view
+
+
+projectJDK: "corretto-24" #(Applied in CI/CD pipeline)
+
+#Specify Qodana linter for analysis (Applied in CI/CD pipeline)
+linter: jetbrains/qodana-jvm:2025.3

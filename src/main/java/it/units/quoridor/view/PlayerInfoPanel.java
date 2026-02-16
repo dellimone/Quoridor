@@ -150,36 +150,4 @@ public class PlayerInfoPanel extends JPanel {
             };
         }
     }
-
-    // === For Testing ===
-
-    public static void main(String[] args) {
-        SwingUtilities.invokeLater(() -> {
-            JFrame frame = new JFrame("PlayerInfoPanel Test");
-            frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-
-            PlayerInfoPanel panel = new PlayerInfoPanel();
-
-            // Test with 2 players
-            List<PlayerViewModel> players = List.of(
-                    new PlayerViewModel(PlayerId.PLAYER_1, "Alice", 10, true),
-                    new PlayerViewModel(PlayerId.PLAYER_2, "Bob", 8, false)
-            );
-
-            panel.updatePlayers(players);
-            panel.setCurrentPlayer(PlayerId.PLAYER_1);
-
-            frame.add(panel);
-            frame.pack();
-            frame.setLocationRelativeTo(null);
-            frame.setVisible(true);
-
-            // Simulate turn change after 2 seconds
-            Timer timer = new Timer(2000, e -> {
-                panel.setCurrentPlayer(PlayerId.PLAYER_2);
-            });
-            timer.setRepeats(false);
-            timer.start();
-        });
-    }
 }

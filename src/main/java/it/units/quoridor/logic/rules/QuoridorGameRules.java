@@ -3,6 +3,7 @@ package it.units.quoridor.logic.rules;
 import it.units.quoridor.domain.PlayerId;
 import it.units.quoridor.domain.Position;
 
+/** Standard Quoridor rules: P1 starts bottom, P2 starts top, 10 walls each. */
 public class QuoridorGameRules implements GameRules {
 
     @Override
@@ -28,28 +29,10 @@ public class QuoridorGameRules implements GameRules {
 
     @Override
     public int getInitialWallCount(PlayerCount playerCount) {
-        if (playerCount == PlayerCount.TWO_PLAYERS){
-            return 10;
-        }
-        if  (playerCount == PlayerCount.FOUR_PLAYERS){
-            return 5;
-        }
-        throw  new IllegalArgumentException("Unknown PlayerCount: " + playerCount);
-    }
-
-    @Override
-    public PlayerId getNextPlayer(PlayerId currentPlayer, PlayerCount playerCount) {
         return switch (playerCount) {
-            case TWO_PLAYERS -> currentPlayer == PlayerId.PLAYER_1
-                    ? PlayerId.PLAYER_2
-                    : PlayerId.PLAYER_1;
-
-            case FOUR_PLAYERS -> switch (currentPlayer) {
-                case PLAYER_1 -> PlayerId.PLAYER_2;
-                case PLAYER_2 -> PlayerId.PLAYER_3;
-                case PLAYER_3 -> PlayerId.PLAYER_4;
-                case PLAYER_4 -> PlayerId.PLAYER_1;
-            };
+            case TWO_PLAYERS -> 10;
+            case FOUR_PLAYERS -> 5;
         };
     }
+
 }

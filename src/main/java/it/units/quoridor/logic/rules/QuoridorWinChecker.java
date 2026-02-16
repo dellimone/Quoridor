@@ -3,20 +3,22 @@ package it.units.quoridor.logic.rules;
 import it.units.quoridor.domain.GameState;
 import it.units.quoridor.domain.PlayerId;
 import it.units.quoridor.domain.Position;
-import it.units.quoridor.engine.WinChecker;
 
+
+/** Wins when a player's pawn reaches their goal row. */
 public class QuoridorWinChecker implements WinChecker {
+
+    private final GameRules rules;
+
+    public QuoridorWinChecker(GameRules rules) {
+        this.rules = rules;
+    }
 
     @Override
     public boolean isWin(GameState state, PlayerId playerId) {
-        // Get player's current position from the board
-        Position currentPosition = state.getPlayerPosition(playerId);
+        Position currentPosition = state.playerPosition(playerId);
+        int goalRow = rules.getGoalRow(playerId);
 
-        // Get player's goal row from their player data
-        //TODO: extract goal row from Player and move it to Rules
-        int goalRow = state.getPlayer(playerId).goalRow();
-
-        // Player wins when their current row equals their goal row
         return currentPosition.row() == goalRow;
     }
 }

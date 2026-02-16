@@ -354,43 +354,4 @@ public class SwingGameView extends JFrame implements GameView {
             messageClearTimer.start();
         }
     }
-
-    // === For Testing ===
-
-    public static void main(String[] args) {
-        SwingUtilities.invokeLater(() -> {
-            SwingGameView view = new SwingGameView();
-
-            view.setListener(new ViewListener() {
-                @Override
-                public void onNewGame(int playerCount) {
-                    System.out.println("New game: " + playerCount + " players");
-                    view.showMessage("Game started!");
-                }
-
-                @Override
-                public void onCellClicked(int row, int col) {
-                    System.out.println("Cell clicked: (" + row + ", " + col + ")");
-                }
-
-                @Override
-                public void onWallPlacement(int row, int col, it.units.quoridor.domain.WallOrientation orientation) {
-                    System.out.println("Wall placement: (" + row + ", " + col + ") " + orientation);
-                }
-
-                @Override
-                public void onUndo() {
-                    System.out.println("Undo clicked");
-                    view.showMessage("Move undone");
-                }
-
-                @Override
-                public void onQuit() {
-                    System.exit(0);
-                }
-            });
-
-            view.setVisible(true);
-        });
-    }
 }

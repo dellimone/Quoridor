@@ -1,9 +1,9 @@
-package it.units.quoridor.logic;
+package it.units.quoridor.logic.pathFinder;
 
 import it.units.quoridor.domain.*;
-import it.units.quoridor.logic.pathFinder.BfsPathFinder;
 import org.junit.jupiter.api.Test;
 
+import static it.units.quoridor.TestFixtures.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 class BfsPathFinderTest {
@@ -44,7 +44,7 @@ class BfsPathFinderTest {
     void pathExistsWithSingleNonBlockingWall() {
         // Arrange - Wall exists but doesn't block the path
         Board board = new Board()
-                .addWall(new Wall(new WallPosition(0, 0), WallOrientation.HORIZONTAL));
+                .addWall(hWall(0, 0));
 
         Position start = new Position(2, 2);
         Position end = new Position(6, 6);
@@ -62,10 +62,10 @@ class BfsPathFinderTest {
     void noPathWhenCompletelyBlockedByWalls() {
         // Arrange - Create walls that completely surround the start position
         Board board = new Board()
-                .addWall(new Wall(new WallPosition(3, 3), WallOrientation.HORIZONTAL))  // Blocks SOUTH
-                .addWall(new Wall(new WallPosition(4, 3), WallOrientation.HORIZONTAL))  // Blocks NORTH
-                .addWall(new Wall(new WallPosition(4, 3), WallOrientation.VERTICAL))    // Blocks WEST
-                .addWall(new Wall(new WallPosition(4, 4), WallOrientation.VERTICAL));   // Blocks EAST
+                .addWall(hWall(3, 3))   // Blocks SOUTH
+                .addWall(hWall(4, 3))   // Blocks NORTH
+                .addWall(vWall(4, 3))   // Blocks WEST
+                .addWall(vWall(4, 4));  // Blocks EAST
 
         Position start = new Position(4, 4);  // Trapped in the center
         Position end = new Position(0, 0);

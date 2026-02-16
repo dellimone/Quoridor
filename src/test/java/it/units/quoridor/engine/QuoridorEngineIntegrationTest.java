@@ -8,18 +8,20 @@ import it.units.quoridor.logic.rules.QuoridorGameRules;
 
 
 import it.units.quoridor.logic.rules.QuoridorWinChecker;
+import it.units.quoridor.logic.rules.WinChecker;
 import it.units.quoridor.logic.validation.PawnMoveValidator;
-import it.units.quoridor.logic.validation.RulesPawnMoveValidator;
-import it.units.quoridor.logic.validation.RulesWallPlacementValidator;
+import it.units.quoridor.logic.validation.QuoridorPawnMoveValidator;
+import it.units.quoridor.logic.validation.QuoridorWallPlacementValidator;
 import it.units.quoridor.logic.validation.WallPlacementValidator;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 
-import java.util.List;
 import java.util.Set;
 
+import static it.units.quoridor.TestFixtures.hWall;
+import static it.units.quoridor.TestFixtures.stateWith;
 import static org.junit.jupiter.api.Assertions.*;
 @ExtendWith(MockitoExtension.class)
 
@@ -34,9 +36,9 @@ public class QuoridorEngineIntegrationTest {
     GameRules rules = new QuoridorGameRules();
     PathFinder pathFinder = new BfsPathFinder();
 
-    PawnMoveValidator pawnValidator = new RulesPawnMoveValidator();
-    WallPlacementValidator wallValidator = new RulesWallPlacementValidator(rules, pathFinder);
-    WinChecker winChecker = new QuoridorWinChecker();
+    PawnMoveValidator pawnValidator = new QuoridorPawnMoveValidator();
+    WallPlacementValidator wallValidator = new QuoridorWallPlacementValidator(rules, pathFinder);
+    WinChecker winChecker = new QuoridorWinChecker(rules);
 
     // 1. legal pawn destinations does not throw
     @Test
@@ -52,14 +54,11 @@ public class QuoridorEngineIntegrationTest {
     // 2. legal pawn destinations does not throw in corners
     @Test
     void legalPawnDestinations_noThrows_corners() {
-        Player p1 = new Player(PlayerId.PLAYER_1, "P1", 10, 8);
-        Player p2 = new Player(PlayerId.PLAYER_2, "P2", 10, 0);
-
         Board board = new Board()
                 .withPlayerAt(PlayerId.PLAYER_1, new Position(0, 0))
                 .withPlayerAt(PlayerId.PLAYER_2, new Position(8, 4));
 
-        GameState cornerState = new GameState(board, List.of(p1, p2));
+        GameState cornerState = stateWith(board);
 
         QuoridorEngine engine = QuoridorEngine.forTesting(rules, pawnValidator, wallValidator, winChecker, cornerState);
 
@@ -72,15 +71,11 @@ public class QuoridorEngineIntegrationTest {
     // 3. legal pawn movements should include "normal" steps
     @Test
     void legalPawnDestinations_includesNormalSteps() {
-        Player p1 = new Player(PlayerId.PLAYER_1, "P1", 10, 8);
-        Player p2 = new Player(PlayerId.PLAYER_2, "P2", 10, 0);
-
         Board board = new Board()
                 .withPlayerAt(PlayerId.PLAYER_1, new Position(2, 4))
                 .withPlayerAt(PlayerId.PLAYER_2, new Position(8, 4));
 
-        GameState state = new GameState(board, List.of(p1, p2));
-
+        GameState state = stateWith(board);
         QuoridorEngine engine = QuoridorEngine.forTesting(rules, pawnValidator, wallValidator, winChecker, state);
 
         Set<Position> dest = engine.legalPawnDestinationsForPlayer(PlayerId.PLAYER_1);
@@ -94,35 +89,27 @@ public class QuoridorEngineIntegrationTest {
     // 4. valid step moves should update the state
     @Test
     void validMove_updateState() {
-        Player p1 = new Player(PlayerId.PLAYER_1, "P1", 10, 8);
-        Player p2 = new Player(PlayerId.PLAYER_2, "P2", 10, 0);
-
         Board board = new Board()
                 .withPlayerAt(PlayerId.PLAYER_1, new Position(2, 4))
                 .withPlayerAt(PlayerId.PLAYER_2, new Position(8, 4));
-
-        GameState state = new GameState(board, List.of(p1, p2));
+        GameState state = stateWith(board);
 
         QuoridorEngine engine = QuoridorEngine.forTesting(rules, pawnValidator, wallValidator, winChecker, state);
 
-        MoveResult res = engine.movePawn(PlayerId.PLAYER_1, Direction.EAST);
+        MoveResult res = engine.movePawn(PlayerId.PLAYER_1, new Position(2,5));
         assertTrue(res.isValid());
 
-        assertEquals(new Position(2, 5), engine.getGameState().getPlayerPosition(PlayerId.PLAYER_1));
+        assertEquals(new Position(2, 5), engine.gameState().playerPosition(PlayerId.PLAYER_1));
     }
 
     // 5. legalPawnDestinations should include jumps when available
     @Test
     void legalPawnDestinations_jumpAvailable() {
-        Player p1 = new Player(PlayerId.PLAYER_1, "P1", 10, 8);
-        Player p2 = new Player(PlayerId.PLAYER_2, "P2", 10, 0);
-
         Board board = new Board()
                 .withPlayerAt(PlayerId.PLAYER_1, new Position(2, 4))
                 .withPlayerAt(PlayerId.PLAYER_2, new Position(1, 4)); // adjacent SOUTH to enbale the jump
 
-        GameState state = new GameState(board, List.of(p1, p2));
-
+        GameState state = stateWith(board);
         QuoridorEngine engine = QuoridorEngine.forTesting(rules, pawnValidator, wallValidator, winChecker, state);
 
         Set<Position> dest = engine.legalPawnDestinationsForPlayer(PlayerId.PLAYER_1);
@@ -134,16 +121,12 @@ public class QuoridorEngineIntegrationTest {
     // 6. diagonal jump has to become a possibility when straight jump is not accessible
     @Test
     void diagonalMoveAvailable_JumpNotAccessible() {
-        Player p1 = new Player(PlayerId.PLAYER_1, "P1", 10, 8);
-        Player p2 = new Player(PlayerId.PLAYER_2, "P2", 10, 0);
-        Player p3 = new Player(PlayerId.PLAYER_3, "P3", 10, 0);
-
         Board board = new Board()
                 .withPlayerAt(PlayerId.PLAYER_1, new Position(2, 4))
                 .withPlayerAt(PlayerId.PLAYER_2, new Position(1, 4)) // adjacent SOUTH
                 .withPlayerAt(PlayerId.PLAYER_3, new Position(0, 4)); // jump square occupied by another player
 
-        GameState state = new GameState(board, List.of(p1, p2, p3));
+        GameState state = stateWith(board);
         QuoridorEngine engine = QuoridorEngine.forTesting(rules, pawnValidator, wallValidator, winChecker, state);
 
         Set<Position> dest = engine.legalPawnDestinationsForPlayer(PlayerId.PLAYER_1);
@@ -158,15 +141,12 @@ public class QuoridorEngineIntegrationTest {
     // mirror test but with a wall
     @Test
     void diagonalMoveAvailable_JumpNotAccessibleWallCase() {
-        Player p1 = new Player(PlayerId.PLAYER_1, "P1", 10, 8);
-        Player p2 = new Player(PlayerId.PLAYER_2, "P2", 10, 0);
-
-        Board board = new Board()
+       Board board = new Board()
                 .withPlayerAt(PlayerId.PLAYER_1, new Position(2, 4))
                 .withPlayerAt(PlayerId.PLAYER_2, new Position(1, 4)) // adjacent SOUTH
                 .addWall(new Wall(new WallPosition(0, 4), WallOrientation.HORIZONTAL)); // jump square occupied by another player
 
-        GameState state = new GameState(board, List.of(p1, p2));
+        GameState state = stateWith(board);
         QuoridorEngine engine = QuoridorEngine.forTesting(rules, pawnValidator, wallValidator, winChecker, state);
 
         Set<Position> dest = engine.legalPawnDestinationsForPlayer(PlayerId.PLAYER_1);
@@ -181,14 +161,11 @@ public class QuoridorEngineIntegrationTest {
     // 7. diagonal moves non available when jumping straight is
     @Test
     void diagonalMoveNotAvailable_JumpAccessible() {
-        Player p1 = new Player(PlayerId.PLAYER_1, "P1", 10, 8);
-        Player p2 = new Player(PlayerId.PLAYER_2, "P2", 10, 0);
-
         Board board = new Board()
                 .withPlayerAt(PlayerId.PLAYER_1, new Position(2, 4))
                 .withPlayerAt(PlayerId.PLAYER_2, new Position(1, 4)); // adjacent SOUTH
 
-        GameState state = new GameState(board, List.of(p1, p2));
+        GameState state = stateWith(board);
         QuoridorEngine engine = QuoridorEngine.forTesting(rules, pawnValidator, wallValidator, winChecker, state);
 
         Set<Position> dest = engine.legalPawnDestinationsForPlayer(PlayerId.PLAYER_1);
@@ -203,30 +180,24 @@ public class QuoridorEngineIntegrationTest {
     // 8. diagonal legal moves should update the state
     @Test
     void diagonalMoveAvailable_updateState() {
-        Player p1 = new Player(PlayerId.PLAYER_1, "P1", 10, 8);
-        Player p2 = new Player(PlayerId.PLAYER_2, "P2", 10, 0);
-
         Board board = new Board()
                 .withPlayerAt(PlayerId.PLAYER_1, new Position(2, 4))
                 .withPlayerAt(PlayerId.PLAYER_2, new Position(1, 4)) // adjacent SOUTH
                 .addWall(new Wall(new WallPosition(0, 4), WallOrientation.HORIZONTAL)); // jump square occupied by another player
 
-        GameState state = new GameState(board, List.of(p1, p2));
+        GameState state = stateWith(board);
         QuoridorEngine engine = QuoridorEngine.forTesting(rules, pawnValidator, wallValidator, winChecker, state);
 
         MoveResult res = engine.movePawn(PlayerId.PLAYER_1, new Position(1, 3));
         assertTrue(res.isValid());
 
-        assertEquals(new Position(1, 3), engine.getGameState().getPlayerPosition(PlayerId.PLAYER_1));
+        assertEquals(new Position(1, 3), engine.gameState().playerPosition(PlayerId.PLAYER_1));
     }
 
 
     // 9. standard one-step in a cardinal direction tests
     @Test
     void standardOneStepTest_bothPlayers() {
-        Player p1 = new Player(PlayerId.PLAYER_1, "P1", 10, 8);
-        Player p2 = new Player(PlayerId.PLAYER_2, "P2", 10, 0);
-
         Board board = new Board()
                 .withPlayerAt(PlayerId.PLAYER_1, new Position(6, 5))
                 .withPlayerAt(PlayerId.PLAYER_2, new Position(3, 0))
@@ -235,7 +206,7 @@ public class QuoridorEngineIntegrationTest {
                 .addWall(new Wall(new WallPosition(6, 4), WallOrientation.HORIZONTAL));
 
 
-        GameState state = new GameState(board, List.of(p1, p2));
+        GameState state = stateWith(board);
         QuoridorEngine engine = QuoridorEngine.forTesting(rules, pawnValidator, wallValidator, winChecker, state);
 
         Set<Position> destP1 = engine.legalPawnDestinationsForPlayer(PlayerId.PLAYER_1);
@@ -253,16 +224,13 @@ public class QuoridorEngineIntegrationTest {
     // 10. straight and diagonal jump cases
     @Test
     void straightAndDiagonal_JumpCases_bothPlayers() {
-        Player p1 = new Player(PlayerId.PLAYER_1, "P1", 10, 8);
-        Player p2 = new Player(PlayerId.PLAYER_2, "P2", 10, 0);
-
         Board board = new Board()
                 .withPlayerAt(PlayerId.PLAYER_1, new Position(6, 5))
                 .withPlayerAt(PlayerId.PLAYER_2, new Position(5, 5))
                 .addWall(new Wall(new WallPosition(6, 4), WallOrientation.HORIZONTAL));
 
 
-        GameState state = new GameState(board, List.of(p1, p2));
+        GameState state = stateWith(board);
         QuoridorEngine engine = QuoridorEngine.forTesting(rules, pawnValidator, wallValidator, winChecker, state);
 
         Set<Position> destP1 = engine.legalPawnDestinationsForPlayer(PlayerId.PLAYER_1);
@@ -284,16 +252,12 @@ public class QuoridorEngineIntegrationTest {
     // 11. edge cases for diagonals and jump for player 1
     @Test
     void straightAndDiagonalJumps_playerOneCases() {
-        Player p1 = new Player(PlayerId.PLAYER_1, "P1", 10, 8);
-        Player p2 = new Player(PlayerId.PLAYER_2, "P2", 10, 0);
-
         Board board = new Board()
                 .withPlayerAt(PlayerId.PLAYER_1, new Position(4, 3))
                 .withPlayerAt(PlayerId.PLAYER_2, new Position(4, 4))
                 .addWall(new Wall(new WallPosition(5, 4), WallOrientation.HORIZONTAL));
 
-
-        GameState state = new GameState(board, List.of(p1, p2));
+        GameState state = stateWith(board);
         QuoridorEngine engine = QuoridorEngine.forTesting(rules, pawnValidator, wallValidator, winChecker, state);
 
         Set<Position> destP1 = engine.legalPawnDestinationsForPlayer(PlayerId.PLAYER_1);
@@ -307,9 +271,6 @@ public class QuoridorEngineIntegrationTest {
     // edge case in which we disable the jump and thus enable the diagonal by putting a wall behind
     @Test
     void straightAndDiagonalJumps_playerOneEdgeCases() {
-        Player p1 = new Player(PlayerId.PLAYER_1, "P1", 10, 8);
-        Player p2 = new Player(PlayerId.PLAYER_2, "P2", 10, 0);
-
         Board board = new Board()
                 .withPlayerAt(PlayerId.PLAYER_1, new Position(4, 3))
                 .withPlayerAt(PlayerId.PLAYER_2, new Position(4, 4))
@@ -317,7 +278,7 @@ public class QuoridorEngineIntegrationTest {
                 .addWall(new Wall(new WallPosition(4, 4), WallOrientation.VERTICAL));
 
 
-        GameState state = new GameState(board, List.of(p1, p2));
+        GameState state = stateWith(board);
         QuoridorEngine engine = QuoridorEngine.forTesting(rules, pawnValidator, wallValidator, winChecker, state);
 
 

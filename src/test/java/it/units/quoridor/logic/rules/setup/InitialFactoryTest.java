@@ -1,18 +1,13 @@
-package it.units.quoridor.logic;
+package it.units.quoridor.logic.rules.setup;
 
 import it.units.quoridor.domain.*;
 import it.units.quoridor.engine.*;
-import it.units.quoridor.logic.*;
 
-import it.units.quoridor.logic.rules.GameRules;
 import it.units.quoridor.logic.rules.PlayerCount;
 import it.units.quoridor.logic.rules.QuoridorGameRules;
-import it.units.quoridor.logic.rules.setup.InitialStateFactory;
-import it.units.quoridor.logic.rules.setup.PlayerSpec;
-import net.bytebuddy.pool.TypePool;
+
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.List;
@@ -43,13 +38,13 @@ public class InitialFactoryTest {
         );
 
         // we assert whether they are initialised according to the rules
-        assertEquals(rules.getStartPosition(PlayerId.PLAYER_1), initialState.getPlayerPosition(PlayerId.PLAYER_1));
-        assertEquals(rules.getStartPosition(PlayerId.PLAYER_2), initialState.getPlayerPosition(PlayerId.PLAYER_2));
+        assertEquals(rules.getStartPosition(PlayerId.PLAYER_1), initialState.playerPosition(PlayerId.PLAYER_1));
+        assertEquals(rules.getStartPosition(PlayerId.PLAYER_2), initialState.playerPosition(PlayerId.PLAYER_2));
 
         // check whether they have the correct wall count as rules expect
         int expectedWalls = rules.getInitialWallCount(PlayerCount.TWO_PLAYERS);
-        assertEquals(expectedWalls, initialState.getPlayer(PlayerId.PLAYER_1).wallsRemaining());
-        assertEquals(expectedWalls, initialState.getPlayer(PlayerId.PLAYER_2).wallsRemaining());
+        assertEquals(expectedWalls, initialState.player(PlayerId.PLAYER_1).wallsRemaining());
+        assertEquals(expectedWalls, initialState.player(PlayerId.PLAYER_2).wallsRemaining());
 
         // check that player1 is the starting player
         assertEquals(PlayerId.PLAYER_1, initialState.currentPlayerId());

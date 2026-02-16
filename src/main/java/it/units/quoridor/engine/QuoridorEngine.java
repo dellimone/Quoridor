@@ -10,6 +10,7 @@ import it.units.quoridor.engine.moves.PawnMoveGenerator;
 import java.util.*;
 
 
+/** Standard Quoridor engine for 2-player games. Delegates all validation to the Logic layer. */
 public class QuoridorEngine implements GameEngine {
 
     private final GameRules rules;
@@ -31,26 +32,20 @@ public class QuoridorEngine implements GameEngine {
         this.wallValidator = wallValidator;
         this.winChecker = winChecker;
 
-        this.pawnMoveGenerator = new PawnMoveGenerator(pawnValidator);
+        pawnMoveGenerator = new PawnMoveGenerator(pawnValidator);
 
         newGame();  // Initialize engine to ready state
     }
 
     public void newGame() {
-        // Create fixed player specs for 2-player game
         List<PlayerSpec> specs = List.of(
             new PlayerSpec(PlayerId.PLAYER_1, "Player 1"),
             new PlayerSpec(PlayerId.PLAYER_2, "Player 2")
         );
 
-        // Derive PlayerCount from specs size
         PlayerCount playerCount = PlayerCount.TWO_PLAYERS;
-
-        // Create initial state using factory
-        this.state = InitialStateFactory.create(rules, playerCount, specs);
-
-        // Clear history for new game
-        this.history.clear();
+        state = InitialStateFactory.create(rules, playerCount, specs);
+        history.clear();
     }
 
     // for tests -> package-private:
@@ -65,16 +60,16 @@ public class QuoridorEngine implements GameEngine {
         this.pawnValidator = pawnValidator;
         this.wallValidator = wallValidator;
         this.winChecker = winChecker;
-        this.pawnMoveGenerator = new PawnMoveGenerator(pawnValidator);
+        pawnMoveGenerator = new PawnMoveGenerator(pawnValidator);
 
-        this.state = initialState;
-        this.history.clear();
+        state = initialState;
+        history.clear();
     }
 
 
 
     @Override
-    public GameState getGameState() {
+    public GameState gameState() {
         return state;
     }
 
@@ -86,7 +81,7 @@ public class QuoridorEngine implements GameEngine {
 
 
     @Override
-    public PlayerId getWinner() {
+    public PlayerId winner() {
         return state.winner();
     }
 
@@ -110,19 +105,18 @@ public class QuoridorEngine implements GameEngine {
         return false;
     }
 
-    private MoveResult validateTurnPreconditions(PlayerId playerId) {
+    private Optional<MoveResult> validateTurnPreconditions(PlayerId playerId) {
         if (state.isGameOver()) {
-            return MoveResult.failure("Game is over");
+            return Optional.of(MoveResult.failure("Game is over"));
         }
 
         if (!playerId.equals(state.currentPlayerId())) {
-            return MoveResult.failure("Not your turn");
+            return Optional.of(MoveResult.failure("Not your turn"));
         }
 
-        return null; // Preconditions valid
+        return Optional.empty();
     }
 
-    // for the controller for the highlights
     @Override
     public Set<Position> legalPawnDestinationsForPlayer(PlayerId player) {
         if (state.isGameOver()) return Set.of();
@@ -131,8 +125,8 @@ public class QuoridorEngine implements GameEngine {
 
     @Override
     public MoveResult movePawn(PlayerId playerId, Position target) {
-        MoveResult pre = validateTurnPreconditions(playerId);
-        if (pre != null) return pre;
+        Optional<MoveResult> pre = validateTurnPreconditions(playerId);
+        if (pre.isPresent()) return pre.get();
 
         if (!pawnMoveGenerator.isLegalDestination(state, playerId, target)) {
             return MoveResult.failure("Invalid pawn move");
@@ -146,34 +140,17 @@ public class QuoridorEngine implements GameEngine {
             return MoveResult.win();
         }
 
+        state = state.withNextTurn();
         return MoveResult.success();
     }
 
-    // legacy
-    public MoveResult movePawn(PlayerId playerId, Direction direction) {
-        MoveResult pre = validateTurnPreconditions(playerId);
-        if (pre != null) return pre;
-
-        Optional<Position> dest = pawnMoveGenerator.resolveDestination(state, playerId, direction);
-        if (dest.isEmpty()) return MoveResult.failure("Invalid pawn move");
-
-        // Apply directly, do NOT call core (avoids revalidation)
-        saveSnapshot();
-        state = state.withPawnMovedTo(playerId, dest.get());
-
-        if (winChecker.isWin(state, playerId)) {
-            state = state.withGameFinished(playerId);
-            return MoveResult.win();
-        }
-        return MoveResult.success();
-    }
 
 
     @Override
     public MoveResult placeWall(PlayerId player, Wall wall) {
-        MoveResult preconditionCheck = validateTurnPreconditions(player);
-        if (preconditionCheck != null) {
-            return preconditionCheck;
+        Optional<MoveResult> preconditionCheck = validateTurnPreconditions(player);
+        if (preconditionCheck.isPresent()) {
+            return preconditionCheck.get();
         }
 
         if (state.currentPlayerWallsRemaining() == 0) {
@@ -185,7 +162,7 @@ public class QuoridorEngine implements GameEngine {
         }
 
         saveSnapshot();
-        state = state.withWallPlaced(player, wall);
+        state = state.withWallPlaced(player, wall).withNextTurn();
 
         return MoveResult.success();
     }
