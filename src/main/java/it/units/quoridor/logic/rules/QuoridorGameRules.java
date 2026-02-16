@@ -24,15 +24,22 @@ public class QuoridorGameRules implements GameRules {
         return switch (playerId) {
             case PLAYER_1 -> buildRow(8);
             case PLAYER_2 -> buildRow(0);
-            case PLAYER_3, PLAYER_4 -> throw new UnsupportedOperationException(
-                "4-player goals not yet implemented (requires column goals)"
-            );
+            case PLAYER_3 -> buildColumn(8);
+            case PLAYER_4 -> buildColumn(0);
         };
     }
 
     private Set<Position> buildRow(int row) {
         Set<Position> positions = new HashSet<>();
         for (int col = Position.MIN_COORDINATE; col <= Position.MAX_COORDINATE; col++) {
+            positions.add(new Position(row, col));
+        }
+        return Set.copyOf(positions);
+    }
+
+    private Set<Position> buildColumn(int col) {
+        Set<Position> positions = new HashSet<>();
+        for (int row = Position.MIN_COORDINATE; row <= Position.MAX_COORDINATE; row++) {
             positions.add(new Position(row, col));
         }
         return Set.copyOf(positions);

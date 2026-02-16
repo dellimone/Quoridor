@@ -53,4 +53,37 @@ class QuoridorWinCheckerTest {
 
         assertTrue(winChecker.isWin(state, PlayerId.PLAYER_2));
     }
+
+    @Test
+    void player3WinsAtCol8() {
+        Player p3 = new Player(PlayerId.PLAYER_3, "P3", 5);
+        Board board = new Board()
+                .withPlayerAt(PlayerId.PLAYER_3, new Position(4, 8));
+
+        GameState state = new GameState(board, List.of(p3));
+
+        assertTrue(winChecker.isWin(state, PlayerId.PLAYER_3));
+    }
+
+    @Test
+    void player3NotAtGoalColumnHasNotWon() {
+        Player p3 = new Player(PlayerId.PLAYER_3, "P3", 5);
+        Board board = new Board()
+                .withPlayerAt(PlayerId.PLAYER_3, new Position(4, 5));
+
+        GameState state = new GameState(board, List.of(p3));
+
+        assertFalse(winChecker.isWin(state, PlayerId.PLAYER_3));
+    }
+
+    @Test
+    void player4WinsAtCol0() {
+        Player p4 = new Player(PlayerId.PLAYER_4, "P4", 5);
+        Board board = new Board()
+                .withPlayerAt(PlayerId.PLAYER_4, new Position(7, 0));
+
+        GameState state = new GameState(board, List.of(p4));
+
+        assertTrue(winChecker.isWin(state, PlayerId.PLAYER_4));
+    }
 }

@@ -85,6 +85,30 @@ class GameRulesTest {
     }
 
     @Test
+    void goalPositionsForPlayer3IsEntireCol8() {
+        GameRules rules = new QuoridorGameRules();
+
+        Set<Position> goals = rules.getGoalPositions(PlayerId.PLAYER_3);
+
+        Set<Position> expectedCol8 = IntStream.rangeClosed(0, 8)
+                .mapToObj(row -> new Position(row, 8))
+                .collect(Collectors.toSet());
+        assertEquals(expectedCol8, goals);
+    }
+
+    @Test
+    void goalPositionsForPlayer4IsEntireCol0() {
+        GameRules rules = new QuoridorGameRules();
+
+        Set<Position> goals = rules.getGoalPositions(PlayerId.PLAYER_4);
+
+        Set<Position> expectedCol0 = IntStream.rangeClosed(0, 8)
+                .mapToObj(row -> new Position(row, 0))
+                .collect(Collectors.toSet());
+        assertEquals(expectedCol0, goals);
+    }
+
+    @Test
     void getInitialWallCountFor2PlayerGame() {
         // Arrange
         GameRules rules = new QuoridorGameRules();
