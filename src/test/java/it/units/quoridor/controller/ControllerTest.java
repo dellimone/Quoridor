@@ -3,6 +3,7 @@ package it.units.quoridor.controller;
 import it.units.quoridor.domain.*;
 import it.units.quoridor.engine.GameEngine;
 import it.units.quoridor.engine.MoveResult;
+import it.units.quoridor.logic.rules.PlayerCount;
 import it.units.quoridor.view.BoardViewModel;
 import it.units.quoridor.view.GameView;
 import it.units.quoridor.view.PlayerViewModel;
@@ -48,7 +49,7 @@ class ControllerTest {
         when(board.walls()).thenReturn(Collections.emptySet());
 
         // new game
-        controller.onNewGame(2);
+        controller.onNewGame(2, List.of("Player 1", "Player 2"));
 
         // if we want to do reset
         // TODO verify(gameEngine).setUp()
@@ -96,7 +97,7 @@ class ControllerTest {
         when(board.playerPosition(PlayerId.PLAYER_1)).thenReturn(new Position(0,0));
         when(board.walls()).thenReturn(Collections.emptySet());
 
-        controller.onNewGame(2);
+        controller.onNewGame(2, List.of("Player 1", "Player 2"));
 
         ArgumentCaptor<BoardViewModel> captor = ArgumentCaptor.forClass(BoardViewModel.class);
         verify(gameView).renderBoard(captor.capture());
@@ -284,7 +285,7 @@ class ControllerTest {
         when(gameState.currentPlayer()).thenReturn(player);
         when(gameState.currentPlayerId()).thenReturn(PlayerId.PLAYER_1);
         when(player.id()).thenReturn(PlayerId.PLAYER_1);
-        when(player.name()).thenReturn("Player 1");
+        when(player.name()).thenReturn("Marco");
         when(board.playerPosition(PlayerId.PLAYER_1)).thenReturn(new Position(0, 0));
         when(gameState.players()).thenReturn(List.of(player));
         when(board.walls()).thenReturn(Collections.emptySet());
@@ -296,9 +297,9 @@ class ControllerTest {
         // Act - click adjacent cell to trigger winning move
         controller.onCellClicked(7, 0);
 
-        // Assert - CRITICAL: should show game over
+        // Assert - CRITICAL: should show game over with player's name
         verify(gameView).renderBoard(any(BoardViewModel.class));
-        verify(gameView).showGameOver(PlayerId.PLAYER_1);
+        verify(gameView).showGameOver("Marco");
     }
 
     @Test
@@ -313,10 +314,10 @@ class ControllerTest {
         when(board.walls()).thenReturn(Collections.emptySet());
 
         // Act
-        controller.onNewGame(2);
+        controller.onNewGame(2, List.of("Player 1", "Player 2"));
 
         // Assert - verify all expected behavior
-        verify(gameEngine).reset();  // Must call engine.reset()!
+        verify(gameEngine).newGame(PlayerCount.TWO_PLAYERS, List.of("Player 1", "Player 2"));
         verify(gameView).renderBoard(any(BoardViewModel.class));
         verify(gameView).setUndoEnabled(false);  // No history at start
         verify(gameView).showMessage("New game started!");

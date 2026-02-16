@@ -2,6 +2,8 @@ package it.units.quoridor.view;
 
 import it.units.quoridor.domain.WallOrientation;
 
+import java.util.List;
+
 /**
  * Listener interface for user input events from the view.
  *
@@ -17,8 +19,9 @@ public interface ViewListener {
      * Called when user starts a new game.
      *
      * @param playerCount number of players (2 or 4)
+     * @param playerNames names for each player (size must match playerCount)
      */
-    void onNewGame(int playerCount);
+    void onNewGame(int playerCount, List<String> playerNames);
 
     /**
      * Called when user clicks on a board cell.

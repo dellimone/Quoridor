@@ -57,9 +57,9 @@ public interface GameView {
     void showError(String error);
 
     /**
-     * Show game over dialog with winner.
+     * Show game over dialog with winner's name.
      */
-    void showGameOver(PlayerId winner);
+    void showGameOver(String winnerName);
 
     /**
      * Hide any overlays (victory, welcome screens, etc.)

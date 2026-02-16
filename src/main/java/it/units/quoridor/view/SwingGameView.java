@@ -63,7 +63,7 @@ public class SwingGameView extends JFrame implements GameView {
         newGameButton = new JButton("New Game");
         newGameButton.addActionListener(e -> {
             if (listener != null) {
-                listener.onNewGame(2);
+                listener.onNewGame(2, List.of("Player 1", "Player 2"));
             }
         });
 
@@ -162,9 +162,9 @@ public class SwingGameView extends JFrame implements GameView {
     }
 
     @Override
-    public void showGameOver(PlayerId winner) {
-        displayMessage("🎉 " + winner + " WINS! 🎉", new Color(40, 167, 69), true, 0);
-        showVictoryScreen(winner);
+    public void showGameOver(String winnerName) {
+        displayMessage("🎉 " + winnerName + " WINS! 🎉", new Color(40, 167, 69), true, 0);
+        showVictoryScreen(winnerName);
     }
 
     @Override
@@ -254,7 +254,7 @@ public class SwingGameView extends JFrame implements GameView {
     /**
      * Shows the victory screen
      */
-    private void showVictoryScreen(PlayerId winner) {
+    private void showVictoryScreen(String winnerName) {
         overlay.removeAll();
         overlay.setOpaque(false);
         overlay.setLayout(new GridBagLayout());
@@ -274,7 +274,7 @@ public class SwingGameView extends JFrame implements GameView {
 
         // Winner
         gbc.gridy = 2;
-        overlay.add(createLabel(winner + " WINS!", 36, Color.WHITE, true), gbc);
+        overlay.add(createLabel(winnerName + " WINS!", 36, Color.WHITE, true), gbc);
 
         // New Game button
         gbc.gridy = 3;
@@ -322,7 +322,7 @@ public class SwingGameView extends JFrame implements GameView {
         button.addActionListener(e -> {
             hideOverlays();
             if (listener != null) {
-                listener.onNewGame(2);
+                listener.onNewGame(2, List.of("Player 1", "Player 2"));
             }
         });
 

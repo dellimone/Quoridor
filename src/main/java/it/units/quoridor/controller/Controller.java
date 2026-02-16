@@ -3,6 +3,7 @@ package it.units.quoridor.controller;
 import it.units.quoridor.domain.*;
 import it.units.quoridor.engine.GameEngine;
 import it.units.quoridor.engine.MoveResult;
+import it.units.quoridor.logic.rules.PlayerCount;
 import it.units.quoridor.view.BoardViewModel;
 import it.units.quoridor.view.GameView;
 import it.units.quoridor.view.PlayerViewModel;
@@ -38,8 +39,11 @@ public class Controller implements ViewListener {
     }
 
     @Override
-    public void onNewGame(int playerCount) {
-        engine.reset();
+    public void onNewGame(int playerCount, List<String> playerNames) {
+        PlayerCount count = (playerCount == 4)
+                ? PlayerCount.FOUR_PLAYERS
+                : PlayerCount.TWO_PLAYERS;
+        engine.newGame(count, playerNames);
         view.hideOverlays();
         updateView();
         view.setUndoEnabled(false);
@@ -66,7 +70,7 @@ public class Controller implements ViewListener {
         if (moveResult.isValid()) {
             updateView();
             if (moveResult.isWin()) {
-                view.showGameOver(currentPlayer.id());
+                view.showGameOver(currentPlayer.name());
             }
         } else {
             view.showError(moveResult.message());
