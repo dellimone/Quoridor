@@ -28,13 +28,10 @@ public class QuoridorGameRules implements GameRules {
 
     @Override
     public int getInitialWallCount(PlayerCount playerCount) {
-        if (playerCount == PlayerCount.TWO_PLAYERS){
-            return 10;
-        }
-        if  (playerCount == PlayerCount.FOUR_PLAYERS){
-            return 5;
-        }
-        throw  new IllegalArgumentException("Unknown PlayerCount: " + playerCount);
+        return switch (playerCount) {
+            case TWO_PLAYERS -> 10;
+            case FOUR_PLAYERS -> 5;
+        };
     }
 
 }
