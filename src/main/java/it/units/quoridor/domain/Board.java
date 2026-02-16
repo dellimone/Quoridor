@@ -49,6 +49,6 @@ public record Board(
     }
 
     public boolean isEdgeBlocked(Position position, Direction direction) {
-        return this.getAllBlockedEdges().contains(new BlockedEdge(position, direction));
+        return getAllBlockedEdges().contains(new BlockedEdge(position, direction));
     }
 }

@@ -1,7 +1,6 @@
 package it.units;
 
 import it.units.quoridor.controller.Controller;
-import it.units.quoridor.domain.*;
 import it.units.quoridor.engine.*;
 import it.units.quoridor.logic.pathFinder.BfsPathFinder;
 import it.units.quoridor.logic.pathFinder.PathFinder;

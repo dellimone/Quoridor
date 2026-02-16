@@ -79,14 +79,14 @@ public record GameState(
 
     public GameState withPawnMovedTo(PlayerId playerId, Position destination) {
         Board newBoard = board.withPlayerAt(playerId, destination);
-        return this.withBoard(newBoard);
+        return withBoard(newBoard);
     }
 
     public GameState withWallPlaced(PlayerId playerId, Wall wall) {
         Board newBoard = board.addWall(wall);
         Player updatedPlayer = getPlayer(playerId).useWall();
 
-        return this.withBoard(newBoard)
+        return withBoard(newBoard)
                    .withUpdatedPlayer(updatedPlayer);
     }
 }

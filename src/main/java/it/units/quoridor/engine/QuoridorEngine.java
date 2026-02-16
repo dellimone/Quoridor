@@ -31,7 +31,7 @@ public class QuoridorEngine implements GameEngine {
         this.wallValidator = wallValidator;
         this.winChecker = winChecker;
 
-        this.pawnMoveGenerator = new PawnMoveGenerator(pawnValidator);
+        pawnMoveGenerator = new PawnMoveGenerator(pawnValidator);
 
         newGame();  // Initialize engine to ready state
     }
@@ -47,10 +47,10 @@ public class QuoridorEngine implements GameEngine {
         PlayerCount playerCount = PlayerCount.TWO_PLAYERS;
 
         // Create initial state using factory
-        this.state = InitialStateFactory.create(rules, playerCount, specs);
+        state = InitialStateFactory.create(rules, playerCount, specs);
 
         // Clear history for new game
-        this.history.clear();
+        history.clear();
     }
 
     // for tests -> package-private:
@@ -65,10 +65,10 @@ public class QuoridorEngine implements GameEngine {
         this.pawnValidator = pawnValidator;
         this.wallValidator = wallValidator;
         this.winChecker = winChecker;
-        this.pawnMoveGenerator = new PawnMoveGenerator(pawnValidator);
+        pawnMoveGenerator = new PawnMoveGenerator(pawnValidator);
 
-        this.state = initialState;
-        this.history.clear();
+        state = initialState;
+        history.clear();
     }
 
 

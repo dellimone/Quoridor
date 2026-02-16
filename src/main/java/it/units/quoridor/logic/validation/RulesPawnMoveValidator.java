@@ -2,9 +2,7 @@ package it.units.quoridor.logic.validation;
 
 import it.units.quoridor.domain.*;
 
-import java.util.Arrays;
 import java.util.Optional;
-import java.util.stream.Stream;
 
 public class RulesPawnMoveValidator implements PawnMoveValidator{
 

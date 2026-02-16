@@ -28,9 +28,9 @@ public class Controller implements ViewListener {
     private static int flipWallRow(int row) { return MAX_WALL_INDEX - row; }
 
     public Controller(GameEngine gameEngine, GameView gameView) {
-        this.engine = gameEngine;
-        this.view = gameView;
-        this.view.setListener(this);
+        engine = gameEngine;
+        view = gameView;
+        view.setListener(this);
     }
 
     // Start a new game
@@ -47,17 +47,17 @@ public class Controller implements ViewListener {
      * Manage the click on a cell
      * Converts the coordinate from the view to the logic for the engine and update the view
      *
-     * @param row_e the row clicked (0-8)
+     * @param rowE the row clicked (0-8)
      * @param col the column clicked (0-8)
      */
     @Override
-    public void onCellClicked(int row_e, int col) {
+    public void onCellClicked(int rowE, int col) {
 
         // Actual context of the game
         GameState gameState = engine.getGameState();
         Player currentPlayer = gameState.currentPlayer();
 
-        Position targetPosition = new Position(flipRow(row_e), col);
+        Position targetPosition = new Position(flipRow(rowE), col);
 
         MoveResult moveResult = engine.movePawn(currentPlayer.id(), targetPosition);
 
