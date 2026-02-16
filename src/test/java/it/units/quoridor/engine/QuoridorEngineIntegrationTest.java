@@ -224,5 +224,4 @@ public class QuoridorEngineIntegrationTest {
         assertEquals(new Position(1, 3), engine.getGameState().getPlayerPosition(PlayerId.PLAYER_1));
     }
 
-
-    }
+}
