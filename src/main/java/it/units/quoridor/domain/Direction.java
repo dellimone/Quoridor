@@ -18,6 +18,9 @@ package it.units.quoridor.domain;
 //         └─────┴─────┴─────┴─────┴─────┘
 
 
+import java.util.Arrays;
+import java.util.Optional;
+
 public enum Direction {
     NORTH(1, 0),   // Moving up increases row
     SOUTH(-1, 0),  // Moving down decreases row
@@ -46,5 +49,12 @@ public enum Direction {
             case WEST  -> EAST;
         };
     }
+
+    public static Optional<Direction> fromUnitDelta(int dr, int dc) {
+        return Arrays.stream(values())
+                .filter(d -> d.rowDelta() == dr && d.colDelta() == dc)
+                .findFirst();
+    }
+
 
 }

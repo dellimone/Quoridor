@@ -25,7 +25,8 @@ public class PawnMoveGeneratorTest {
     @Test
     void noDestinations_whenValidatorRejects() {
         PawnMoveValidator mockValidator = mock(PawnMoveValidator.class);
-        when(mockValidator.canMovePawn(any(), any(), any())).thenReturn(false);
+        when(mockValidator.canMovePawn(any(GameState.class), any(PlayerId.class), any(Direction.class)))
+                .thenReturn(false);
 
         PawnMoveGenerator generator = new PawnMoveGenerator(mockValidator);
 
