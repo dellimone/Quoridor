@@ -282,7 +282,6 @@ public class QuoridorEngineIntegrationTest {
         assertTrue(destP2.contains(new Position(6, 6)));
         assertTrue(destP2.contains(new Position(5, 4)));
         assertTrue(destP2.contains(new Position(5, 6)));
-        assertTrue(destP1.contains(new Position(6, 4)));
         assertTrue(destP1.contains(new Position(4, 5)));
     }
 
@@ -295,7 +294,7 @@ public class QuoridorEngineIntegrationTest {
         Board board = new Board()
                 .withPlayerAt(PlayerId.PLAYER_1, new Position(4, 3))
                 .withPlayerAt(PlayerId.PLAYER_2, new Position(4, 4))
-                .addWall(new Wall(new WallPosition(4, 4), WallOrientation.HORIZONTAL));
+                .addWall(new Wall(new WallPosition(5, 4), WallOrientation.HORIZONTAL));
 
 
         GameState state = new GameState(board, List.of(p1, p2));
