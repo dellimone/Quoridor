@@ -21,6 +21,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.util.Set;
 
 import static it.units.quoridor.TestFixtures.hWall;
+import static it.units.quoridor.TestFixtures.vWall;
 import static it.units.quoridor.TestFixtures.stateWith;
 import static org.junit.jupiter.api.Assertions.*;
 @ExtendWith(MockitoExtension.class)
@@ -144,7 +145,7 @@ public class QuoridorEngineIntegrationTest {
        Board board = new Board()
                 .withPlayerAt(PlayerId.PLAYER_1, new Position(2, 4))
                 .withPlayerAt(PlayerId.PLAYER_2, new Position(1, 4)) // adjacent SOUTH
-                .addWall(new Wall(new WallPosition(0, 4), WallOrientation.HORIZONTAL)); // jump square occupied by another player
+                .addWall(hWall(0, 4)); // jump square occupied by another player
 
         GameState state = stateWith(board);
         QuoridorEngine engine = QuoridorEngine.forTesting(rules, pawnValidator, wallValidator, winChecker, state);
@@ -183,7 +184,7 @@ public class QuoridorEngineIntegrationTest {
         Board board = new Board()
                 .withPlayerAt(PlayerId.PLAYER_1, new Position(2, 4))
                 .withPlayerAt(PlayerId.PLAYER_2, new Position(1, 4)) // adjacent SOUTH
-                .addWall(new Wall(new WallPosition(0, 4), WallOrientation.HORIZONTAL)); // jump square occupied by another player
+                .addWall(hWall(0, 4)); // jump square occupied by wall
 
         GameState state = stateWith(board);
         QuoridorEngine engine = QuoridorEngine.forTesting(rules, pawnValidator, wallValidator, winChecker, state);
@@ -201,10 +202,9 @@ public class QuoridorEngineIntegrationTest {
         Board board = new Board()
                 .withPlayerAt(PlayerId.PLAYER_1, new Position(6, 5))
                 .withPlayerAt(PlayerId.PLAYER_2, new Position(3, 0))
-                .addWall(new Wall(new WallPosition(3, 0), WallOrientation.VERTICAL))
-                .addWall(new Wall(new WallPosition(4, 5), WallOrientation.VERTICAL))
-                .addWall(new Wall(new WallPosition(6, 4), WallOrientation.HORIZONTAL));
-
+                .addWall(vWall(3, 0))
+                .addWall(vWall(4, 5))
+                .addWall(hWall(6, 4));
 
         GameState state = stateWith(board);
         QuoridorEngine engine = QuoridorEngine.forTesting(rules, pawnValidator, wallValidator, winChecker, state);
@@ -227,8 +227,7 @@ public class QuoridorEngineIntegrationTest {
         Board board = new Board()
                 .withPlayerAt(PlayerId.PLAYER_1, new Position(6, 5))
                 .withPlayerAt(PlayerId.PLAYER_2, new Position(5, 5))
-                .addWall(new Wall(new WallPosition(6, 4), WallOrientation.HORIZONTAL));
-
+                .addWall(hWall(6, 4));
 
         GameState state = stateWith(board);
         QuoridorEngine engine = QuoridorEngine.forTesting(rules, pawnValidator, wallValidator, winChecker, state);
@@ -255,7 +254,7 @@ public class QuoridorEngineIntegrationTest {
         Board board = new Board()
                 .withPlayerAt(PlayerId.PLAYER_1, new Position(4, 3))
                 .withPlayerAt(PlayerId.PLAYER_2, new Position(4, 4))
-                .addWall(new Wall(new WallPosition(5, 4), WallOrientation.HORIZONTAL));
+                .addWall(hWall(5, 4));
 
         GameState state = stateWith(board);
         QuoridorEngine engine = QuoridorEngine.forTesting(rules, pawnValidator, wallValidator, winChecker, state);
@@ -274,9 +273,8 @@ public class QuoridorEngineIntegrationTest {
         Board board = new Board()
                 .withPlayerAt(PlayerId.PLAYER_1, new Position(4, 3))
                 .withPlayerAt(PlayerId.PLAYER_2, new Position(4, 4))
-                .addWall(new Wall(new WallPosition(5, 4), WallOrientation.HORIZONTAL))
-                .addWall(new Wall(new WallPosition(4, 4), WallOrientation.VERTICAL));
-
+                .addWall(hWall(5, 4))
+                .addWall(vWall(4, 4));
 
         GameState state = stateWith(board);
         QuoridorEngine engine = QuoridorEngine.forTesting(rules, pawnValidator, wallValidator, winChecker, state);
