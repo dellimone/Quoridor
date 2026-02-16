@@ -146,6 +146,7 @@ public class QuoridorEngine implements GameEngine {
             return MoveResult.win();
         }
 
+        state = state.withNextTurn();
         return MoveResult.success();
     }
 
@@ -167,7 +168,7 @@ public class QuoridorEngine implements GameEngine {
         }
 
         saveSnapshot();
-        state = state.withWallPlaced(player, wall);
+        state = state.withWallPlaced(player, wall).withNextTurn();
 
         return MoveResult.success();
     }

@@ -313,7 +313,7 @@ class GameStateTest {
     }
 
     @Test
-    void withPawnMovedAdvancesTurn() {
+    void withPawnMovedDoesNotAdvanceTurn() {
         Board board = new Board()
                 .withPlayerAt(PlayerId.PLAYER_1, new Position(0, 4))
                 .withPlayerAt(PlayerId.PLAYER_2, new Position(8, 4));
@@ -324,9 +324,9 @@ class GameStateTest {
 
         GameState newState = gameState.withPawnMoved(PlayerId.PLAYER_1, Direction.EAST);
 
-        // Turn should advance
-        assertEquals(PlayerId.PLAYER_1, gameState.currentPlayerId()); // Original unchanged
-        assertEquals(PlayerId.PLAYER_2, newState.currentPlayerId()); // New state has next player
+        // Turn should NOT advance — that's the engine's responsibility
+        assertEquals(PlayerId.PLAYER_1, gameState.currentPlayerId());
+        assertEquals(PlayerId.PLAYER_1, newState.currentPlayerId());
     }
 
     @Test
@@ -389,7 +389,7 @@ class GameStateTest {
     }
 
     @Test
-    void withWallPlacedAdvancesTurn() {
+    void withWallPlacedDoesNotAdvanceTurn() {
         Board board = new Board()
                 .withPlayerAt(PlayerId.PLAYER_1, new Position(0, 4))
                 .withPlayerAt(PlayerId.PLAYER_2, new Position(8, 4));
@@ -401,9 +401,9 @@ class GameStateTest {
         Wall wall = new Wall(new WallPosition(3, 3), WallOrientation.HORIZONTAL);
         GameState newState = gameState.withWallPlaced(PlayerId.PLAYER_1, wall);
 
-        // Turn should advance
-        assertEquals(PlayerId.PLAYER_1, gameState.currentPlayerId()); // Original unchanged
-        assertEquals(PlayerId.PLAYER_2, newState.currentPlayerId()); // New state has next player
+        // Turn should NOT advance — that's the engine's responsibility
+        assertEquals(PlayerId.PLAYER_1, gameState.currentPlayerId());
+        assertEquals(PlayerId.PLAYER_1, newState.currentPlayerId());
     }
 
     @Test
@@ -467,11 +467,8 @@ class GameStateTest {
         Wall wall = new Wall(new WallPosition(3, 3), WallOrientation.HORIZONTAL);
         GameState newState = gameState.withWallPlaced(PlayerId.PLAYER_1, wall);
 
-        // Turn advanced to PLAYER_2, but let's check PLAYER_1's walls via the state
-        // Actually, current player is now PLAYER_2 (10 walls)
-        assertEquals(10, newState.currentPlayerWallsRemaining());
-
-        // Can verify via direct player check that PLAYER_1 has 9
+        // Current player is still P1 (turn not advanced), with 9 walls
+        assertEquals(9, newState.currentPlayerWallsRemaining());
         assertEquals(9, newState.getPlayer(PlayerId.PLAYER_1).wallsRemaining());
     }
 }
