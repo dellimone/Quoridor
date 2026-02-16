@@ -46,7 +46,7 @@ public class QuoridorWallPlacementValidator implements WallPlacementValidator {
 
         Board withWall = board.addWall(wall);
         for (Player p : state.players()) {
-            if (!hasPathToGoalRow(withWall, state.playerPosition(p.id()), rules.getGoalRow(p.id()))) {
+            if (!hasPathToGoal(withWall, state.playerPosition(p.id()), rules.getGoalPositions(p.id()))) {
                 return false;
             }
         }
@@ -54,14 +54,12 @@ public class QuoridorWallPlacementValidator implements WallPlacementValidator {
         return true;
     }
 
-    private boolean hasPathToGoalRow(Board board, Position playerPosition, int goalRow) {
-        for (int col = Position.MIN_COORDINATE; col <= Position.MAX_COORDINATE; col++) {
-            Position target = new Position(goalRow, col);
+    private boolean hasPathToGoal(Board board, Position playerPosition, Set<Position> goalPositions) {
+        for (Position target : goalPositions) {
             if (pathFinder.pathExists(board, playerPosition, target)) {
                 return true;
             }
         }
-
         return false;
     }
 }

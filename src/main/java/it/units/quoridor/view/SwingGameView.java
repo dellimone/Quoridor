@@ -5,6 +5,7 @@ import it.units.quoridor.domain.Position;
 
 import javax.swing.*;
 import java.awt.*;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
@@ -31,6 +32,9 @@ public class SwingGameView extends JFrame implements GameView {
 
     // Listener
     private ViewListener listener;
+
+    // Remembers last player count for "Play Again"
+    private int lastPlayerCount = 2;
 
     public SwingGameView() {
         setTitle("Quoridor");
@@ -61,11 +65,7 @@ public class SwingGameView extends JFrame implements GameView {
         });
 
         newGameButton = new JButton("New Game");
-        newGameButton.addActionListener(e -> {
-            if (listener != null) {
-                listener.onNewGame(2);
-            }
-        });
+        newGameButton.addActionListener(e -> showWelcomeScreen());
 
         // Message label
         messageLabel = new JLabel(" ");
@@ -162,9 +162,9 @@ public class SwingGameView extends JFrame implements GameView {
     }
 
     @Override
-    public void showGameOver(PlayerId winner) {
-        displayMessage("🎉 " + winner + " WINS! 🎉", new Color(40, 167, 69), true, 0);
-        showVictoryScreen(winner);
+    public void showGameOver(String winnerName) {
+        displayMessage("🎉 " + winnerName + " WINS! 🎉", new Color(40, 167, 69), true, 0);
+        showVictoryScreen(winnerName);
     }
 
     @Override
@@ -191,7 +191,7 @@ public class SwingGameView extends JFrame implements GameView {
      * Creates the reusable overlay panel with semi-transparent background
      */
     private JPanel createOverlayPanel() {
-        return new JPanel() {
+        JPanel panel = new JPanel() {
             @Override
             protected void paintComponent(Graphics g) {
                 super.paintComponent(g);
@@ -208,6 +208,12 @@ public class SwingGameView extends JFrame implements GameView {
                 g2d.dispose();
             }
         };
+
+        // Consume all mouse events so they don't reach the board behind
+        panel.addMouseListener(new java.awt.event.MouseAdapter() {});
+        panel.addMouseMotionListener(new java.awt.event.MouseMotionAdapter() {});
+
+        return panel;
     }
 
     /**
@@ -231,20 +237,27 @@ public class SwingGameView extends JFrame implements GameView {
         gbc.insets = new Insets(5, 20, 25, 20);
         overlay.add(createLabel("The Strategic Board Game", 18, new Color(220, 220, 220), false), gbc);
 
-        // Start button
+        // Player count buttons
         gbc.gridy = 2;
-        gbc.insets = new Insets(25, 20, 15, 20);
-        overlay.add(createButton("Start New Game", 24, new Color(40, 167, 69), 280, 60), gbc);
+        gbc.insets = new Insets(25, 20, 10, 20);
+        overlay.add(createPlayerCountButton("2 Players", 24, new Color(40, 167, 69), 280, 60, 2), gbc);
+
+        gbc.gridy = 3;
+        gbc.insets = new Insets(10, 20, 15, 20);
+        overlay.add(createPlayerCountButton("4 Players", 24, new Color(0, 123, 255), 280, 60, 4), gbc);
 
         // Instructions
-        gbc.gridy = 3;
-        gbc.insets = new Insets(25, 20, 15, 20);
-        JLabel instructions = createLabel(
-            "<html><center>Reach the opposite side before your opponent<br>Use walls to block their path!</center></html>",
-            14, new Color(200, 200, 200), false
-        );
-        instructions.setFont(instructions.getFont().deriveFont(Font.ITALIC));
-        overlay.add(instructions, gbc);
+        gbc.gridy = 4;
+        gbc.insets = new Insets(25, 20, 2, 20);
+        JLabel line1 = createLabel("Reach the opposite side before your opponent", 14, new Color(200, 200, 200), false);
+        line1.setFont(line1.getFont().deriveFont(Font.ITALIC));
+        overlay.add(line1, gbc);
+
+        gbc.gridy = 5;
+        gbc.insets = new Insets(2, 20, 15, 20);
+        JLabel line2 = createLabel("Use walls to block their path!", 14, new Color(200, 200, 200), false);
+        line2.setFont(line2.getFont().deriveFont(Font.ITALIC));
+        overlay.add(line2, gbc);
 
         overlay.setVisible(true);
         overlay.revalidate();
@@ -254,7 +267,7 @@ public class SwingGameView extends JFrame implements GameView {
     /**
      * Shows the victory screen
      */
-    private void showVictoryScreen(PlayerId winner) {
+    private void showVictoryScreen(String winnerName) {
         overlay.removeAll();
         overlay.setOpaque(false);
         overlay.setLayout(new GridBagLayout());
@@ -274,12 +287,12 @@ public class SwingGameView extends JFrame implements GameView {
 
         // Winner
         gbc.gridy = 2;
-        overlay.add(createLabel(winner + " WINS!", 36, Color.WHITE, true), gbc);
+        overlay.add(createLabel(winnerName + " WINS!", 36, Color.WHITE, true), gbc);
 
-        // New Game button
+        // Play Again button (goes to name entry with last player count)
         gbc.gridy = 3;
         gbc.insets = new Insets(35, 20, 15, 20);
-        overlay.add(createButton("Play Again", 20, new Color(40, 167, 69), 220, 55), gbc);
+        overlay.add(createPlayerCountButton("Play Again", 20, new Color(40, 167, 69), 220, 55, lastPlayerCount), gbc);
 
         overlay.setVisible(true);
         overlay.revalidate();
@@ -297,9 +310,92 @@ public class SwingGameView extends JFrame implements GameView {
     }
 
     /**
-     * Helper to create styled buttons
+     * Shows name entry screen for the given number of players.
      */
-    private JButton createButton(String text, int fontSize, Color bgColor, int width, int height) {
+    private void showNameEntryScreen(int playerCount) {
+        lastPlayerCount = playerCount;
+        overlay.removeAll();
+        overlay.setOpaque(false);
+        overlay.setLayout(new GridBagLayout());
+
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.gridx = 0;
+        gbc.gridwidth = 2;
+        gbc.insets = new Insets(10, 20, 10, 20);
+
+        // Title
+        gbc.gridy = 0;
+        overlay.add(createLabel("Enter Player Names", 36, new Color(255, 215, 0), true), gbc);
+
+        // Name fields
+        List<JTextField> nameFields = new ArrayList<>();
+        for (int i = 1; i <= playerCount; i++) {
+            gbc.gridy = i;
+            gbc.gridwidth = 1;
+            gbc.anchor = GridBagConstraints.EAST;
+            gbc.insets = new Insets(8, 20, 8, 5);
+            overlay.add(createLabel("Player " + i + ":", 18, Color.WHITE, false), gbc);
+
+            gbc.gridx = 1;
+            gbc.anchor = GridBagConstraints.WEST;
+            gbc.insets = new Insets(8, 5, 8, 20);
+            JTextField field = new JTextField("Player " + i, 15);
+            field.setFont(new Font("SansSerif", Font.PLAIN, 18));
+            nameFields.add(field);
+            overlay.add(field, gbc);
+
+            gbc.gridx = 0;
+        }
+
+        // Start button
+        gbc.gridy = playerCount + 1;
+        gbc.gridx = 0;
+        gbc.gridwidth = 2;
+        gbc.anchor = GridBagConstraints.CENTER;
+        gbc.insets = new Insets(25, 20, 15, 20);
+        JButton startButton = createStyledButton("Start Game", 24, new Color(40, 167, 69), 280, 60);
+        startButton.addActionListener(e -> {
+            List<String> names = new ArrayList<>();
+            for (int idx = 0; idx < nameFields.size(); idx++) {
+                String text = nameFields.get(idx).getText().trim();
+                names.add(text.isEmpty() ? "Player " + (idx + 1) : text);
+            }
+            hideOverlays();
+            if (listener != null) {
+                listener.onNewGame(playerCount, names);
+            }
+        });
+        overlay.add(startButton, gbc);
+
+        // Back button
+        gbc.gridy = playerCount + 2;
+        gbc.insets = new Insets(5, 20, 15, 20);
+        JButton backButton = createStyledButton("Back", 16, new Color(108, 117, 125), 140, 40);
+        backButton.addActionListener(e -> showWelcomeScreen());
+        overlay.add(backButton, gbc);
+
+        overlay.setVisible(true);
+        overlay.revalidate();
+        overlay.repaint();
+
+        // Focus first name field
+        nameFields.get(0).requestFocusInWindow();
+        nameFields.get(0).selectAll();
+    }
+
+    /**
+     * Helper to create styled buttons that navigate to name entry.
+     */
+    private JButton createPlayerCountButton(String text, int fontSize, Color bgColor, int width, int height, int playerCount) {
+        JButton button = createStyledButton(text, fontSize, bgColor, width, height);
+        button.addActionListener(e -> showNameEntryScreen(playerCount));
+        return button;
+    }
+
+    /**
+     * Helper to create a styled button (no action listener).
+     */
+    private JButton createStyledButton(String text, int fontSize, Color bgColor, int width, int height) {
         JButton button = new JButton(text);
         button.setFont(new Font("SansSerif", Font.BOLD, fontSize));
         button.setPreferredSize(new Dimension(width, height));
@@ -319,13 +415,6 @@ public class SwingGameView extends JFrame implements GameView {
             }
         });
 
-        button.addActionListener(e -> {
-            hideOverlays();
-            if (listener != null) {
-                listener.onNewGame(2);
-            }
-        });
-
         return button;
     }
 
@@ -337,16 +426,9 @@ public class SwingGameView extends JFrame implements GameView {
             messageClearTimer.stop();
         }
 
-        String colorHex = String.format("#%02x%02x%02x", color.getRed(), color.getGreen(), color.getBlue());
-        String styledMessage = String.format(
-            "<html><span style='font-size:%dpx; color:%s;%s'>%s</span></html>",
-            bold ? 16 : 14,
-            colorHex,
-            bold ? " font-weight:bold;" : "",
-            message
-        );
-
-        messageLabel.setText(styledMessage);
+        messageLabel.setText(message);
+        messageLabel.setForeground(color);
+        messageLabel.setFont(new Font("SansSerif", bold ? Font.BOLD : Font.PLAIN, bold ? 16 : 14));
 
         if (autoClearMs > 0) {
             messageClearTimer = new Timer(autoClearMs, e -> messageLabel.setText(" "));

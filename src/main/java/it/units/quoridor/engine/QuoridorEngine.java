@@ -10,7 +10,7 @@ import it.units.quoridor.engine.moves.PawnMoveGenerator;
 import java.util.*;
 
 
-/** Standard Quoridor engine for 2-player games. Delegates all validation to the Logic layer. */
+/** Standard Quoridor engine. Delegates all validation to the Logic layer. */
 public class QuoridorEngine implements GameEngine {
 
     private final GameRules rules;
@@ -21,6 +21,12 @@ public class QuoridorEngine implements GameEngine {
 
     private final Deque<GameState> history = new ArrayDeque<>();
     private GameState state;
+    private PlayerCount lastPlayerCount = PlayerCount.TWO_PLAYERS;
+    private List<String> lastPlayerNames = List.of("Player 1", "Player 2");
+
+    private static final List<PlayerId> PLAYER_IDS = List.of(
+            PlayerId.PLAYER_1, PlayerId.PLAYER_2, PlayerId.PLAYER_3, PlayerId.PLAYER_4
+    );
 
     public QuoridorEngine(
             GameRules rules,
@@ -34,17 +40,20 @@ public class QuoridorEngine implements GameEngine {
 
         pawnMoveGenerator = new PawnMoveGenerator(pawnValidator);
 
-        newGame();  // Initialize engine to ready state
+        newGame(PlayerCount.TWO_PLAYERS, List.of("Player 1", "Player 2"));
     }
 
-    public void newGame() {
-        List<PlayerSpec> specs = List.of(
-            new PlayerSpec(PlayerId.PLAYER_1, "Player 1"),
-            new PlayerSpec(PlayerId.PLAYER_2, "Player 2")
-        );
+    @Override
+    public void newGame(PlayerCount playerCount, List<String> playerNames) {
+        this.lastPlayerCount = playerCount;
+        this.lastPlayerNames = playerNames;
 
-        PlayerCount playerCount = PlayerCount.TWO_PLAYERS;
-        state = InitialStateFactory.create(rules, playerCount, specs);
+        List<PlayerSpec> specs = new ArrayList<>();
+        for (int i = 0; i < playerNames.size(); i++) {
+            specs.add(new PlayerSpec(PLAYER_IDS.get(i), playerNames.get(i)));
+        }
+
+        state = InitialStateFactory.create(rules, playerCount, List.copyOf(specs));
         history.clear();
     }
 
@@ -88,7 +97,7 @@ public class QuoridorEngine implements GameEngine {
 
     @Override
     public void reset(){
-        newGame();
+        newGame(lastPlayerCount, lastPlayerNames);
     }
 
 

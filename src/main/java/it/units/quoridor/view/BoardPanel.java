@@ -36,8 +36,8 @@ public class BoardPanel extends JPanel {
      * Calculate cell size based on current panel dimensions
      */
     private int getCellSize() {
-        int availableWidth = getWidth();
-        int availableHeight = getHeight();
+        int availableWidth = getWidth() - 2 * PADDING;
+        int availableHeight = getHeight() - 2 * PADDING;
         int minAvailable = Math.min(availableWidth, availableHeight);
         return Math.max(20, minAvailable / GRID_SIZE);  // Min 20px per cell
     }

@@ -4,6 +4,10 @@ import it.units.quoridor.domain.PlayerId;
 import it.units.quoridor.domain.Position;
 import org.junit.jupiter.api.Test;
 
+import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 class GameRulesTest {
@@ -57,27 +61,51 @@ class GameRulesTest {
     }
 
     @Test
-    void getGoalRowForPlayer1() {
-        // Arrange
+    void goalPositionsForPlayer1IsEntireRow8() {
         GameRules rules = new QuoridorGameRules();
 
-        // Act
-        int goalRow = rules.getGoalRow(PlayerId.PLAYER_1);
+        Set<Position> goals = rules.getGoalPositions(PlayerId.PLAYER_1);
 
-        // Assert
-        assertEquals(8, goalRow);  // Player 1 starts at row 0, must reach row 8
+        Set<Position> expectedRow8 = IntStream.rangeClosed(0, 8)
+                .mapToObj(col -> new Position(8, col))
+                .collect(Collectors.toSet());
+        assertEquals(expectedRow8, goals);
     }
 
     @Test
-    void getGoalRowForPlayer2() {
-        // Arrange
+    void goalPositionsForPlayer2IsEntireRow0() {
         GameRules rules = new QuoridorGameRules();
 
-        // Act
-        int goalRow = rules.getGoalRow(PlayerId.PLAYER_2);
+        Set<Position> goals = rules.getGoalPositions(PlayerId.PLAYER_2);
 
-        // Assert
-        assertEquals(0, goalRow);  // Player 2 starts at row 8, must reach row 0
+        Set<Position> expectedRow0 = IntStream.rangeClosed(0, 8)
+                .mapToObj(col -> new Position(0, col))
+                .collect(Collectors.toSet());
+        assertEquals(expectedRow0, goals);
+    }
+
+    @Test
+    void goalPositionsForPlayer3IsEntireCol8() {
+        GameRules rules = new QuoridorGameRules();
+
+        Set<Position> goals = rules.getGoalPositions(PlayerId.PLAYER_3);
+
+        Set<Position> expectedCol8 = IntStream.rangeClosed(0, 8)
+                .mapToObj(row -> new Position(row, 8))
+                .collect(Collectors.toSet());
+        assertEquals(expectedCol8, goals);
+    }
+
+    @Test
+    void goalPositionsForPlayer4IsEntireCol0() {
+        GameRules rules = new QuoridorGameRules();
+
+        Set<Position> goals = rules.getGoalPositions(PlayerId.PLAYER_4);
+
+        Set<Position> expectedCol0 = IntStream.rangeClosed(0, 8)
+                .mapToObj(row -> new Position(row, 0))
+                .collect(Collectors.toSet());
+        assertEquals(expectedCol0, goals);
     }
 
     @Test
