@@ -12,6 +12,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import static it.units.quoridor.TestFixtures.*;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
@@ -34,7 +35,7 @@ public class WallPlacementTest {
         QuoridorEngine engine = new QuoridorEngine(rules, pawnValidator, wallValidator, winChecker);
 
         // define a new wall
-        Wall wall = new Wall(new WallPosition(1, 2), WallOrientation.HORIZONTAL);
+        Wall wall = hWall(1, 2);
 
         // make the wall positioning move
         engine.placeWall(PlayerId.PLAYER_1, wall);
@@ -54,7 +55,7 @@ public class WallPlacementTest {
         GameState initialState = engine.getGameState();
 
         // define a new wall
-        Wall wall = new Wall(new WallPosition(1, 2), WallOrientation.HORIZONTAL);
+        Wall wall = hWall(1, 2);
 
         // return false for this wall placement
         when(wallValidator.canPlaceWall(any(GameState.class), eq(PlayerId.PLAYER_1), eq(wall))).thenReturn(false);
@@ -77,7 +78,7 @@ public class WallPlacementTest {
         QuoridorEngine engine = new QuoridorEngine(rules, pawnValidator, wallValidator, winChecker);
 
         // define a new wall
-        Wall wall = new Wall(new WallPosition(1, 2), WallOrientation.HORIZONTAL);
+        Wall wall = hWall(1, 2);
 
         // return true for this wall placement
         when(wallValidator.canPlaceWall(any(GameState.class), eq(PlayerId.PLAYER_1), eq(wall))).thenReturn(true);
@@ -104,7 +105,7 @@ public class WallPlacementTest {
         GameState initialState = engine.getGameState();
 
         // define a new wall
-        Wall wall = new Wall(new WallPosition(1, 2), WallOrientation.HORIZONTAL);
+        Wall wall = hWall(1, 2);
 
         MoveResult result = engine.placeWall(PlayerId.PLAYER_2, wall);
 
@@ -131,7 +132,7 @@ public class WallPlacementTest {
         assertTrue(engine.isGameOver());
 
         // define a new wall
-        Wall wall = new Wall(new WallPosition(1, 2), WallOrientation.HORIZONTAL);
+        Wall wall = hWall(1, 2);
 
         MoveResult result = engine.placeWall(PlayerId.PLAYER_1, wall);
 
@@ -153,7 +154,7 @@ public class WallPlacementTest {
         Board initialBoard = engine.getGameState().board();
 
         // define a new wall
-        Wall wall = new Wall(new WallPosition(1, 2), WallOrientation.HORIZONTAL);
+        Wall wall = hWall(1, 2);
 
         // return true for this wall placement
         when(wallValidator.canPlaceWall(any(GameState.class), eq(PlayerId.PLAYER_1), eq(wall))).thenReturn(true);
@@ -183,7 +184,7 @@ public class WallPlacementTest {
         int currentWalls = engine.getGameState().getPlayer(PlayerId.PLAYER_1).wallsRemaining();
 
         // define a new wall
-        Wall wall = new Wall(new WallPosition(1, 2), WallOrientation.HORIZONTAL);
+        Wall wall = hWall(1, 2);
 
         // return true for this wall placement
         when(wallValidator.canPlaceWall(any(GameState.class), eq(PlayerId.PLAYER_1), eq(wall))).thenReturn(true);
@@ -210,7 +211,7 @@ public class WallPlacementTest {
         int currentWalls = initialState.getPlayer(PlayerId.PLAYER_1).wallsRemaining();
 
         // define a new wall
-        Wall wall = new Wall(new WallPosition(1, 2), WallOrientation.HORIZONTAL);
+        Wall wall = hWall(1, 2);
 
         // return false for this wall placement
         when(wallValidator.canPlaceWall(any(GameState.class), eq(PlayerId.PLAYER_1), eq(wall))).thenReturn(false);
@@ -239,7 +240,7 @@ public class WallPlacementTest {
                 .withUpdatedPlayer(engine.getGameState().getPlayer(PlayerId.PLAYER_1).withWallsRemaining(0));
 
         // We need to simulate this - let's place 10 valid walls
-        Wall wall = new Wall(new WallPosition(1, 2), WallOrientation.HORIZONTAL);
+        Wall wall = hWall(1, 2);
         when(wallValidator.canPlaceWall(any(GameState.class), eq(PlayerId.PLAYER_1), any(Wall.class))).thenReturn(true);
         when(wallValidator.canPlaceWall(any(GameState.class), eq(PlayerId.PLAYER_2), any(Wall.class))).thenReturn(true);
 

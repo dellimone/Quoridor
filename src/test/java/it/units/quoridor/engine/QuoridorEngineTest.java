@@ -14,6 +14,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 
+import static it.units.quoridor.TestFixtures.*;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
@@ -40,8 +41,8 @@ public class QuoridorEngineTest {
         // Verify initial state matches rules
         assertNotNull(actual);
         assertEquals(PlayerId.PLAYER_1, actual.currentPlayerId());
-        assertEquals(new Position(0, 4), actual.getPlayerPosition(PlayerId.PLAYER_1));
-        assertEquals(new Position(8, 4), actual.getPlayerPosition(PlayerId.PLAYER_2));
+        assertEquals(P1_START,actual.getPlayerPosition(PlayerId.PLAYER_1));
+        assertEquals(P2_START,actual.getPlayerPosition(PlayerId.PLAYER_2));
     }
 
     // 19. reset game on demand
@@ -54,7 +55,7 @@ public class QuoridorEngineTest {
         GameState initialState = engine.getGameState();
 
         // we do some actions (two valid moves)
-        Wall wall = new Wall(new WallPosition(1, 2), WallOrientation.HORIZONTAL);
+        Wall wall = hWall(1, 2);
         when(wallValidator.canPlaceWall(any(GameState.class), eq(PlayerId.PLAYER_1), eq(wall))).thenReturn(true);
         engine.placeWall(PlayerId.PLAYER_1, wall);
 
@@ -135,7 +136,7 @@ public class QuoridorEngineTest {
         GameState initialState = engine.getGameState();
 
         // make a valid wall placement
-        Wall wall = new Wall(new WallPosition(1, 2), WallOrientation.HORIZONTAL);
+        Wall wall = hWall(1, 2);
         when(wallValidator.canPlaceWall(any(GameState.class), eq(PlayerId.PLAYER_1), eq(wall))).thenReturn(true);
         engine.placeWall(PlayerId.PLAYER_1, wall);
 
@@ -164,7 +165,7 @@ public class QuoridorEngineTest {
         GameState initialState = engine.getGameState();
 
         // make a valid wall placement
-        Wall wall = new Wall(new WallPosition(1, 2), WallOrientation.HORIZONTAL);
+        Wall wall = hWall(1, 2);
         when(wallValidator.canPlaceWall(any(GameState.class), eq(PlayerId.PLAYER_1), eq(wall))).thenReturn(true);
         engine.placeWall(PlayerId.PLAYER_1, wall);
 
@@ -204,8 +205,8 @@ public class QuoridorEngineTest {
         GameState state = engine.getGameState();
 
         // Players should be at start positions per rules
-        assertEquals(new Position(0, 4), state.getPlayerPosition(PlayerId.PLAYER_1));
-        assertEquals(new Position(8, 4), state.getPlayerPosition(PlayerId.PLAYER_2));
+        assertEquals(P1_START,state.getPlayerPosition(PlayerId.PLAYER_1));
+        assertEquals(P2_START,state.getPlayerPosition(PlayerId.PLAYER_2));
 
         // Players should have correct wall count (10 for 2-player)
         assertEquals(10, state.getPlayer(PlayerId.PLAYER_1).wallsRemaining());

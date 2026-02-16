@@ -8,9 +8,9 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.util.List;
 import java.util.Set;
 
+import static it.units.quoridor.TestFixtures.*;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
@@ -26,14 +26,7 @@ public class PawnMoveGeneratorTest {
 
         PawnMoveGenerator generator = new PawnMoveGenerator(mockValidator);
 
-        Player p1 = new Player(PlayerId.PLAYER_1, "P1", 10);
-        Player p2 = new Player(PlayerId.PLAYER_2, "P2", 10);
-
-        Board board = new Board()
-                .withPlayerAt(PlayerId.PLAYER_1, new Position(0, 4))
-                .withPlayerAt(PlayerId.PLAYER_2, new Position(8, 4));
-
-        GameState initialState = new GameState(board, List.of(p1, p2));
+        GameState initialState = standardState();
 
         Set<Position> result = generator.legalDestinations(initialState, PlayerId.PLAYER_1);
 
@@ -48,14 +41,7 @@ public class PawnMoveGeneratorTest {
     // 1. adjacent move appears in legal destinations
     @Test
     void adjacentMoveIncludedInLegalDestinations() {
-        Player p1 = new Player(PlayerId.PLAYER_1, "P1", 10);
-        Player p2 = new Player(PlayerId.PLAYER_2, "P2", 10);
-
-        Board board = new Board()
-                .withPlayerAt(PlayerId.PLAYER_1, new Position(0, 4))
-                .withPlayerAt(PlayerId.PLAYER_2, new Position(8, 4));
-
-        GameState initialState = new GameState(board, List.of(p1, p2));
+        GameState initialState = standardState();
 
         Set<Position> result = generator.legalDestinations(initialState, PlayerId.PLAYER_1);
 
@@ -68,15 +54,9 @@ public class PawnMoveGeneratorTest {
     // 2. wall-blocked direction excluded from legal destinations
     @Test
     void wallBlockedDirectionExcluded() {
-        Player p1 = new Player(PlayerId.PLAYER_1, "P1", 10);
-        Player p2 = new Player(PlayerId.PLAYER_2, "P2", 10);
+        Board board = standardBoard().addWall(vWall(0, 4));
 
-        Board board = new Board()
-                .addWall(new Wall(new WallPosition(0, 4), WallOrientation.VERTICAL))
-                .withPlayerAt(PlayerId.PLAYER_1, new Position(0, 4))
-                .withPlayerAt(PlayerId.PLAYER_2, new Position(8, 4));
-
-        GameState initialState = new GameState(board, List.of(p1, p2));
+        GameState initialState = stateWith(board);
 
         Set<Position> result = generator.legalDestinations(initialState, PlayerId.PLAYER_1);
 
@@ -86,14 +66,11 @@ public class PawnMoveGeneratorTest {
     // 3. jump: when adjacent to opponent with clear path behind, jump destination is included
     @Test
     void jumpDestinationIncluded() {
-        Player p1 = new Player(PlayerId.PLAYER_1, "P1", 10);
-        Player p2 = new Player(PlayerId.PLAYER_2, "P2", 10);
-
         Board board = new Board()
                 .withPlayerAt(PlayerId.PLAYER_1, new Position(0, 4))
                 .withPlayerAt(PlayerId.PLAYER_2, new Position(0, 5));
 
-        GameState initialState = new GameState(board, List.of(p1, p2));
+        GameState initialState = stateWith(board);
 
         Set<Position> result = generator.legalDestinations(initialState, PlayerId.PLAYER_1);
 
@@ -104,14 +81,11 @@ public class PawnMoveGeneratorTest {
     // 4. out-of-bounds positions never appear
     @Test
     void outOfBoundsExcluded() {
-        Player p1 = new Player(PlayerId.PLAYER_1, "P1", 10);
-        Player p2 = new Player(PlayerId.PLAYER_2, "P2", 10);
-
         Board board = new Board()
                 .withPlayerAt(PlayerId.PLAYER_1, new Position(0, 4))
                 .withPlayerAt(PlayerId.PLAYER_2, new Position(0, 5));
 
-        GameState initialState = new GameState(board, List.of(p1, p2));
+        GameState initialState = stateWith(board);
 
         Set<Position> result = generator.legalDestinations(initialState, PlayerId.PLAYER_1);
 
@@ -125,14 +99,11 @@ public class PawnMoveGeneratorTest {
     // 5. jump out of bounds: opponent at board edge, jump would go off-board
     @Test
     void jumpOutOfBoundsExcluded() {
-        Player p1 = new Player(PlayerId.PLAYER_1, "P1", 10);
-        Player p2 = new Player(PlayerId.PLAYER_2, "P2", 10);
-
         Board board = new Board()
                 .withPlayerAt(PlayerId.PLAYER_1, new Position(0, 7))
                 .withPlayerAt(PlayerId.PLAYER_2, new Position(0, 8));
 
-        GameState initialState = new GameState(board, List.of(p1, p2));
+        GameState initialState = stateWith(board);
 
         Set<Position> result = generator.legalDestinations(initialState, PlayerId.PLAYER_1);
 

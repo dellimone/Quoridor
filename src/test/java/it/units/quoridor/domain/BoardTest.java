@@ -4,6 +4,7 @@ import org.junit.jupiter.api.Test;
 
 import java.util.Set;
 
+import static it.units.quoridor.TestFixtures.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 class BoardTest {
@@ -19,9 +20,7 @@ class BoardTest {
     @Test
     void  addWallReturnsNewBoardWithWall() {
         Board board = new Board();
-        Wall wall = new Wall(
-                new WallPosition(1,2),
-                WallOrientation.HORIZONTAL);
+        Wall wall = hWall(1, 2);
 
         Board boardWithWall = board.addWall(wall);
 
@@ -32,8 +31,8 @@ class BoardTest {
     @Test
     void getWallsReturnsBoardWalls() {
         Board board = new Board();
-        Wall wall1 = new Wall(new WallPosition(2, 2), WallOrientation.HORIZONTAL);
-        Wall wall2 = new Wall(new WallPosition(4, 4), WallOrientation.VERTICAL);
+        Wall wall1 = hWall(2, 2);
+        Wall wall2 = vWall(4, 4);
 
         Board boardWithWalls = board.addWall(wall1).addWall(wall2);
 
@@ -70,8 +69,8 @@ class BoardTest {
     @Test
     void getAllBlockedEdgesReturnsEdgesFromAllWalls() {
         Board board = new Board();
-        Wall wall1 = new Wall(new WallPosition(2, 3), WallOrientation.HORIZONTAL);
-        Wall wall2 = new Wall(new WallPosition(5, 5), WallOrientation.VERTICAL);
+        Wall wall1 = hWall(2, 3);
+        Wall wall2 = vWall(5, 5);
 
         Board boardWithWalls = board.addWall(wall1).addWall(wall2);
 
@@ -86,7 +85,7 @@ class BoardTest {
     @Test
     void isEdgeBlockedReturnsTrueForBlockedEdge() {
         Board board = new Board();
-        Wall wall = new Wall(new WallPosition(3, 4), WallOrientation.HORIZONTAL);
+        Wall wall = hWall(3, 4);
         Board boardWithWall = board.addWall(wall);
 
         // Horizontal wall at (3,4) blocks position (3,4) moving NORTH
@@ -98,7 +97,7 @@ class BoardTest {
     @Test
     void isEdgeBlockedReturnsFalseForUnblockedEdge() {
         Board board = new Board();
-        Wall wall = new Wall(new WallPosition(3, 4), WallOrientation.HORIZONTAL);
+        Wall wall = hWall(3, 4);
         Board boardWithWall = board.addWall(wall);
 
         // This edge is not blocked by the horizontal wall
