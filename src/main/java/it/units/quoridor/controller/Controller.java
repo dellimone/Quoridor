@@ -39,6 +39,7 @@ public class Controller implements ViewListener {
     @Override
     public void onNewGame(int playerCount) {
         engine.reset();  // Reset game state and clear history
+        view.hideOverlays();  // Hide any victory/welcome screens
         updateView();
         view.setUndoEnabled(false);  // No history at game start
         view.showMessage("New game started!");
@@ -103,10 +104,10 @@ public class Controller implements ViewListener {
             if (result.isValid()) {
                 updateView();
             } else {
-                view.showMessage("Invalid Wall Placement");
+                view.showError("Invalid Wall Placement");
             }
         } catch (IllegalArgumentException e) {
-            view.showMessage("Invalid Wall Placement, outside of board");
+            view.showError("Invalid Wall Placement, outside of board");
         }
     }
 
@@ -117,7 +118,7 @@ public class Controller implements ViewListener {
             updateView();
             view.showMessage("Move undone");
         } else {
-            view.showError("Nothing to undo");
+            view.showMessage("Nothing to undo");
         }
     }
 

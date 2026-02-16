@@ -27,11 +27,41 @@ import java.util.Set;
 public class BoardPanel extends JPanel {
 
     // Layout constants
-    private static final int CELL_SIZE = 60;
+    private static final int DEFAULT_CELL_SIZE = 60;  // For preferred size only
     private static final int GRID_SIZE = 9;
     private static final int WALL_THICKNESS = 6;
-    private static final int BOARD_SIZE = CELL_SIZE * GRID_SIZE;
     private static final int PADDING = 20;
+
+    /**
+     * Calculate cell size based on current panel dimensions
+     */
+    private int getCellSize() {
+        int availableWidth = getWidth();
+        int availableHeight = getHeight();
+        int minAvailable = Math.min(availableWidth, availableHeight);
+        return Math.max(20, minAvailable / GRID_SIZE);  // Min 20px per cell
+    }
+
+    /**
+     * Calculate board size based on current cell size
+     */
+    private int getBoardSize() {
+        return getCellSize() * GRID_SIZE;
+    }
+
+    /**
+     * Calculate horizontal padding to center the board
+     */
+    private int getPaddingX() {
+        return Math.max(PADDING, (getWidth() - getBoardSize()) / 2);
+    }
+
+    /**
+     * Calculate vertical padding to center the board
+     */
+    private int getPaddingY() {
+        return Math.max(PADDING, (getHeight() - getBoardSize()) / 2);
+    }
 
     // Colors
     private static final Color GRID_COLOR = new Color(100, 100, 100);
@@ -57,8 +87,8 @@ public class BoardPanel extends JPanel {
         this.highlightedCells = new HashSet<>();
 
         setPreferredSize(new Dimension(
-                BOARD_SIZE + 2 * PADDING,
-                BOARD_SIZE + 2 * PADDING
+                DEFAULT_CELL_SIZE * GRID_SIZE + 2 * PADDING,
+                DEFAULT_CELL_SIZE * GRID_SIZE + 2 * PADDING
         ));
         setBackground(Color.WHITE);
 
@@ -134,9 +164,9 @@ public class BoardPanel extends JPanel {
         g.setColor(CELL_COLOR);
         for (int row = 0; row < GRID_SIZE; row++) {
             for (int col = 0; col < GRID_SIZE; col++) {
-                int x = PADDING + col * CELL_SIZE;
-                int y = PADDING + row * CELL_SIZE;
-                g.fillRect(x, y, CELL_SIZE, CELL_SIZE);
+                int x = getPaddingX() + col * getCellSize();
+                int y = getPaddingY() + row * getCellSize();
+                g.fillRect(x, y, getCellSize(), getCellSize());
             }
         }
     }
@@ -147,23 +177,23 @@ public class BoardPanel extends JPanel {
 
         // Draw vertical lines
         for (int col = 0; col <= GRID_SIZE; col++) {
-            int x = PADDING + col * CELL_SIZE;
-            g.drawLine(x, PADDING, x, PADDING + BOARD_SIZE);
+            int x = getPaddingX() + col * getCellSize();
+            g.drawLine(x, getPaddingY(), x, getPaddingY() + getBoardSize());
         }
 
         // Draw horizontal lines
         for (int row = 0; row <= GRID_SIZE; row++) {
-            int y = PADDING + row * CELL_SIZE;
-            g.drawLine(PADDING, y, PADDING + BOARD_SIZE, y);
+            int y = getPaddingY() + row * getCellSize();
+            g.drawLine(getPaddingX(), y, getPaddingX() + getBoardSize(), y);
         }
     }
 
     private void drawHighlights(Graphics2D g) {
         g.setColor(HIGHLIGHT_COLOR);
         for (Position pos : highlightedCells) {
-            int x = PADDING + pos.col() * CELL_SIZE;
-            int y = PADDING + pos.row() * CELL_SIZE;
-            g.fillRect(x + 2, y + 2, CELL_SIZE - 4, CELL_SIZE - 4);
+            int x = getPaddingX() + pos.col() * getCellSize();
+            int y = getPaddingY() + pos.row() * getCellSize();
+            g.fillRect(x + 2, y + 2, getCellSize() - 4, getCellSize() - 4);
         }
     }
 
@@ -171,9 +201,9 @@ public class BoardPanel extends JPanel {
         // Draw hovered cell
         if (hoveredCell != null) {
             g.setColor(HOVER_CELL_COLOR);
-            int x = PADDING + hoveredCell.col() * CELL_SIZE;
-            int y = PADDING + hoveredCell.row() * CELL_SIZE;
-            g.fillRect(x + 2, y + 2, CELL_SIZE - 4, CELL_SIZE - 4);
+            int x = getPaddingX() + hoveredCell.col() * getCellSize();
+            int y = getPaddingY() + hoveredCell.row() * getCellSize();
+            g.fillRect(x + 2, y + 2, getCellSize() - 4, getCellSize() - 4);
         }
 
         // Draw hovered wall
@@ -183,16 +213,16 @@ public class BoardPanel extends JPanel {
             int wallCol = hoveredWall.col();
 
             if (hoveredWall.orientation() == WallOrientation.HORIZONTAL) {
-                int x = PADDING + wallCol * CELL_SIZE;
-                int y = PADDING + (wallRow + 1) * CELL_SIZE - WALL_THICKNESS / 2;
-                int width = 2 * CELL_SIZE;
+                int x = getPaddingX() + wallCol * getCellSize();
+                int y = getPaddingY() + (wallRow + 1) * getCellSize() - WALL_THICKNESS / 2;
+                int width = 2 * getCellSize();
                 int height = WALL_THICKNESS;
                 g.fillRect(x, y, width, height);
             } else {
-                int x = PADDING + (wallCol + 1) * CELL_SIZE - WALL_THICKNESS / 2;
-                int y = PADDING + wallRow * CELL_SIZE;
+                int x = getPaddingX() + (wallCol + 1) * getCellSize() - WALL_THICKNESS / 2;
+                int y = getPaddingY() + wallRow * getCellSize();
                 int width = WALL_THICKNESS;
-                int height = 2 * CELL_SIZE;
+                int height = 2 * getCellSize();
                 g.fillRect(x, y, width, height);
             }
         }
@@ -213,17 +243,17 @@ public class BoardPanel extends JPanel {
 
         if (wall.orientation() == WallOrientation.HORIZONTAL) {
             // Horizontal wall: spans 2 cells horizontally
-            int x = PADDING + wallCol * CELL_SIZE;
-            int y = PADDING + (wallRow + 1) * CELL_SIZE - WALL_THICKNESS / 2;
-            int width = 2 * CELL_SIZE;
+            int x = getPaddingX() + wallCol * getCellSize();
+            int y = getPaddingY() + (wallRow + 1) * getCellSize() - WALL_THICKNESS / 2;
+            int width = 2 * getCellSize();
             int height = WALL_THICKNESS;
             g.fillRect(x, y, width, height);
         } else {
             // Vertical wall: spans 2 cells vertically
-            int x = PADDING + (wallCol + 1) * CELL_SIZE - WALL_THICKNESS / 2;
-            int y = PADDING + wallRow * CELL_SIZE;
+            int x = getPaddingX() + (wallCol + 1) * getCellSize() - WALL_THICKNESS / 2;
+            int y = getPaddingY() + wallRow * getCellSize();
             int width = WALL_THICKNESS;
-            int height = 2 * CELL_SIZE;
+            int height = 2 * getCellSize();
             g.fillRect(x, y, width, height);
         }
     }
@@ -240,9 +270,9 @@ public class BoardPanel extends JPanel {
 
     private void drawPawn(Graphics2D g, PlayerId playerId, Position position) {
         // Calculate center of cell
-        int centerX = PADDING + position.col() * CELL_SIZE + CELL_SIZE / 2;
-        int centerY = PADDING + position.row() * CELL_SIZE + CELL_SIZE / 2;
-        int radius = CELL_SIZE / 3;
+        int centerX = getPaddingX() + position.col() * getCellSize() + getCellSize() / 2;
+        int centerY = getPaddingY() + position.row() * getCellSize() + getCellSize() / 2;
+        int radius = getCellSize() / 3;
 
         // Choose color based on player
         Color pawnColor = getPawnColor(playerId);
@@ -273,8 +303,8 @@ public class BoardPanel extends JPanel {
         int mouseY = e.getY();
 
         // Check if mouse is within board bounds
-        if (mouseX < PADDING || mouseX > PADDING + BOARD_SIZE ||
-                mouseY < PADDING || mouseY > PADDING + BOARD_SIZE) {
+        if (mouseX < getPaddingX() || mouseX > getPaddingX() + getBoardSize() ||
+                mouseY < getPaddingY() || mouseY > getPaddingY() + getBoardSize()) {
             hoveredCell = null;
             hoveredWall = null;
             repaint();
@@ -282,8 +312,8 @@ public class BoardPanel extends JPanel {
         }
 
         // Convert pixel coordinates to grid coordinates (float)
-        float gridX = (mouseX - PADDING) / (float) CELL_SIZE;
-        float gridY = (mouseY - PADDING) / (float) CELL_SIZE;
+        float gridX = (mouseX - getPaddingX()) / (float) getCellSize();
+        float gridY = (mouseY - getPaddingY()) / (float) getCellSize();
 
         // Get the cell we're in
         int cellRow = (int) gridY;

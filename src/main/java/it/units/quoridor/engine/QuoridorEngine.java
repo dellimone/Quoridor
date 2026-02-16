@@ -143,6 +143,7 @@ public class QuoridorEngine implements GameEngine {
 
         if (winChecker.isWin(state, playerId)) {
             state = state.withGameFinished(playerId);
+            return MoveResult.win();
         }
 
         return MoveResult.success();
@@ -162,6 +163,7 @@ public class QuoridorEngine implements GameEngine {
 
         if (winChecker.isWin(state, playerId)) {
             state = state.withGameFinished(playerId);
+            return MoveResult.win();
         }
         return MoveResult.success();
     }

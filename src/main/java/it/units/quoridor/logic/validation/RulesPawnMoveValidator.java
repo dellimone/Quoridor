@@ -66,19 +66,40 @@ public class RulesPawnMoveValidator implements PawnMoveValidator{
     // another case for MD=2 for later (diagonal jump)
     private boolean canDiagonalJump(Board board, Position from, Position target, int stepDr, int stepDc) {
 
+        // target has to be free
         if (board.occupantAt(target).isPresent()) return false;
 
-        return Direction.fromUnitDelta(stepDr, 0)
-                .flatMap(front -> from.tryMove(front)
-                        .filter(adj -> !board.isEdgeBlocked(from, front))
-                        .filter(adj -> board.occupantAt(adj).isPresent())
-                        .filter(adj -> !canStraightJump(board, from, front))
-                        .flatMap(adj -> Direction.fromUnitDelta(0, stepDc)
-                                .flatMap(side -> adj.tryMove(side)
-                                        .filter(p -> p.equals(target))
-                                        .filter(p -> !board.isEdgeBlocked(adj, side))
-                                )
-                        )
+        // two types of "diagonal" moves
+        // - stand in "vertical" front and move E/W of the other pawn
+        // - stand in "horizontal" front and move N/S of the other pawn
+        Optional<Direction> verticalFront   = Direction.fromUnitDelta(stepDr, 0);   // N or S
+        Optional<Direction> horizontalFront = Direction.fromUnitDelta(0, stepDc);   // E or W
+
+        // pawn in vertical-front, move sideways from pawn
+        boolean viaVertical = verticalFront.isPresent()
+                && horizontalFront.isPresent()
+                && from.tryMove(verticalFront.get())
+                .filter(adj -> !board.isEdgeBlocked(from, verticalFront.get()))
+                .filter(adj -> board.occupantAt(adj).isPresent())
+                .filter(adj -> !canStraightJump(board, from, verticalFront.get())) // jump blocked => diagonal allowed
+                .flatMap(adj -> adj.tryMove(horizontalFront.get())
+                        .filter(p -> p.equals(target))
+                        .filter(p -> !board.isEdgeBlocked(adj, horizontalFront.get()))
+                )
+                .isPresent();
+
+        if (viaVertical) return true;
+
+        // but if pawn in horizontal-front, move north/south of the pawn
+        return horizontalFront.isPresent()
+                && verticalFront.isPresent()
+                && from.tryMove(horizontalFront.get())
+                .filter(adj -> !board.isEdgeBlocked(from, horizontalFront.get()))
+                .filter(adj -> board.occupantAt(adj).isPresent())
+                .filter(adj -> !canStraightJump(board, from, horizontalFront.get()))
+                .flatMap(adj -> adj.tryMove(verticalFront.get())
+                        .filter(p -> p.equals(target))
+                        .filter(p -> !board.isEdgeBlocked(adj, verticalFront.get()))
                 )
                 .isPresent();
     }
