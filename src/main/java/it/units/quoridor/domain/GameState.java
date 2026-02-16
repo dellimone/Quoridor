@@ -77,14 +77,6 @@ public record GameState(
                 GameStatus.IN_PROGRESS, null);
     }
 
-    public GameState withPawnMoved(PlayerId playerId, Direction direction) {
-        Position currentPos = board.playerPosition(playerId);
-        Position newPos = currentPos.move(direction);
-        Board newBoard = board.withPlayerAt(playerId, newPos);
-
-        return this.withBoard(newBoard);
-    }
-
     public GameState withPawnMovedTo(PlayerId playerId, Position destination) {
         Board newBoard = board.withPlayerAt(playerId, destination);
         return this.withBoard(newBoard);

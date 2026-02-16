@@ -37,19 +37,4 @@ public class QuoridorGameRules implements GameRules {
         throw  new IllegalArgumentException("Unknown PlayerCount: " + playerCount);
     }
 
-    @Override
-    public PlayerId getNextPlayer(PlayerId currentPlayer, PlayerCount playerCount) {
-        return switch (playerCount) {
-            case TWO_PLAYERS -> currentPlayer == PlayerId.PLAYER_1
-                    ? PlayerId.PLAYER_2
-                    : PlayerId.PLAYER_1;
-
-            case FOUR_PLAYERS -> switch (currentPlayer) {
-                case PLAYER_1 -> PlayerId.PLAYER_2;
-                case PLAYER_2 -> PlayerId.PLAYER_3;
-                case PLAYER_3 -> PlayerId.PLAYER_4;
-                case PLAYER_4 -> PlayerId.PLAYER_1;
-            };
-        };
-    }
 }

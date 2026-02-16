@@ -292,61 +292,6 @@ class GameStateTest {
         assertEquals(PlayerId.PLAYER_2, nextTurn.currentPlayerId()); // Turn advanced
     }
 
-    // Tests for withPawnMoved transformation
-
-    @Test
-    void withPawnMovedUpdatesPlayerPosition() {
-        Board board = new Board()
-                .withPlayerAt(PlayerId.PLAYER_1, new Position(0, 4))
-                .withPlayerAt(PlayerId.PLAYER_2, new Position(8, 4));
-        Player player1 = new Player(PlayerId.PLAYER_1, "Alice", 10);
-        Player player2 = new Player(PlayerId.PLAYER_2, "Bob", 10);
-        List<Player> players = List.of(player1, player2);
-        GameState gameState = new GameState(board, players);
-
-        GameState newState = gameState.withPawnMoved(PlayerId.PLAYER_1, Direction.NORTH);
-
-        // Player should be moved
-        assertEquals(new Position(1, 4), newState.getPlayerPosition(PlayerId.PLAYER_1));
-        // Other player unchanged
-        assertEquals(new Position(8, 4), newState.getPlayerPosition(PlayerId.PLAYER_2));
-    }
-
-    @Test
-    void withPawnMovedDoesNotAdvanceTurn() {
-        Board board = new Board()
-                .withPlayerAt(PlayerId.PLAYER_1, new Position(0, 4))
-                .withPlayerAt(PlayerId.PLAYER_2, new Position(8, 4));
-        Player player1 = new Player(PlayerId.PLAYER_1, "Alice", 10);
-        Player player2 = new Player(PlayerId.PLAYER_2, "Bob", 10);
-        List<Player> players = List.of(player1, player2);
-        GameState gameState = new GameState(board, players);
-
-        GameState newState = gameState.withPawnMoved(PlayerId.PLAYER_1, Direction.EAST);
-
-        // Turn should NOT advance — that's the engine's responsibility
-        assertEquals(PlayerId.PLAYER_1, gameState.currentPlayerId());
-        assertEquals(PlayerId.PLAYER_1, newState.currentPlayerId());
-    }
-
-    @Test
-    void withPawnMovedPreservesPlayers() {
-        Board board = new Board()
-                .withPlayerAt(PlayerId.PLAYER_1, new Position(0, 4))
-                .withPlayerAt(PlayerId.PLAYER_2, new Position(8, 4));
-        Player player1 = new Player(PlayerId.PLAYER_1, "Alice", 10);
-        Player player2 = new Player(PlayerId.PLAYER_2, "Bob", 10);
-        List<Player> players = List.of(player1, player2);
-        GameState gameState = new GameState(board, players);
-
-        GameState newState = gameState.withPawnMoved(PlayerId.PLAYER_1, Direction.NORTH);
-
-        // Players should be unchanged (walls, names, etc.)
-        assertEquals(10, newState.getPlayer(PlayerId.PLAYER_1).wallsRemaining());
-        assertEquals(10, newState.getPlayer(PlayerId.PLAYER_2).wallsRemaining());
-        assertEquals("Alice", newState.getPlayer(PlayerId.PLAYER_1).name());
-    }
-
     // Tests for withWallPlaced transformation
 
     @Test

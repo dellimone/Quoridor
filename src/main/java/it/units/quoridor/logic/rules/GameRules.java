@@ -9,6 +9,4 @@ public interface GameRules {
     int getGoalRow(PlayerId playerId);
 
     int getInitialWallCount(PlayerCount playerCount);
-
-    PlayerId getNextPlayer(PlayerId currentPlayer, PlayerCount playerCount);
 }
