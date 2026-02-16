@@ -34,7 +34,7 @@ public class InitialStateFactory {
 
         // we build the players
         List<Player> players = specs.stream()
-                .map(s -> new Player(s.id(), s.name(), walls, rules.getGoalRow(s.id())))
+                .map(s -> new Player(s.id(), s.name(), walls))
                 .toList();
 
         Board board = new Board();

@@ -22,8 +22,8 @@ public class WallValidatorTest {
     @Test
     void legalWallPlacement() {
         // create a small example for board
-        Player p1 = new Player(PlayerId.PLAYER_1, "P1", 10, 8);
-        Player p2 = new Player(PlayerId.PLAYER_2, "P2", 10, 0);
+        Player p1 = new Player(PlayerId.PLAYER_1, "P1", 10);
+        Player p2 = new Player(PlayerId.PLAYER_2, "P2", 10);
 
         WallPosition wallPosition = new WallPosition(1,5);
         Wall wall = new Wall(wallPosition, WallOrientation.HORIZONTAL);
@@ -41,8 +41,8 @@ public class WallValidatorTest {
     @Test
     void overlappingWalls_returnsFalse() {
         // create a small example for board
-        Player p1 = new Player(PlayerId.PLAYER_1, "P1", 10, 8);
-        Player p2 = new Player(PlayerId.PLAYER_2, "P2", 10, 0);
+        Player p1 = new Player(PlayerId.PLAYER_1, "P1", 10);
+        Player p2 = new Player(PlayerId.PLAYER_2, "P2", 10);
 
         WallPosition wallPosition = new WallPosition(3,3);
         Wall wall = new Wall(wallPosition, WallOrientation.HORIZONTAL);
@@ -64,8 +64,8 @@ public class WallValidatorTest {
     @Test
     void crossingWalls_returnFalse() {
         // create a small example for board
-        Player p1 = new Player(PlayerId.PLAYER_1, "P1", 10, 8);
-        Player p2 = new Player(PlayerId.PLAYER_2, "P2", 10, 0);
+        Player p1 = new Player(PlayerId.PLAYER_1, "P1", 10);
+        Player p2 = new Player(PlayerId.PLAYER_2, "P2", 10);
 
         WallPosition wallPosition = new WallPosition(3,3);
         Wall wall = new Wall(wallPosition, WallOrientation.HORIZONTAL);
@@ -87,8 +87,8 @@ public class WallValidatorTest {
     @Test
     void wallBlockingAllPaths_returnFalse() {
         // create a small example for board
-        Player p1 = new Player(PlayerId.PLAYER_1, "P1", 10, 8);
-        Player p2 = new Player(PlayerId.PLAYER_2, "P2", 10, 0);
+        Player p1 = new Player(PlayerId.PLAYER_1, "P1", 10);
+        Player p2 = new Player(PlayerId.PLAYER_2, "P2", 10);
 
         Board board = new Board()
                 .withPlayerAt(PlayerId.PLAYER_1, new Position(0, 4))

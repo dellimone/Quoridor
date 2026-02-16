@@ -21,8 +21,8 @@ public class PawnValidatorTest {
     @Test
     void returnsTrue_freeSquareFromWalls() {
         // create a small example for board
-        Player p1 = new Player(PlayerId.PLAYER_1, "P1", 10, 8);
-        Player p2 = new Player(PlayerId.PLAYER_2, "P2", 10, 0);
+        Player p1 = new Player(PlayerId.PLAYER_1, "P1", 10);
+        Player p2 = new Player(PlayerId.PLAYER_2, "P2", 10);
 
         Board board = new Board()
                 .withPlayerAt(PlayerId.PLAYER_1, new Position(0, 4))
@@ -37,8 +37,8 @@ public class PawnValidatorTest {
     @Test
     void returnsFalse_occupiedSquareByWall() {
         // create a small example for board
-        Player p1 = new Player(PlayerId.PLAYER_1, "P1", 10, 8);
-        Player p2 = new Player(PlayerId.PLAYER_2, "P2", 10, 0);
+        Player p1 = new Player(PlayerId.PLAYER_1, "P1", 10);
+        Player p2 = new Player(PlayerId.PLAYER_2, "P2", 10);
 
         Board board = new Board()
                 .withPlayerAt(PlayerId.PLAYER_1, new Position(0, 4))
@@ -59,8 +59,8 @@ public class PawnValidatorTest {
     @Test
     void returnsTrue_proposedSquareOccupiedBehindFree() {
         // create a small example for board
-        Player p1 = new Player(PlayerId.PLAYER_1, "P1", 10, 8);
-        Player p2 = new Player(PlayerId.PLAYER_2, "P2", 10, 0);
+        Player p1 = new Player(PlayerId.PLAYER_1, "P1", 10);
+        Player p2 = new Player(PlayerId.PLAYER_2, "P2", 10);
 
         Board board = new Board()
                 .withPlayerAt(PlayerId.PLAYER_1, new Position(2, 4))
@@ -75,8 +75,8 @@ public class PawnValidatorTest {
     @Test
     void returnsFalse_proposedSquareOccupiedBehindWall() {
         // create a small example for board
-        Player p1 = new Player(PlayerId.PLAYER_1, "P1", 10, 8);
-        Player p2 = new Player(PlayerId.PLAYER_2, "P2", 10, 0);
+        Player p1 = new Player(PlayerId.PLAYER_1, "P1", 10);
+        Player p2 = new Player(PlayerId.PLAYER_2, "P2", 10);
         WallPosition wallPosition = new WallPosition(0,4);
         Wall wall = new Wall(wallPosition, WallOrientation.HORIZONTAL);
 
@@ -94,9 +94,9 @@ public class PawnValidatorTest {
     @Test
     void returnsFalse_proposedSquareOccupiedBehindAnotherPlayer() {
         // create a small example for board
-        Player p1 = new Player(PlayerId.PLAYER_1, "P1", 10, 8);
-        Player p2 = new Player(PlayerId.PLAYER_2, "P2", 10, 0);
-        Player p3 = new Player(PlayerId.PLAYER_3, "P3", 10, 0);
+        Player p1 = new Player(PlayerId.PLAYER_1, "P1", 10);
+        Player p2 = new Player(PlayerId.PLAYER_2, "P2", 10);
+        Player p3 = new Player(PlayerId.PLAYER_3, "P3", 10);
 
         Board board = new Board()
                 .withPlayerAt(PlayerId.PLAYER_1, new Position(2, 4))
@@ -112,8 +112,8 @@ public class PawnValidatorTest {
     @Test
     void returnsFalse_proposedSquareOccupiedBehindVoid() {
         // create a small example for board
-        Player p1 = new Player(PlayerId.PLAYER_1, "P1", 10, 8);
-        Player p2 = new Player(PlayerId.PLAYER_2, "P2", 10, 0);
+        Player p1 = new Player(PlayerId.PLAYER_1, "P1", 10);
+        Player p2 = new Player(PlayerId.PLAYER_2, "P2", 10);
 
         Board board = new Board()
                 .withPlayerAt(PlayerId.PLAYER_1, new Position(1, 4))
@@ -127,8 +127,8 @@ public class PawnValidatorTest {
     // 7. diagonal allowed when jump is blocked by a wall behind BUT side is open
     @Test
     void allowedDiagonal_jumpBlocked_sideOpen() {
-        Player p1 = new Player(PlayerId.PLAYER_1, "P1", 10, 8);
-        Player p2 = new Player(PlayerId.PLAYER_2, "P2", 10, 0);
+        Player p1 = new Player(PlayerId.PLAYER_1, "P1", 10);
+        Player p2 = new Player(PlayerId.PLAYER_2, "P2", 10);
         WallPosition wallPosition = new WallPosition(0,4);
         Wall wall = new Wall(wallPosition, WallOrientation.HORIZONTAL);
 
@@ -145,8 +145,8 @@ public class PawnValidatorTest {
     // 8. diagonal is not allowed when jump is not allowed and side is blocked by a wall
     @Test
     void noDiagonal_jumpBlocked_sideWallBlocked () {
-        Player p1 = new Player(PlayerId.PLAYER_1, "P1", 10, 8);
-        Player p2 = new Player(PlayerId.PLAYER_2, "P2", 10, 0);
+        Player p1 = new Player(PlayerId.PLAYER_1, "P1", 10);
+        Player p2 = new Player(PlayerId.PLAYER_2, "P2", 10);
         WallPosition wallPosition = new WallPosition(1,4);
         Wall wall = new Wall(wallPosition, WallOrientation.HORIZONTAL);
 
@@ -167,8 +167,8 @@ public class PawnValidatorTest {
     // 9. diagonal is allowed only in the "horizontal case" -> diagonals on N/S
     @Test
     void Diagonal_horizontalCase () {
-        Player p1 = new Player(PlayerId.PLAYER_1, "P1", 10, 8);
-        Player p2 = new Player(PlayerId.PLAYER_2, "P2", 10, 0);
+        Player p1 = new Player(PlayerId.PLAYER_1, "P1", 10);
+        Player p2 = new Player(PlayerId.PLAYER_2, "P2", 10);
         WallPosition wallPosition = new WallPosition(2,2);
         Wall wall = new Wall(wallPosition, WallOrientation.VERTICAL);
 

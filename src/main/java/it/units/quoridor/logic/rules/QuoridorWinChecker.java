@@ -7,16 +7,17 @@ import it.units.quoridor.engine.WinChecker;
 
 public class QuoridorWinChecker implements WinChecker {
 
+    private final GameRules rules;
+
+    public QuoridorWinChecker(GameRules rules) {
+        this.rules = rules;
+    }
+
     @Override
     public boolean isWin(GameState state, PlayerId playerId) {
-        // Get player's current position from the board
         Position currentPosition = state.getPlayerPosition(playerId);
+        int goalRow = rules.getGoalRow(playerId);
 
-        // Get player's goal row from their player data
-        //TODO: extract goal row from Player and move it to Rules
-        int goalRow = state.getPlayer(playerId).goalRow();
-
-        // Player wins when their current row equals their goal row
         return currentPosition.row() == goalRow;
     }
 }

@@ -11,8 +11,8 @@ class GameStateTest {
     @Test
     void createGameStateWithBoardAndPlayers() {
         Board board = new Board();
-        Player player1 = new Player(PlayerId.PLAYER_1, "Alice", 10, 0);
-        Player player2 = new Player(PlayerId.PLAYER_2, "Bob", 10, 8);
+        Player player1 = new Player(PlayerId.PLAYER_1, "Alice", 10);
+        Player player2 = new Player(PlayerId.PLAYER_2, "Bob", 10);
         List<Player> players = List.of(player1, player2);
 
         GameState gameState = new GameState(board, players);
@@ -28,8 +28,8 @@ class GameStateTest {
     @Test
     void getCurrentPlayerReturnsPlayerWhoseTurnItIs() {
         Board board = new Board();
-        Player player1 = new Player(PlayerId.PLAYER_1, "Alice", 10, 0);
-        Player player2 = new Player(PlayerId.PLAYER_2, "Bob", 10, 8);
+        Player player1 = new Player(PlayerId.PLAYER_1, "Alice", 10);
+        Player player2 = new Player(PlayerId.PLAYER_2, "Bob", 10);
         List<Player> players = List.of(player1, player2);
 
         GameState gameState = new GameState(board, players);
@@ -43,8 +43,8 @@ class GameStateTest {
     @Test
     void getPlayerByIdReturnsCorrectPlayer() {
         Board board = new Board();
-        Player player1 = new Player(PlayerId.PLAYER_1, "Alice", 10, 0);
-        Player player2 = new Player(PlayerId.PLAYER_2, "Bob", 10, 8);
+        Player player1 = new Player(PlayerId.PLAYER_1, "Alice", 10);
+        Player player2 = new Player(PlayerId.PLAYER_2, "Bob", 10);
         List<Player> players = List.of(player1, player2);
 
         GameState gameState = new GameState(board, players);
@@ -58,8 +58,8 @@ class GameStateTest {
     @Test
     void withNextTurnReturnsNewStateWithNextPlayer() {
         Board board = new Board();
-        Player player1 = new Player(PlayerId.PLAYER_1, "Alice", 10, 0);
-        Player player2 = new Player(PlayerId.PLAYER_2, "Bob", 10, 8);
+        Player player1 = new Player(PlayerId.PLAYER_1, "Alice", 10);
+        Player player2 = new Player(PlayerId.PLAYER_2, "Bob", 10);
         List<Player> players = List.of(player1, player2);
         GameState gameState = new GameState(board, players);
 
@@ -75,8 +75,8 @@ class GameStateTest {
     @Test
     void twoPlayerGameCyclesCorrectly() {
         Board board = new Board();
-        Player player1 = new Player(PlayerId.PLAYER_1, "Alice", 10, 0);
-        Player player2 = new Player(PlayerId.PLAYER_2, "Bob", 10, 8);
+        Player player1 = new Player(PlayerId.PLAYER_1, "Alice", 10);
+        Player player2 = new Player(PlayerId.PLAYER_2, "Bob", 10);
         List<Player> players = List.of(player1, player2);
         GameState state = new GameState(board, players);
 
@@ -96,10 +96,10 @@ class GameStateTest {
     @Test
     void fourPlayerGameCyclesCorrectly() {
         Board board = new Board();
-        Player player1 = new Player(PlayerId.PLAYER_1, "Alice", 5, 0);
-        Player player2 = new Player(PlayerId.PLAYER_2, "Bob", 5, 8);
-        Player player3 = new Player(PlayerId.PLAYER_3, "Charlie", 5, 4);
-        Player player4 = new Player(PlayerId.PLAYER_4, "Diana", 5, 4);
+        Player player1 = new Player(PlayerId.PLAYER_1, "Alice", 5);
+        Player player2 = new Player(PlayerId.PLAYER_2, "Bob", 5);
+        Player player3 = new Player(PlayerId.PLAYER_3, "Charlie", 5);
+        Player player4 = new Player(PlayerId.PLAYER_4, "Diana", 5);
         List<Player> players = List.of(player1, player2, player3, player4);
         GameState state = new GameState(board, players);
 
@@ -124,8 +124,8 @@ class GameStateTest {
     @Test
     void newGameStateHasStatusInProgress() {
         Board board = new Board();
-        Player player1 = new Player(PlayerId.PLAYER_1, "Alice", 10, 0);
-        Player player2 = new Player(PlayerId.PLAYER_2, "Bob", 10, 8);
+        Player player1 = new Player(PlayerId.PLAYER_1, "Alice", 10);
+        Player player2 = new Player(PlayerId.PLAYER_2, "Bob", 10);
         List<Player> players = List.of(player1, player2);
 
         GameState gameState = new GameState(board, players);
@@ -138,8 +138,8 @@ class GameStateTest {
     @Test
     void isGameOverReturnsFalseForInProgressGame() {
         Board board = new Board();
-        Player player1 = new Player(PlayerId.PLAYER_1, "Alice", 10, 0);
-        Player player2 = new Player(PlayerId.PLAYER_2, "Bob", 10, 8);
+        Player player1 = new Player(PlayerId.PLAYER_1, "Alice", 10);
+        Player player2 = new Player(PlayerId.PLAYER_2, "Bob", 10);
         List<Player> players = List.of(player1, player2);
 
         GameState gameState = new GameState(board, players);
@@ -150,8 +150,8 @@ class GameStateTest {
     @Test
     void withGameFinishedSetsStatusAndWinner() {
         Board board = new Board();
-        Player player1 = new Player(PlayerId.PLAYER_1, "Alice", 10, 0);
-        Player player2 = new Player(PlayerId.PLAYER_2, "Bob", 10, 8);
+        Player player1 = new Player(PlayerId.PLAYER_1, "Alice", 10);
+        Player player2 = new Player(PlayerId.PLAYER_2, "Bob", 10);
         List<Player> players = List.of(player1, player2);
         GameState gameState = new GameState(board, players);
 
@@ -165,8 +165,8 @@ class GameStateTest {
     @Test
     void withGameFinishedPreservesOtherFields() {
         Board board = new Board();
-        Player player1 = new Player(PlayerId.PLAYER_1, "Alice", 10, 0);
-        Player player2 = new Player(PlayerId.PLAYER_2, "Bob", 10, 8);
+        Player player1 = new Player(PlayerId.PLAYER_1, "Alice", 10);
+        Player player2 = new Player(PlayerId.PLAYER_2, "Bob", 10);
         List<Player> players = List.of(player1, player2);
         GameState gameState = new GameState(board, players, 1); // P2's turn
 
@@ -181,8 +181,8 @@ class GameStateTest {
     @Test
     void withGameInProgressClearsWinner() {
         Board board = new Board();
-        Player player1 = new Player(PlayerId.PLAYER_1, "Alice", 10, 0);
-        Player player2 = new Player(PlayerId.PLAYER_2, "Bob", 10, 8);
+        Player player1 = new Player(PlayerId.PLAYER_1, "Alice", 10);
+        Player player2 = new Player(PlayerId.PLAYER_2, "Bob", 10);
         List<Player> players = List.of(player1, player2);
         GameState gameState = new GameState(board, players);
 
@@ -201,8 +201,8 @@ class GameStateTest {
     @Test
     void withGameInProgressPreservesOtherFields() {
         Board board = new Board();
-        Player player1 = new Player(PlayerId.PLAYER_1, "Alice", 10, 0);
-        Player player2 = new Player(PlayerId.PLAYER_2, "Bob", 10, 8);
+        Player player1 = new Player(PlayerId.PLAYER_1, "Alice", 10);
+        Player player2 = new Player(PlayerId.PLAYER_2, "Bob", 10);
         List<Player> players = List.of(player1, player2);
         GameState finishedState = new GameState(board, players, 1);
         finishedState = finishedState.withGameFinished(PlayerId.PLAYER_2);
@@ -217,8 +217,8 @@ class GameStateTest {
     @Test
     void isGameOverReturnsTrueForFinishedGame() {
         Board board = new Board();
-        Player player1 = new Player(PlayerId.PLAYER_1, "Alice", 10, 0);
-        Player player2 = new Player(PlayerId.PLAYER_2, "Bob", 10, 8);
+        Player player1 = new Player(PlayerId.PLAYER_1, "Alice", 10);
+        Player player2 = new Player(PlayerId.PLAYER_2, "Bob", 10);
         List<Player> players = List.of(player1, player2);
         GameState gameState = new GameState(board, players);
 
@@ -231,8 +231,8 @@ class GameStateTest {
     @Test
     void withBoardPreservesGameStatus() {
         Board board = new Board();
-        Player player1 = new Player(PlayerId.PLAYER_1, "Alice", 10, 0);
-        Player player2 = new Player(PlayerId.PLAYER_2, "Bob", 10, 8);
+        Player player1 = new Player(PlayerId.PLAYER_1, "Alice", 10);
+        Player player2 = new Player(PlayerId.PLAYER_2, "Bob", 10);
         List<Player> players = List.of(player1, player2);
         GameState gameState = new GameState(board, players);
 
@@ -254,8 +254,8 @@ class GameStateTest {
     @Test
     void withUpdatedPlayerPreservesGameStatus() {
         Board board = new Board();
-        Player player1 = new Player(PlayerId.PLAYER_1, "Alice", 10, 0);
-        Player player2 = new Player(PlayerId.PLAYER_2, "Bob", 10, 8);
+        Player player1 = new Player(PlayerId.PLAYER_1, "Alice", 10);
+        Player player2 = new Player(PlayerId.PLAYER_2, "Bob", 10);
         List<Player> players = List.of(player1, player2);
         GameState gameState = new GameState(board, players);
 
@@ -275,8 +275,8 @@ class GameStateTest {
     @Test
     void withNextTurnPreservesGameStatus() {
         Board board = new Board();
-        Player player1 = new Player(PlayerId.PLAYER_1, "Alice", 10, 0);
-        Player player2 = new Player(PlayerId.PLAYER_2, "Bob", 10, 8);
+        Player player1 = new Player(PlayerId.PLAYER_1, "Alice", 10);
+        Player player2 = new Player(PlayerId.PLAYER_2, "Bob", 10);
         List<Player> players = List.of(player1, player2);
         GameState gameState = new GameState(board, players);
 
@@ -299,8 +299,8 @@ class GameStateTest {
         Board board = new Board()
                 .withPlayerAt(PlayerId.PLAYER_1, new Position(0, 4))
                 .withPlayerAt(PlayerId.PLAYER_2, new Position(8, 4));
-        Player player1 = new Player(PlayerId.PLAYER_1, "Alice", 10, 8);
-        Player player2 = new Player(PlayerId.PLAYER_2, "Bob", 10, 0);
+        Player player1 = new Player(PlayerId.PLAYER_1, "Alice", 10);
+        Player player2 = new Player(PlayerId.PLAYER_2, "Bob", 10);
         List<Player> players = List.of(player1, player2);
         GameState gameState = new GameState(board, players);
 
@@ -317,8 +317,8 @@ class GameStateTest {
         Board board = new Board()
                 .withPlayerAt(PlayerId.PLAYER_1, new Position(0, 4))
                 .withPlayerAt(PlayerId.PLAYER_2, new Position(8, 4));
-        Player player1 = new Player(PlayerId.PLAYER_1, "Alice", 10, 8);
-        Player player2 = new Player(PlayerId.PLAYER_2, "Bob", 10, 0);
+        Player player1 = new Player(PlayerId.PLAYER_1, "Alice", 10);
+        Player player2 = new Player(PlayerId.PLAYER_2, "Bob", 10);
         List<Player> players = List.of(player1, player2);
         GameState gameState = new GameState(board, players);
 
@@ -334,8 +334,8 @@ class GameStateTest {
         Board board = new Board()
                 .withPlayerAt(PlayerId.PLAYER_1, new Position(0, 4))
                 .withPlayerAt(PlayerId.PLAYER_2, new Position(8, 4));
-        Player player1 = new Player(PlayerId.PLAYER_1, "Alice", 10, 8);
-        Player player2 = new Player(PlayerId.PLAYER_2, "Bob", 10, 0);
+        Player player1 = new Player(PlayerId.PLAYER_1, "Alice", 10);
+        Player player2 = new Player(PlayerId.PLAYER_2, "Bob", 10);
         List<Player> players = List.of(player1, player2);
         GameState gameState = new GameState(board, players);
 
@@ -354,8 +354,8 @@ class GameStateTest {
         Board board = new Board()
                 .withPlayerAt(PlayerId.PLAYER_1, new Position(0, 4))
                 .withPlayerAt(PlayerId.PLAYER_2, new Position(8, 4));
-        Player player1 = new Player(PlayerId.PLAYER_1, "Alice", 10, 8);
-        Player player2 = new Player(PlayerId.PLAYER_2, "Bob", 10, 0);
+        Player player1 = new Player(PlayerId.PLAYER_1, "Alice", 10);
+        Player player2 = new Player(PlayerId.PLAYER_2, "Bob", 10);
         List<Player> players = List.of(player1, player2);
         GameState gameState = new GameState(board, players);
 
@@ -373,8 +373,8 @@ class GameStateTest {
         Board board = new Board()
                 .withPlayerAt(PlayerId.PLAYER_1, new Position(0, 4))
                 .withPlayerAt(PlayerId.PLAYER_2, new Position(8, 4));
-        Player player1 = new Player(PlayerId.PLAYER_1, "Alice", 10, 8);
-        Player player2 = new Player(PlayerId.PLAYER_2, "Bob", 10, 0);
+        Player player1 = new Player(PlayerId.PLAYER_1, "Alice", 10);
+        Player player2 = new Player(PlayerId.PLAYER_2, "Bob", 10);
         List<Player> players = List.of(player1, player2);
         GameState gameState = new GameState(board, players);
 
@@ -393,8 +393,8 @@ class GameStateTest {
         Board board = new Board()
                 .withPlayerAt(PlayerId.PLAYER_1, new Position(0, 4))
                 .withPlayerAt(PlayerId.PLAYER_2, new Position(8, 4));
-        Player player1 = new Player(PlayerId.PLAYER_1, "Alice", 10, 8);
-        Player player2 = new Player(PlayerId.PLAYER_2, "Bob", 10, 0);
+        Player player1 = new Player(PlayerId.PLAYER_1, "Alice", 10);
+        Player player2 = new Player(PlayerId.PLAYER_2, "Bob", 10);
         List<Player> players = List.of(player1, player2);
         GameState gameState = new GameState(board, players);
 
@@ -411,8 +411,8 @@ class GameStateTest {
         Board board = new Board()
                 .withPlayerAt(PlayerId.PLAYER_1, new Position(0, 4))
                 .withPlayerAt(PlayerId.PLAYER_2, new Position(8, 4));
-        Player player1 = new Player(PlayerId.PLAYER_1, "Alice", 10, 8);
-        Player player2 = new Player(PlayerId.PLAYER_2, "Bob", 10, 0);
+        Player player1 = new Player(PlayerId.PLAYER_1, "Alice", 10);
+        Player player2 = new Player(PlayerId.PLAYER_2, "Bob", 10);
         List<Player> players = List.of(player1, player2);
         GameState gameState = new GameState(board, players);
 
@@ -429,8 +429,8 @@ class GameStateTest {
     @Test
     void currentPlayerWallsRemainingReturnsCurrentPlayerWallCount() {
         Board board = new Board();
-        Player player1 = new Player(PlayerId.PLAYER_1, "Alice", 10, 8);
-        Player player2 = new Player(PlayerId.PLAYER_2, "Bob", 7, 0);
+        Player player1 = new Player(PlayerId.PLAYER_1, "Alice", 10);
+        Player player2 = new Player(PlayerId.PLAYER_2, "Bob", 7);
         List<Player> players = List.of(player1, player2);
         GameState gameState = new GameState(board, players);
 
@@ -441,8 +441,8 @@ class GameStateTest {
     @Test
     void currentPlayerWallsRemainingReflectsTurnChanges() {
         Board board = new Board();
-        Player player1 = new Player(PlayerId.PLAYER_1, "Alice", 10, 8);
-        Player player2 = new Player(PlayerId.PLAYER_2, "Bob", 7, 0);
+        Player player1 = new Player(PlayerId.PLAYER_1, "Alice", 10);
+        Player player2 = new Player(PlayerId.PLAYER_2, "Bob", 7);
         List<Player> players = List.of(player1, player2);
         GameState gameState = new GameState(board, players);
 
@@ -459,8 +459,8 @@ class GameStateTest {
         Board board = new Board()
                 .withPlayerAt(PlayerId.PLAYER_1, new Position(0, 4))
                 .withPlayerAt(PlayerId.PLAYER_2, new Position(8, 4));
-        Player player1 = new Player(PlayerId.PLAYER_1, "Alice", 10, 8);
-        Player player2 = new Player(PlayerId.PLAYER_2, "Bob", 10, 0);
+        Player player1 = new Player(PlayerId.PLAYER_1, "Alice", 10);
+        Player player2 = new Player(PlayerId.PLAYER_2, "Bob", 10);
         List<Player> players = List.of(player1, player2);
         GameState gameState = new GameState(board, players);
 

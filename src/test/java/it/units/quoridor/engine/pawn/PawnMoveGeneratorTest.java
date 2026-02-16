@@ -26,8 +26,8 @@ public class PawnMoveGeneratorTest {
 
         PawnMoveGenerator generator = new PawnMoveGenerator(mockValidator);
 
-        Player p1 = new Player(PlayerId.PLAYER_1, "P1", 10, 8);
-        Player p2 = new Player(PlayerId.PLAYER_2, "P2", 10, 0);
+        Player p1 = new Player(PlayerId.PLAYER_1, "P1", 10);
+        Player p2 = new Player(PlayerId.PLAYER_2, "P2", 10);
 
         Board board = new Board()
                 .withPlayerAt(PlayerId.PLAYER_1, new Position(0, 4))
@@ -48,8 +48,8 @@ public class PawnMoveGeneratorTest {
     // 1. adjacent move appears in legal destinations
     @Test
     void adjacentMoveIncludedInLegalDestinations() {
-        Player p1 = new Player(PlayerId.PLAYER_1, "P1", 10, 8);
-        Player p2 = new Player(PlayerId.PLAYER_2, "P2", 10, 0);
+        Player p1 = new Player(PlayerId.PLAYER_1, "P1", 10);
+        Player p2 = new Player(PlayerId.PLAYER_2, "P2", 10);
 
         Board board = new Board()
                 .withPlayerAt(PlayerId.PLAYER_1, new Position(0, 4))
@@ -68,8 +68,8 @@ public class PawnMoveGeneratorTest {
     // 2. wall-blocked direction excluded from legal destinations
     @Test
     void wallBlockedDirectionExcluded() {
-        Player p1 = new Player(PlayerId.PLAYER_1, "P1", 10, 8);
-        Player p2 = new Player(PlayerId.PLAYER_2, "P2", 10, 0);
+        Player p1 = new Player(PlayerId.PLAYER_1, "P1", 10);
+        Player p2 = new Player(PlayerId.PLAYER_2, "P2", 10);
 
         Board board = new Board()
                 .addWall(new Wall(new WallPosition(0, 4), WallOrientation.VERTICAL))
@@ -86,8 +86,8 @@ public class PawnMoveGeneratorTest {
     // 3. jump: when adjacent to opponent with clear path behind, jump destination is included
     @Test
     void jumpDestinationIncluded() {
-        Player p1 = new Player(PlayerId.PLAYER_1, "P1", 10, 8);
-        Player p2 = new Player(PlayerId.PLAYER_2, "P2", 10, 0);
+        Player p1 = new Player(PlayerId.PLAYER_1, "P1", 10);
+        Player p2 = new Player(PlayerId.PLAYER_2, "P2", 10);
 
         Board board = new Board()
                 .withPlayerAt(PlayerId.PLAYER_1, new Position(0, 4))
@@ -104,8 +104,8 @@ public class PawnMoveGeneratorTest {
     // 4. out-of-bounds positions never appear
     @Test
     void outOfBoundsExcluded() {
-        Player p1 = new Player(PlayerId.PLAYER_1, "P1", 10, 8);
-        Player p2 = new Player(PlayerId.PLAYER_2, "P2", 10, 0);
+        Player p1 = new Player(PlayerId.PLAYER_1, "P1", 10);
+        Player p2 = new Player(PlayerId.PLAYER_2, "P2", 10);
 
         Board board = new Board()
                 .withPlayerAt(PlayerId.PLAYER_1, new Position(0, 4))
@@ -125,8 +125,8 @@ public class PawnMoveGeneratorTest {
     // 5. jump out of bounds: opponent at board edge, jump would go off-board
     @Test
     void jumpOutOfBoundsExcluded() {
-        Player p1 = new Player(PlayerId.PLAYER_1, "P1", 10, 8);
-        Player p2 = new Player(PlayerId.PLAYER_2, "P2", 10, 0);
+        Player p1 = new Player(PlayerId.PLAYER_1, "P1", 10);
+        Player p2 = new Player(PlayerId.PLAYER_2, "P2", 10);
 
         Board board = new Board()
                 .withPlayerAt(PlayerId.PLAYER_1, new Position(0, 7))

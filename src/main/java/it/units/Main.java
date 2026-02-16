@@ -27,7 +27,7 @@ public class Main {
             // 1. Create stateless logic components
             PathFinder pathFinder = new BfsPathFinder();
             GameRules rules = new QuoridorGameRules();
-            WinChecker winChecker = new QuoridorWinChecker();
+            WinChecker winChecker = new QuoridorWinChecker(rules);
 
             // 2. Create validators as lambdas (temporary implementations)
             PawnMoveValidator pawnValidator =
