@@ -59,7 +59,7 @@ public class RulesPawnMoveValidator implements PawnMoveValidator{
         return from.tryMove(dir)
                 .filter(adj -> !board.isEdgeBlocked(from, dir))
                 .filter(adj -> board.occupantAt(adj).isPresent())
-                .filter(adj -> canJump(board, adj, dir)) // your existing helper
+                .filter(adj -> canJump(board, adj, dir))
                 .isPresent();
     }
 
@@ -97,7 +97,7 @@ public class RulesPawnMoveValidator implements PawnMoveValidator{
 
         // diagonal target: (±1,±1) -> implement later
         if (Math.abs(dr) == 1 && Math.abs(dc) == 1) {
-            return canDiagonalJump(board, from, target, stepDr, stepDc); // placeholder for now
+            return canDiagonalJump(board, from, target, stepDr, stepDc);
         }
 
         return false;
