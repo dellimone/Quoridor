@@ -110,16 +110,16 @@ public class QuoridorEngine implements GameEngine {
         return false;
     }
 
-    private MoveResult validateTurnPreconditions(PlayerId playerId) {
+    private Optional<MoveResult> validateTurnPreconditions(PlayerId playerId) {
         if (state.isGameOver()) {
-            return MoveResult.failure("Game is over");
+            return Optional.of(MoveResult.failure("Game is over"));
         }
 
         if (!playerId.equals(state.currentPlayerId())) {
-            return MoveResult.failure("Not your turn");
+            return Optional.of(MoveResult.failure("Not your turn"));
         }
 
-        return null; // Preconditions valid
+        return Optional.empty();
     }
 
     // for the controller for the highlights
@@ -131,8 +131,8 @@ public class QuoridorEngine implements GameEngine {
 
     @Override
     public MoveResult movePawn(PlayerId playerId, Position target) {
-        MoveResult pre = validateTurnPreconditions(playerId);
-        if (pre != null) return pre;
+        Optional<MoveResult> pre = validateTurnPreconditions(playerId);
+        if (pre.isPresent()) return pre.get();
 
         if (!pawnMoveGenerator.isLegalDestination(state, playerId, target)) {
             return MoveResult.failure("Invalid pawn move");
@@ -153,9 +153,9 @@ public class QuoridorEngine implements GameEngine {
 
     @Override
     public MoveResult placeWall(PlayerId player, Wall wall) {
-        MoveResult preconditionCheck = validateTurnPreconditions(player);
-        if (preconditionCheck != null) {
-            return preconditionCheck;
+        Optional<MoveResult> preconditionCheck = validateTurnPreconditions(player);
+        if (preconditionCheck.isPresent()) {
+            return preconditionCheck.get();
         }
 
         if (state.currentPlayerWallsRemaining() == 0) {
