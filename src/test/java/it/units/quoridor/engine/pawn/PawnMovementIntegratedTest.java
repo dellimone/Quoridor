@@ -43,7 +43,7 @@ public class PawnMovementIntegratedTest {
     void engineAppliesAdjacentMove_ifAvailable() {
 
         GameEngine engine = new QuoridorEngine(rules, pawnValidator, wallValidator, winChecker);
-        engine.movePawn(PlayerId.PLAYER_1, Direction.EAST);
+        engine.movePawn(PlayerId.PLAYER_1, new Position(0, 5));
 
         assertEquals(new Position(0, 5), engine.getGameState().getPlayerPosition(PlayerId.PLAYER_1));
     }

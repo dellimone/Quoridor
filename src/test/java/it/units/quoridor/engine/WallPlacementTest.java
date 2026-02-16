@@ -124,9 +124,9 @@ public class WallPlacementTest {
         QuoridorEngine engine = new QuoridorEngine(rules, pawnValidator, wallValidator, winChecker);
 
         // Simulate a winning move to trigger game over
-        when(pawnValidator.canMovePawn(any(GameState.class), eq(PlayerId.PLAYER_1), eq(Direction.NORTH))).thenReturn(true);
+        when(pawnValidator.canMovePawn(any(GameState.class), eq(PlayerId.PLAYER_1), eq(new Position(1, 4)))).thenReturn(true);
         when(winChecker.isWin(any(GameState.class), eq(PlayerId.PLAYER_1))).thenReturn(true);
-        engine.movePawn(PlayerId.PLAYER_1, Direction.NORTH);
+        engine.movePawn(PlayerId.PLAYER_1, new Position(1, 4));
 
         assertTrue(engine.isGameOver());
 

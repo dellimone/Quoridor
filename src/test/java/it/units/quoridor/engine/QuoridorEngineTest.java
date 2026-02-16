@@ -62,8 +62,8 @@ public class QuoridorEngineTest {
         GameState oldGameState = engine.getGameState();
         assertNotEquals(initialState, oldGameState);
 
-        when(pawnValidator.canMovePawn(any(GameState.class), eq(PlayerId.PLAYER_2), eq(Direction.EAST))).thenReturn(true);
-        engine.movePawn(PlayerId.PLAYER_2, Direction.EAST);
+        when(pawnValidator.canMovePawn(any(GameState.class), eq(PlayerId.PLAYER_2), eq(new Position(8, 5)))).thenReturn(true);
+        engine.movePawn(PlayerId.PLAYER_2, new Position(8, 5));
 
         // check if current state changed
         assertNotEquals(oldGameState, engine.getGameState());
@@ -95,8 +95,8 @@ public class QuoridorEngineTest {
 
         GameState initialState = engine.getGameState();
 
-        when(pawnValidator.canMovePawn(any(GameState.class), eq(PlayerId.PLAYER_1), eq(Direction.EAST))).thenReturn(true);
-        engine.movePawn(PlayerId.PLAYER_1, Direction.EAST);
+        when(pawnValidator.canMovePawn(any(GameState.class), eq(PlayerId.PLAYER_1), eq(new Position(0, 5)))).thenReturn(true);
+        engine.movePawn(PlayerId.PLAYER_1, new Position(0, 5));
 
         assertNotEquals(initialState, engine.getGameState());
 
@@ -113,8 +113,8 @@ public class QuoridorEngineTest {
 
         GameState initialState = engine.getGameState();
 
-        when(pawnValidator.canMovePawn(any(GameState.class), eq(PlayerId.PLAYER_1), eq(Direction.EAST))).thenReturn(true);
-        engine.movePawn(PlayerId.PLAYER_1, Direction.EAST);
+        when(pawnValidator.canMovePawn(any(GameState.class), eq(PlayerId.PLAYER_1), eq(new Position(0, 5)))).thenReturn(true);
+        engine.movePawn(PlayerId.PLAYER_1, new Position(0, 5));
 
         assertNotEquals(initialState, engine.getGameState());
 
