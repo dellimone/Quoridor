@@ -2,7 +2,7 @@ name: CI
 
 on:
   push:
-    branches: [main, master, controller-refactoring, validator, diagonal-implementation]
+    branches: [main, master, code-smells]
   pull_request:
     branches: [main, master]
 

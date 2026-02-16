@@ -2,13 +2,14 @@ package it.units.quoridor.domain;
 
 import java.util.List;
 
+/** Immutable snapshot of the entire game. All {@code with*} methods return new instances. */
 public record GameState(
         Board board,
         List<Player> players,
         int currentPlayerIndex,
         GameStatus status,
         PlayerId winner) {
-    // Compact constructor
+
     public GameState {
         players = List.copyOf(players);
     }
@@ -17,7 +18,6 @@ public record GameState(
         this(board, players, currentPlayerIndex, GameStatus.IN_PROGRESS, null);
     }
 
-    // Convenience constructor - starts with first player (index 0)
     public GameState(Board board, List<Player> players) {
         this(board, players, 0, GameStatus.IN_PROGRESS, null);
     }
@@ -30,14 +30,14 @@ public record GameState(
         return players.get(currentPlayerIndex);
     }
 
-    public Player getPlayer(PlayerId playerId) {
+    public Player player(PlayerId playerId) {
         return players.stream()
                 .filter(p -> p.id().equals(playerId))
                 .findFirst()
                 .orElseThrow();
     }
 
-    public Position getPlayerPosition(PlayerId playerId) {
+    public Position playerPosition(PlayerId playerId) {
         return board.playerPosition(playerId);
     }
 
@@ -50,12 +50,10 @@ public record GameState(
         return new GameState(board, players, nextIndex, status, winner);
     }
 
-    // we return a new GameState with updated turn (useful for valid pawn movements and pawn placements)
     public GameState withBoard(Board newBoard) {
         return new GameState(newBoard, players, currentPlayerIndex, status, winner);
     }
 
-    // creates a new player list where the player with the same id is replaced -> to avoid mutating
     public GameState withUpdatedPlayer(Player updatedPlayer) {
         List<Player> newPlayers = players.stream()
                 .map(player -> player.id().equals(updatedPlayer.id()) ? updatedPlayer : player)
@@ -77,27 +75,16 @@ public record GameState(
                 GameStatus.IN_PROGRESS, null);
     }
 
-    public GameState withPawnMoved(PlayerId playerId, Direction direction) {
-        Position currentPos = board.playerPosition(playerId);
-        Position newPos = currentPos.move(direction);
-        Board newBoard = board.withPlayerAt(playerId, newPos);
-
-        return this.withBoard(newBoard).withNextTurn();
-    }
-
-    // for jumps and diagonals
     public GameState withPawnMovedTo(PlayerId playerId, Position destination) {
         Board newBoard = board.withPlayerAt(playerId, destination);
-        return this.withBoard(newBoard).withNextTurn();
+        return withBoard(newBoard);
     }
-    
 
     public GameState withWallPlaced(PlayerId playerId, Wall wall) {
         Board newBoard = board.addWall(wall);
-        Player updatedPlayer = getPlayer(playerId).useWall();
+        Player updatedPlayer = player(playerId).useWall();
 
-        return this.withBoard(newBoard)
-                   .withUpdatedPlayer(updatedPlayer)
-                   .withNextTurn();
+        return withBoard(newBoard)
+                   .withUpdatedPlayer(updatedPlayer);
     }
 }

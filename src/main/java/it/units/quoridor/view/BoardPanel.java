@@ -82,6 +82,11 @@ public class BoardPanel extends JPanel {
 
     // Helper record for wall hover
     private record WallHover(int row, int col, WallOrientation orientation) {}
+    private record HoverResult(WallHover wall, Position cell) {
+        static HoverResult ofWall(WallHover wall) { return new HoverResult(wall, null); }
+        static HoverResult ofCell(Position cell) { return new HoverResult(null, cell); }
+        static HoverResult none() { return new HoverResult(null, null); }
+    }
 
     public BoardPanel() {
         this.highlightedCells = new HashSet<>();
@@ -331,63 +336,58 @@ public class BoardPanel extends JPanel {
         float localX = gridX - cellCol;
         float localY = gridY - cellRow;
 
-        // Edge threshold (30% from edge = wall zone)
-        float edgeThreshold = 0.3f;
+        HoverResult result = detectHoverTarget(cellRow, cellCol, localX, localY);
 
-        WallHover newWall = null;
-        Position newCell = null;
+        // Update hover state if changed
+        if ((result.wall() != null && !result.wall().equals(hoveredWall)) ||
+                (result.cell() != null && !result.cell().equals(hoveredCell)) ||
+                (result.wall() == null && result.cell() == null && (hoveredWall != null || hoveredCell != null))) {
+            hoveredWall = result.wall();
+            hoveredCell = result.cell();
+            repaint();
+        }
+    }
 
-        // Check if hovering near an edge
+    private HoverResult detectHoverTarget(int cellRow, int cellCol, float localX, float localY) {
+        float edgeThreshold = 0.1f;
+
         if (localY < edgeThreshold) {
-            // Near TOP edge of cell - horizontal wall above this cell
+            // Near TOP edge — horizontal wall above
             if (cellRow > 0) {
-                // Determine wall position based on which half of the edge
                 int wallCol = (localX < 0.5f) ? Math.max(0, cellCol - 1) : cellCol;
                 if (wallCol <= 7) {
-                    newWall = new WallHover(cellRow - 1, wallCol, WallOrientation.HORIZONTAL);
+                    return HoverResult.ofWall(new WallHover(cellRow - 1, wallCol, WallOrientation.HORIZONTAL));
                 }
             }
         } else if (localY > (1.0f - edgeThreshold)) {
-            // Near BOTTOM edge of cell - horizontal wall below this cell
+            // Near BOTTOM edge — horizontal wall below
             if (cellRow < GRID_SIZE - 1) {
-                // Determine wall position based on which half of the edge
                 int wallCol = (localX < 0.5f) ? Math.max(0, cellCol - 1) : cellCol;
                 if (wallCol <= 7) {
-                    newWall = new WallHover(cellRow, wallCol, WallOrientation.HORIZONTAL);
+                    return HoverResult.ofWall(new WallHover(cellRow, wallCol, WallOrientation.HORIZONTAL));
                 }
             }
         } else if (localX < edgeThreshold) {
-            // Near LEFT edge of cell - vertical wall to the left
+            // Near LEFT edge — vertical wall to the left
             if (cellCol > 0) {
-                // Determine wall position based on which half of the edge
                 int wallRow = (localY < 0.5f) ? Math.max(0, cellRow - 1) : cellRow;
                 if (wallRow <= 7) {
-                    newWall = new WallHover(wallRow, cellCol - 1, WallOrientation.VERTICAL);
+                    return HoverResult.ofWall(new WallHover(wallRow, cellCol - 1, WallOrientation.VERTICAL));
                 }
             }
         } else if (localX > (1.0f - edgeThreshold)) {
-            // Near RIGHT edge of cell - vertical wall to the right
+            // Near RIGHT edge — vertical wall to the right
             if (cellCol < GRID_SIZE - 1) {
-                // Determine wall position based on which half of the edge
                 int wallRow = (localY < 0.5f) ? Math.max(0, cellRow - 1) : cellRow;
                 if (wallRow <= 7) {
-                    newWall = new WallHover(wallRow, cellCol, WallOrientation.VERTICAL);
+                    return HoverResult.ofWall(new WallHover(wallRow, cellCol, WallOrientation.VERTICAL));
                 }
             }
         } else {
-            // In the center of the cell
-            newCell = new Position(cellRow, cellCol);
+            return HoverResult.ofCell(new Position(cellRow, cellCol));
         }
 
-
-        // Update hover state if changed
-        if ((newWall != null && !newWall.equals(hoveredWall)) ||
-                (newCell != null && !newCell.equals(hoveredCell)) ||
-                (newWall == null && newCell == null && (hoveredWall != null || hoveredCell != null))) {
-            hoveredWall = newWall;
-            hoveredCell = newCell;
-            repaint();
-        }
+        return HoverResult.none();
     }
 
     private void handleMouseClick(MouseEvent e) {
@@ -403,68 +403,5 @@ public class BoardPanel extends JPanel {
         } else if (hoveredCell != null) {
             listener.onCellClicked(hoveredCell.row(), hoveredCell.col());
         }
-    }
-
-    // === For Testing ===
-
-    public static void main(String[] args) {
-        SwingUtilities.invokeLater(() -> {
-            JFrame frame = new JFrame("BoardPanel Test");
-            frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-
-            BoardPanel panel = new BoardPanel();
-
-            // Test with some data
-            Map<PlayerId, Position> positions = new HashMap<>();
-            positions.put(PlayerId.PLAYER_1, new Position(8, 4));
-            positions.put(PlayerId.PLAYER_2, new Position(0, 4));
-
-            Set<Wall> walls = new HashSet<>();
-            walls.add(new Wall(
-                    new it.units.quoridor.domain.WallPosition(3, 4),
-                    WallOrientation.HORIZONTAL
-            ));
-            walls.add(new Wall(
-                    new it.units.quoridor.domain.WallPosition(5, 2),
-                    WallOrientation.VERTICAL
-            ));
-
-            BoardViewModel board = new BoardViewModel(positions, walls);
-            panel.render(board);
-
-            // Highlight some cells
-            Set<Position> highlights = new HashSet<>();
-            highlights.add(new Position(7, 4));
-            highlights.add(new Position(8, 3));
-            highlights.add(new Position(8, 5));
-            panel.highlightCells(highlights);
-
-            // Add click listener
-            panel.setViewListener(new ViewListener() {
-                @Override
-                public void onNewGame(int playerCount) {}
-
-                @Override
-                public void onCellClicked(int row, int col) {
-                    System.out.println("Cell clicked: (" + row + ", " + col + ")");
-                }
-
-                @Override
-                public void onWallPlacement(int row, int col, WallOrientation orientation) {
-                    System.out.println("Wall placement: " + row + ", " + col + " " + orientation);
-                }
-
-                @Override
-                public void onUndo() {}
-
-                @Override
-                public void onQuit() {}
-            });
-
-            frame.add(panel);
-            frame.pack();
-            frame.setLocationRelativeTo(null);
-            frame.setVisible(true);
-        });
     }
 }
