@@ -42,7 +42,7 @@ class ControllerTest {
         GameState gameState = mock(GameState.class);
         Board board = mock(Board.class);
 
-        when(gameEngine.getGameState()).thenReturn(gameState);
+        when(gameEngine.gameState()).thenReturn(gameState);
         when(gameState.board()).thenReturn(board);
         when(gameState.players()).thenReturn(List.of());
         when(board.walls()).thenReturn(Collections.emptySet());
@@ -63,7 +63,7 @@ class ControllerTest {
         Board board = mock(Board.class);
         Player player = mock(Player.class);
 
-        when(gameEngine.getGameState()).thenReturn(gameState);
+        when(gameEngine.gameState()).thenReturn(gameState);
         when(gameState.board()).thenReturn(board);
         when(gameState.currentPlayer()).thenReturn(player);
         when(gameState.currentPlayerId()).thenReturn(PlayerId.PLAYER_1);
@@ -85,7 +85,7 @@ class ControllerTest {
         Board board = mock(Board.class);
         Player player = mock(Player.class);
 
-        when(gameEngine.getGameState()).thenReturn(gameState);
+        when(gameEngine.gameState()).thenReturn(gameState);
         when(gameState.board()).thenReturn(board);
         when(gameState.currentPlayer()).thenReturn(player);
         when(gameState.currentPlayerId()).thenReturn(PlayerId.PLAYER_1);
@@ -114,7 +114,7 @@ class ControllerTest {
         Board board = mock(Board.class);
         Player player = mock(Player.class);
 
-        when(gameEngine.getGameState()).thenReturn(gameState);
+        when(gameEngine.gameState()).thenReturn(gameState);
         when(gameState.board()).thenReturn(board);
         when(gameState.currentPlayer()).thenReturn(player);
         when(gameState.currentPlayerId()).thenReturn(PlayerId.PLAYER_1);
@@ -182,7 +182,7 @@ class ControllerTest {
         Board board = mock(Board.class);
         Player player = mock(Player.class);
 
-        when(gameEngine.getGameState()).thenReturn(gameState);
+        when(gameEngine.gameState()).thenReturn(gameState);
         when(gameState.board()).thenReturn(board);
         when(gameState.currentPlayer()).thenReturn(player);
         when(gameState.players()).thenReturn(List.of(player));
@@ -216,7 +216,7 @@ class ControllerTest {
         Player player1 = mock(Player.class);
         Player player2 = mock(Player.class);
 
-        when(gameEngine.getGameState()).thenReturn(gameState);
+        when(gameEngine.gameState()).thenReturn(gameState);
         when(gameState.board()).thenReturn(board);
         when(gameState.currentPlayerId()).thenReturn(PlayerId.PLAYER_1);
         when(gameState.players()).thenReturn(List.of(player1, player2));
@@ -251,7 +251,7 @@ class ControllerTest {
         Board board = mock(Board.class);
         Player player = mock(Player.class);
 
-        when(gameEngine.getGameState()).thenReturn(gameState);
+        when(gameEngine.gameState()).thenReturn(gameState);
         when(gameState.board()).thenReturn(board);
         when(gameState.currentPlayerId()).thenReturn(PlayerId.PLAYER_1);
         when(gameState.players()).thenReturn(List.of(player));
@@ -279,7 +279,7 @@ class ControllerTest {
         Board board = mock(Board.class);
         Player player = mock(Player.class);
 
-        when(gameEngine.getGameState()).thenReturn(gameState);
+        when(gameEngine.gameState()).thenReturn(gameState);
         when(gameState.board()).thenReturn(board);
         when(gameState.currentPlayer()).thenReturn(player);
         when(gameState.currentPlayerId()).thenReturn(PlayerId.PLAYER_1);
@@ -307,7 +307,7 @@ class ControllerTest {
         GameState gameState = mock(GameState.class);
         Board board = mock(Board.class);
 
-        when(gameEngine.getGameState()).thenReturn(gameState);
+        when(gameEngine.gameState()).thenReturn(gameState);
         when(gameState.board()).thenReturn(board);
         when(gameState.players()).thenReturn(List.of());
         when(board.walls()).thenReturn(Collections.emptySet());
@@ -328,7 +328,7 @@ class ControllerTest {
         GameState gameState = mock(GameState.class);
         Board board = mock(Board.class);
 
-        when(gameEngine.getGameState()).thenReturn(gameState);
+        when(gameEngine.gameState()).thenReturn(gameState);
         when(gameState.board()).thenReturn(board);
         when(gameState.players()).thenReturn(List.of());
         when(board.walls()).thenReturn(Collections.emptySet());

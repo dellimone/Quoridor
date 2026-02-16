@@ -74,12 +74,12 @@ class BoardTest {
 
         Board boardWithWalls = board.addWall(wall1).addWall(wall2);
 
-        Set<BlockedEdge> blockedEdges = boardWithWalls.getAllBlockedEdges();
+        Set<BlockedEdge> blockedEdges = boardWithWalls.allBlockedEdges();
 
         // Horizontal wall blocks 4 edges, vertical wall blocks 4 edges
         assertEquals(8, blockedEdges.size());
-        assertTrue(blockedEdges.containsAll(wall1.getBlockedEdges()));
-        assertTrue(blockedEdges.containsAll(wall2.getBlockedEdges()));
+        assertTrue(blockedEdges.containsAll(wall1.blockedEdges()));
+        assertTrue(blockedEdges.containsAll(wall2.blockedEdges()));
     }
 
     @Test

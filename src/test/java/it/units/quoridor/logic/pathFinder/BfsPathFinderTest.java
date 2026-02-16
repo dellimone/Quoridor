@@ -1,7 +1,6 @@
-package it.units.quoridor.logic;
+package it.units.quoridor.logic.pathFinder;
 
 import it.units.quoridor.domain.*;
-import it.units.quoridor.logic.pathFinder.BfsPathFinder;
 import org.junit.jupiter.api.Test;
 
 import static it.units.quoridor.TestFixtures.*;

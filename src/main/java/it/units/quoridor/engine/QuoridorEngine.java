@@ -10,6 +10,7 @@ import it.units.quoridor.engine.moves.PawnMoveGenerator;
 import java.util.*;
 
 
+/** Standard Quoridor engine for 2-player games. Delegates all validation to the Logic layer. */
 public class QuoridorEngine implements GameEngine {
 
     private final GameRules rules;
@@ -37,19 +38,13 @@ public class QuoridorEngine implements GameEngine {
     }
 
     public void newGame() {
-        // Create fixed player specs for 2-player game
         List<PlayerSpec> specs = List.of(
             new PlayerSpec(PlayerId.PLAYER_1, "Player 1"),
             new PlayerSpec(PlayerId.PLAYER_2, "Player 2")
         );
 
-        // Derive PlayerCount from specs size
         PlayerCount playerCount = PlayerCount.TWO_PLAYERS;
-
-        // Create initial state using factory
         state = InitialStateFactory.create(rules, playerCount, specs);
-
-        // Clear history for new game
         history.clear();
     }
 
@@ -74,7 +69,7 @@ public class QuoridorEngine implements GameEngine {
 
 
     @Override
-    public GameState getGameState() {
+    public GameState gameState() {
         return state;
     }
 
@@ -86,7 +81,7 @@ public class QuoridorEngine implements GameEngine {
 
 
     @Override
-    public PlayerId getWinner() {
+    public PlayerId winner() {
         return state.winner();
     }
 
@@ -122,7 +117,6 @@ public class QuoridorEngine implements GameEngine {
         return Optional.empty();
     }
 
-    // for the controller for the highlights
     @Override
     public Set<Position> legalPawnDestinationsForPlayer(PlayerId player) {
         if (state.isGameOver()) return Set.of();

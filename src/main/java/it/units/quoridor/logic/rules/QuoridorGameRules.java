@@ -3,6 +3,7 @@ package it.units.quoridor.logic.rules;
 import it.units.quoridor.domain.PlayerId;
 import it.units.quoridor.domain.Position;
 
+/** Standard Quoridor rules: P1 starts bottom, P2 starts top, 10 walls each. */
 public class QuoridorGameRules implements GameRules {
 
     @Override

@@ -15,8 +15,7 @@ import static org.junit.jupiter.api.Assertions.*;
 @ExtendWith(MockitoExtension.class)
 public class PawnValidatorTest {
 
-    private final QuoridorGameRules rules = new QuoridorGameRules();
-    private final PawnMoveValidator pawnValidator = new RulesPawnMoveValidator();
+    private final PawnMoveValidator pawnValidator = new QuoridorPawnMoveValidator();
 
     // 1. returns true when proposed square is free from walls
     @Test

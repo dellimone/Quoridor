@@ -1,16 +1,15 @@
 package it.units.quoridor.engine;
 
+/** Result of a move attempt — success, failure with reason, or win. */
 public record MoveResult(
         boolean isValid,
         boolean isWin,
         String message
 ) {
-    // Static factory method for a standard success
     public static MoveResult success() {
-        return new MoveResult(true,false, "Move executed");
+        return new MoveResult(true, false, "Move executed");
     }
 
-    // Static factory method for a custom failure message
     public static MoveResult failure(String reason) {
         return new MoveResult(false, false, reason);
     }

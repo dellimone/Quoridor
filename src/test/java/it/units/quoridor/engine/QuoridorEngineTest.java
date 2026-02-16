@@ -2,8 +2,7 @@ package it.units.quoridor.engine;
 
 import it.units.quoridor.domain.*;
 import it.units.quoridor.domain.GameState;
-import it.units.quoridor.logic.rules.GameRules;
-import it.units.quoridor.logic.rules.QuoridorGameRules;
+import it.units.quoridor.logic.rules.*;
 
 
 import it.units.quoridor.logic.validation.PawnMoveValidator;
@@ -36,13 +35,13 @@ public class QuoridorEngineTest {
         GameRules rules = new QuoridorGameRules();
         QuoridorEngine engine = new QuoridorEngine(rules, pawnValidator, wallValidator, winChecker);
 
-        GameState actual = engine.getGameState();
+        GameState actual = engine.gameState();
 
         // Verify initial state matches rules
         assertNotNull(actual);
         assertEquals(PlayerId.PLAYER_1, actual.currentPlayerId());
-        assertEquals(P1_START,actual.getPlayerPosition(PlayerId.PLAYER_1));
-        assertEquals(P2_START,actual.getPlayerPosition(PlayerId.PLAYER_2));
+        assertEquals(P1_START,actual.playerPosition(PlayerId.PLAYER_1));
+        assertEquals(P2_START,actual.playerPosition(PlayerId.PLAYER_2));
     }
 
     // 19. reset game on demand
@@ -52,7 +51,7 @@ public class QuoridorEngineTest {
         GameRules rules = new QuoridorGameRules();
         QuoridorEngine engine = new QuoridorEngine(rules, pawnValidator, wallValidator, winChecker);
 
-        GameState initialState = engine.getGameState();
+        GameState initialState = engine.gameState();
 
         // we do some actions (two valid moves)
         Wall wall = hWall(1, 2);
@@ -60,20 +59,20 @@ public class QuoridorEngineTest {
         engine.placeWall(PlayerId.PLAYER_1, wall);
 
         // check if current state changed
-        GameState oldGameState = engine.getGameState();
+        GameState oldGameState = engine.gameState();
         assertNotEquals(initialState, oldGameState);
 
         when(pawnValidator.canMovePawn(any(GameState.class), eq(PlayerId.PLAYER_2), eq(new Position(8, 5)))).thenReturn(true);
         engine.movePawn(PlayerId.PLAYER_2, new Position(8, 5));
 
         // check if current state changed
-        assertNotEquals(oldGameState, engine.getGameState());
+        assertNotEquals(oldGameState, engine.gameState());
 
         // now we reset
         engine.reset();
 
         // and we should be back to the initial state
-        assertEquals(initialState, engine.getGameState());
+        assertEquals(initialState, engine.gameState());
     }
 
     // 20. undo on new engine returns false
@@ -94,12 +93,12 @@ public class QuoridorEngineTest {
         GameRules rules = new QuoridorGameRules();
         QuoridorEngine engine = new QuoridorEngine(rules, pawnValidator, wallValidator, winChecker);
 
-        GameState initialState = engine.getGameState();
+        GameState initialState = engine.gameState();
 
         when(pawnValidator.canMovePawn(any(GameState.class), eq(PlayerId.PLAYER_1), eq(new Position(0, 5)))).thenReturn(true);
         engine.movePawn(PlayerId.PLAYER_1, new Position(0, 5));
 
-        assertNotEquals(initialState, engine.getGameState());
+        assertNotEquals(initialState, engine.gameState());
 
         boolean undoAction = engine.undo();
         assertTrue(undoAction);
@@ -112,18 +111,18 @@ public class QuoridorEngineTest {
         GameRules rules = new QuoridorGameRules();
         QuoridorEngine engine = new QuoridorEngine(rules, pawnValidator, wallValidator, winChecker);
 
-        GameState initialState = engine.getGameState();
+        GameState initialState = engine.gameState();
 
         when(pawnValidator.canMovePawn(any(GameState.class), eq(PlayerId.PLAYER_1), eq(new Position(0, 5)))).thenReturn(true);
         engine.movePawn(PlayerId.PLAYER_1, new Position(0, 5));
 
-        assertNotEquals(initialState, engine.getGameState());
+        assertNotEquals(initialState, engine.gameState());
 
         boolean undoAction = engine.undo();
         assertTrue(undoAction);
 
         // we check that we actually went back to the previous state
-        assertEquals(initialState, engine.getGameState());
+        assertEquals(initialState, engine.gameState());
     }
 
     // 23. after valid wall placement, state changes; if we do undo(), we go back to the initial state
@@ -133,7 +132,7 @@ public class QuoridorEngineTest {
         GameRules rules = new QuoridorGameRules();
         QuoridorEngine engine = new QuoridorEngine(rules, pawnValidator, wallValidator, winChecker);
 
-        GameState initialState = engine.getGameState();
+        GameState initialState = engine.gameState();
 
         // make a valid wall placement
         Wall wall = hWall(1, 2);
@@ -141,18 +140,18 @@ public class QuoridorEngineTest {
         engine.placeWall(PlayerId.PLAYER_1, wall);
 
         // assert the state actually changed
-        assertNotEquals(initialState, engine.getGameState());
-        assertEquals(9, engine.getGameState().getPlayer(PlayerId.PLAYER_1).wallsRemaining());
+        assertNotEquals(initialState, engine.gameState());
+        assertEquals(9, engine.gameState().player(PlayerId.PLAYER_1).wallsRemaining());
 
         // undo last wall action
         boolean undoAction = engine.undo();
         assertTrue(undoAction);
 
         // we check that we actually went back to the previous state
-        assertEquals(initialState, engine.getGameState());
+        assertEquals(initialState, engine.gameState());
 
         // assert P1 went back to 10 walls remaining
-        assertEquals(10, engine.getGameState().getPlayer(PlayerId.PLAYER_1).wallsRemaining());
+        assertEquals(10, engine.gameState().player(PlayerId.PLAYER_1).wallsRemaining());
     }
 
     // 24. history should be cleared after a reset
@@ -162,7 +161,7 @@ public class QuoridorEngineTest {
         GameRules rules = new QuoridorGameRules();
         QuoridorEngine engine = new QuoridorEngine(rules, pawnValidator, wallValidator, winChecker);
 
-        GameState initialState = engine.getGameState();
+        GameState initialState = engine.gameState();
 
         // make a valid wall placement
         Wall wall = hWall(1, 2);
@@ -170,8 +169,8 @@ public class QuoridorEngineTest {
         engine.placeWall(PlayerId.PLAYER_1, wall);
 
         // assert the state actually changed
-        assertNotEquals(initialState, engine.getGameState());
-        assertEquals(9, engine.getGameState().getPlayer(PlayerId.PLAYER_1).wallsRemaining());
+        assertNotEquals(initialState, engine.gameState());
+        assertEquals(9, engine.gameState().player(PlayerId.PLAYER_1).wallsRemaining());
 
         // reset game
         engine.reset();
@@ -181,10 +180,10 @@ public class QuoridorEngineTest {
         assertFalse(undoAction);
 
         // we check that we actually went back to the initial state
-        assertEquals(initialState, engine.getGameState());
+        assertEquals(initialState, engine.gameState());
 
         // assert P1 went back to 10 walls remaining
-        assertEquals(10, engine.getGameState().getPlayer(PlayerId.PLAYER_1).wallsRemaining());
+        assertEquals(10, engine.gameState().player(PlayerId.PLAYER_1).wallsRemaining());
     }
 
     // Test for new constructor + newGame() refactoring
@@ -202,15 +201,15 @@ public class QuoridorEngineTest {
         // When: Starting a new game
 
         // Then: GameState should match the rules
-        GameState state = engine.getGameState();
+        GameState state = engine.gameState();
 
         // Players should be at start positions per rules
-        assertEquals(P1_START,state.getPlayerPosition(PlayerId.PLAYER_1));
-        assertEquals(P2_START,state.getPlayerPosition(PlayerId.PLAYER_2));
+        assertEquals(P1_START,state.playerPosition(PlayerId.PLAYER_1));
+        assertEquals(P2_START,state.playerPosition(PlayerId.PLAYER_2));
 
         // Players should have correct wall count (10 for 2-player)
-        assertEquals(10, state.getPlayer(PlayerId.PLAYER_1).wallsRemaining());
-        assertEquals(10, state.getPlayer(PlayerId.PLAYER_2).wallsRemaining());
+        assertEquals(10, state.player(PlayerId.PLAYER_1).wallsRemaining());
+        assertEquals(10, state.player(PlayerId.PLAYER_2).wallsRemaining());
 
         // Game should be in progress
         assertEquals(GameStatus.IN_PROGRESS, state.status());

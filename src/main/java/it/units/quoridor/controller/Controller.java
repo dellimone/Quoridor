@@ -14,6 +14,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+/**
+ * Translates view events into engine calls and engine state into view models.
+ * Flips row coordinates between view (0=top) and domain (0=bottom).
+ */
 public class Controller implements ViewListener {
 
     private final GameEngine engine;
@@ -33,13 +37,12 @@ public class Controller implements ViewListener {
         view.setListener(this);
     }
 
-    // Start a new game
     @Override
     public void onNewGame(int playerCount) {
-        engine.reset();  // Reset game state and clear history
-        view.hideOverlays();  // Hide any victory/welcome screens
+        engine.reset();
+        view.hideOverlays();
         updateView();
-        view.setUndoEnabled(false);  // No history at game start
+        view.setUndoEnabled(false);
         view.showMessage("New game started!");
     }
 
@@ -53,8 +56,7 @@ public class Controller implements ViewListener {
     @Override
     public void onCellClicked(int rowE, int col) {
 
-        // Actual context of the game
-        GameState gameState = engine.getGameState();
+        GameState gameState = engine.gameState();
         Player currentPlayer = gameState.currentPlayer();
 
         Position targetPosition = new Position(flipRow(rowE), col);
@@ -82,17 +84,13 @@ public class Controller implements ViewListener {
     @Override
     public void onWallPlacement(int row, int col, WallOrientation orientation) {
 
-        // Info about the player
-        Player currentPlayer = engine.getGameState().currentPlayer();
+        Player currentPlayer = engine.gameState().currentPlayer();
 
         try {
             WallPosition wallPosition = new WallPosition(flipWallRow(row), col);
             Wall wall  = new Wall(wallPosition, orientation);
-            // Ask the engine to place the wall
-            // Control if the player has wall to place, if they overlap or block the path
             MoveResult result = engine.placeWall(currentPlayer.id(), wall);
 
-            // Check the result
             if (result.isValid()) {
                 updateView();
             } else {
@@ -125,53 +123,38 @@ public class Controller implements ViewListener {
      */
     void updateView() {
 
-        // Take the actual game state
-        GameState gameState = engine.getGameState();
+        GameState gameState = engine.gameState();
         if (gameState == null) return;
 
         updateGameBoard(gameState);
         updateInfoPanel(gameState);
         updateHighlights(gameState);
 
-        // Update the current player
         view.setCurrentPlayer(gameState.currentPlayerId());
-
-        // Update undo button state (disable if game over)
         view.setUndoEnabled(!gameState.isGameOver());
     }
 
     void updateGameBoard(GameState gameState) {
-        // Associate each player id and its position
         Map<PlayerId, Position> viewPosition = new HashMap<>();
-
-        // For each player game state we take the id and the position and add them to viewPosition
         for (Player p: gameState.players()) {
             Position position = gameState.board().playerPosition(p.id());
-            if (position != null ) {
-                // The position is converted
+            if (position != null) {
                 viewPosition.put(p.id(), new Position(flipRow(position.row()), position.col()));
             }
         }
 
-        // Set so we don't have duplicate of walls
         Set<Wall> viewWalls = new HashSet<>();
-
-        // For each wall in the game state convert the row index and add them to the viewWalls
         for (Wall w: gameState.board().walls()) {
             WallPosition domainPos = w.position();
             WallPosition wallPosition = new WallPosition(flipWallRow(domainPos.row()), domainPos.col());
             viewWalls.add(new Wall(wallPosition, w.orientation()));
         }
 
-        // viewModel contain the data for the view
         BoardViewModel viewModel = new BoardViewModel(viewPosition, viewWalls);
-
-        // Update the current view
         view.renderBoard(viewModel);
     }
 
     void updateInfoPanel(GameState gameState) {
-        // Update player info panel
         List<PlayerViewModel> playerViewModels = gameState.players().stream()
                 .map(p -> new PlayerViewModel(
                         p.id(),

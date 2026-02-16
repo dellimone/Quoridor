@@ -4,6 +4,7 @@ import it.units.quoridor.domain.*;
 import it.units.quoridor.logic.validation.PawnMoveValidator;
 import java.util.*;
 
+/** Generates all legal pawn destinations by testing candidate positions against the validator. */
 public class PawnMoveGenerator {
 
     private final PawnMoveValidator pawnValidator;
@@ -18,7 +19,7 @@ public class PawnMoveGenerator {
 
     public Set<Position> legalDestinations(GameState state, PlayerId playerId) {
         Set<Position> destinations = new HashSet<>();
-        Position from = state.getPlayerPosition(playerId);
+        Position from = state.playerPosition(playerId);
 
         for (Position candidate : candidatePositions(from)) {
             if (pawnValidator.canMovePawn(state, playerId, candidate)) {

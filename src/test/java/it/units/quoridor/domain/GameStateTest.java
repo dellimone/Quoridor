@@ -34,7 +34,7 @@ class GameStateTest {
     void getPlayerByIdReturnsCorrectPlayer() {
         GameState gameState = stateWith(new Board());
 
-        Player retrievedPlayer = gameState.getPlayer(PlayerId.PLAYER_2);
+        Player retrievedPlayer = gameState.player(PlayerId.PLAYER_2);
 
         assertEquals(P2, retrievedPlayer);
         assertEquals("P2", retrievedPlayer.name());
@@ -207,7 +207,7 @@ class GameStateTest {
         // Status should still be FINISHED
         assertEquals(GameStatus.FINISHED, updatedState.status());
         assertEquals(PlayerId.PLAYER_2, updatedState.winner());
-        assertEquals(9, updatedState.getPlayer(PlayerId.PLAYER_1).wallsRemaining());
+        assertEquals(9, updatedState.player(PlayerId.PLAYER_1).wallsRemaining());
     }
 
     @Test
@@ -249,10 +249,10 @@ class GameStateTest {
         GameState newState = gameState.withWallPlaced(PlayerId.PLAYER_1, wall);
 
         // Player 1 should have one less wall
-        assertEquals(10, gameState.getPlayer(PlayerId.PLAYER_1).wallsRemaining()); // Original unchanged
-        assertEquals(9, newState.getPlayer(PlayerId.PLAYER_1).wallsRemaining()); // Decremented
+        assertEquals(10, gameState.player(PlayerId.PLAYER_1).wallsRemaining()); // Original unchanged
+        assertEquals(9, newState.player(PlayerId.PLAYER_1).wallsRemaining()); // Decremented
         // Player 2 unchanged
-        assertEquals(10, newState.getPlayer(PlayerId.PLAYER_2).wallsRemaining());
+        assertEquals(10, newState.player(PlayerId.PLAYER_2).wallsRemaining());
     }
 
     @Test
@@ -275,8 +275,8 @@ class GameStateTest {
         GameState newState = gameState.withWallPlaced(PlayerId.PLAYER_1, wall);
 
         // Player positions should be unchanged
-        assertEquals(P1_START, newState.getPlayerPosition(PlayerId.PLAYER_1));
-        assertEquals(P2_START, newState.getPlayerPosition(PlayerId.PLAYER_2));
+        assertEquals(P1_START, newState.playerPosition(PlayerId.PLAYER_1));
+        assertEquals(P2_START, newState.playerPosition(PlayerId.PLAYER_2));
     }
 
     // Tests for helper methods (Law of Demeter)
@@ -312,6 +312,6 @@ class GameStateTest {
 
         // Current player is still P1 (turn not advanced), with 9 walls
         assertEquals(9, newState.currentPlayerWallsRemaining());
-        assertEquals(9, newState.getPlayer(PlayerId.PLAYER_1).wallsRemaining());
+        assertEquals(9, newState.player(PlayerId.PLAYER_1).wallsRemaining());
     }
 }

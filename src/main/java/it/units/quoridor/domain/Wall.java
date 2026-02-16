@@ -5,7 +5,7 @@ import java.util.Set;
 
 public record Wall(WallPosition position, WallOrientation orientation) {
 
-    public Set<BlockedEdge> getBlockedEdges() {
+    public Set<BlockedEdge> blockedEdges() {
 
         int row = position.row();
         int col = position.col();

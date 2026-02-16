@@ -6,6 +6,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.Optional;
 
+/** Immutable game board: 9x9 cell grid tracking player positions and placed walls. */
 public record Board(
         Set<Wall> walls,
         Map<PlayerId, Position> playerPositions
@@ -27,7 +28,6 @@ public record Board(
         return new Board(walls, newPlayerPositions);
     }
 
-    // helper function for validator
     public Optional<PlayerId> occupantAt(Position position) {
         return playerPositions().entrySet().stream()
                 .filter(e -> e.getValue().equals(position))
@@ -40,15 +40,15 @@ public record Board(
         return playerPositions.get(playerId);
     }
 
-    public Set<BlockedEdge> getAllBlockedEdges() {
+    public Set<BlockedEdge> allBlockedEdges() {
         Set<BlockedEdge> blockedEdges = new HashSet<>();
         for (Wall wall : walls) {
-            blockedEdges.addAll(wall.getBlockedEdges());
+            blockedEdges.addAll(wall.blockedEdges());
         }
         return blockedEdges;
     }
 
     public boolean isEdgeBlocked(Position position, Direction direction) {
-        return getAllBlockedEdges().contains(new BlockedEdge(position, direction));
+        return allBlockedEdges().contains(new BlockedEdge(position, direction));
     }
 }

@@ -5,7 +5,6 @@ import java.util.Optional;
 
 /**
  * Represent a valid position on the 9x9 Quoridor board.
- *
  * Uses Cartesian coordinate system:
  * - Origin (0,0) at bottom-left corner
  * - row 0 = bottom, row 8 = top
@@ -31,7 +30,6 @@ public record Position(int row, int col) {
     }
 
 
-    // needed for the validator since move throws an exception (out of boundary movement should return false)
     public Optional<Position> tryMove(Direction direction) {
         int newRow = row + direction.rowDelta();
         int newCol = col + direction.colDelta();
@@ -41,7 +39,6 @@ public record Position(int row, int col) {
             return Optional.empty();
         }
 
-        // if it was valid, it will construct a new position and returns it inside an optional
         return Optional.of(new Position(newRow, newCol));
     }
 

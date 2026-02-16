@@ -2,7 +2,7 @@ package it.units.quoridor.engine.pawn;
 import it.units.quoridor.domain.*;
 
 import it.units.quoridor.logic.validation.PawnMoveValidator;
-import it.units.quoridor.logic.validation.RulesPawnMoveValidator;
+import it.units.quoridor.logic.validation.QuoridorPawnMoveValidator;
 import it.units.quoridor.engine.moves.PawnMoveGenerator;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -35,7 +35,7 @@ public class PawnMoveGeneratorTest {
 
 
     // integration tests: generator + real validator
-    private final PawnMoveValidator validator = new RulesPawnMoveValidator();
+    private final PawnMoveValidator validator = new QuoridorPawnMoveValidator();
     private final PawnMoveGenerator generator = new PawnMoveGenerator(validator);
 
     // 1. adjacent move appears in legal destinations

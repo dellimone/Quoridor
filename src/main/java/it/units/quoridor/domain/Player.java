@@ -1,5 +1,6 @@
 package it.units.quoridor.domain;
 
+/** Immutable player state: identity, name, and remaining wall count. */
 public record Player(
     PlayerId id,
     String name,
@@ -9,7 +10,6 @@ public record Player(
         if (wallsRemaining < 0) throw new IllegalArgumentException("wallsRemaining must be >= 0");
     }
 
-    // instead of mutating, we return a new player
     public Player useWall() {
         if (wallsRemaining <= 0) {
             throw new IllegalStateException("no walls remaining");

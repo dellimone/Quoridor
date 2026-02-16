@@ -1,5 +1,6 @@
 package it.units.quoridor.domain;
 
+/** Position on the 8x8 wall intersection grid (0-7, 0-7). Each intersection anchors a 2-cell wall. */
 public record WallPosition(int row, int col) {
     public static final int MIN_COORDINATE = 0;
     public static final int MAX_COORDINATE = 7;

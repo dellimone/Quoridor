@@ -1,10 +1,7 @@
-package it.units.quoridor.logic;
+package it.units.quoridor.logic.rules;
 
 import it.units.quoridor.domain.PlayerId;
 import it.units.quoridor.domain.Position;
-import it.units.quoridor.logic.rules.GameRules;
-import it.units.quoridor.logic.rules.PlayerCount;
-import it.units.quoridor.logic.rules.QuoridorGameRules;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;

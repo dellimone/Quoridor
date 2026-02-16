@@ -15,7 +15,7 @@ import static org.junit.jupiter.api.Assertions.*;
 public class WallValidatorTest {
     private final QuoridorGameRules rules = new QuoridorGameRules();
     private final BfsPathFinder pathFinder = new BfsPathFinder();
-    private final WallPlacementValidator wallValidator = new RulesWallPlacementValidator(rules, pathFinder);
+    private final WallPlacementValidator wallValidator = new QuoridorWallPlacementValidator(rules, pathFinder);
 
     // 1. legal placement on empty board: placing a wall in the middle should return true
     @Test

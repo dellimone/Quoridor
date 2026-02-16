@@ -1,8 +1,7 @@
 package it.units.quoridor.engine;
 
 import it.units.quoridor.domain.*;
-import it.units.quoridor.logic.rules.GameRules;
-import it.units.quoridor.logic.rules.QuoridorGameRules;
+import it.units.quoridor.logic.rules.*;
 
 
 import it.units.quoridor.logic.validation.PawnMoveValidator;
@@ -52,7 +51,7 @@ public class WallPlacementTest {
         GameRules rules = new QuoridorGameRules();
         QuoridorEngine engine = new QuoridorEngine(rules, pawnValidator, wallValidator, winChecker);
 
-        GameState initialState = engine.getGameState();
+        GameState initialState = engine.gameState();
 
         // define a new wall
         Wall wall = hWall(1, 2);
@@ -64,7 +63,7 @@ public class WallPlacementTest {
 
         // assertions
         assertFalse(result.isValid());
-        assertEquals(initialState, engine.getGameState());
+        assertEquals(initialState, engine.gameState());
 
         verify(wallValidator).canPlaceWall(any(GameState.class), eq(PlayerId.PLAYER_1), eq(wall));
         verifyNoMoreInteractions(wallValidator);
@@ -88,7 +87,7 @@ public class WallPlacementTest {
         // assertions
         assertTrue(result.isValid());
 
-        GameState nextState = engine.getGameState();
+        GameState nextState = engine.gameState();
         assertEquals(PlayerId.PLAYER_2, nextState.currentPlayerId());
 
         verify(wallValidator).canPlaceWall(any(GameState.class), eq(PlayerId.PLAYER_1), eq(wall));
@@ -102,7 +101,7 @@ public class WallPlacementTest {
         GameRules rules = new QuoridorGameRules();
         QuoridorEngine engine = new QuoridorEngine(rules, pawnValidator, wallValidator, winChecker);
 
-        GameState initialState = engine.getGameState();
+        GameState initialState = engine.gameState();
 
         // define a new wall
         Wall wall = hWall(1, 2);
@@ -111,7 +110,7 @@ public class WallPlacementTest {
 
         // assertions
         assertFalse(result.isValid());
-        assertEquals(initialState, engine.getGameState());
+        assertEquals(initialState, engine.gameState());
 
         // wall validator SHOULD NOT be called at all
         verifyNoInteractions(wallValidator);
@@ -151,7 +150,7 @@ public class WallPlacementTest {
         GameRules rules = new QuoridorGameRules();
         QuoridorEngine engine = new QuoridorEngine(rules, pawnValidator, wallValidator, winChecker);
 
-        Board initialBoard = engine.getGameState().board();
+        Board initialBoard = engine.gameState().board();
 
         // define a new wall
         Wall wall = hWall(1, 2);
@@ -164,8 +163,8 @@ public class WallPlacementTest {
         // assertions
         assertTrue(result.isValid());
 
-        GameState nextState = engine.getGameState();
-        Board newBoard = engine.getGameState().board();
+        GameState nextState = engine.gameState();
+        Board newBoard = engine.gameState().board();
 
         assertEquals(PlayerId.PLAYER_2, nextState.currentPlayerId());
         assertEquals(initialBoard.addWall(wall), newBoard); // new board should reflect valid wall placement
@@ -181,7 +180,7 @@ public class WallPlacementTest {
         GameRules rules = new QuoridorGameRules();
         QuoridorEngine engine = new QuoridorEngine(rules, pawnValidator, wallValidator, winChecker);
 
-        int currentWalls = engine.getGameState().getPlayer(PlayerId.PLAYER_1).wallsRemaining();
+        int currentWalls = engine.gameState().player(PlayerId.PLAYER_1).wallsRemaining();
 
         // define a new wall
         Wall wall = hWall(1, 2);
@@ -193,7 +192,7 @@ public class WallPlacementTest {
         assertTrue(result.isValid());
 
         // Verify wall was consumed
-        Player updatedP1 = engine.getGameState().getPlayer(PlayerId.PLAYER_1);
+        Player updatedP1 = engine.gameState().player(PlayerId.PLAYER_1);
         assertEquals(currentWalls - 1, updatedP1.wallsRemaining());
 
         verify(wallValidator).canPlaceWall(any(GameState.class), eq(PlayerId.PLAYER_1), eq(wall));
@@ -207,8 +206,8 @@ public class WallPlacementTest {
         GameRules rules = new QuoridorGameRules();
         QuoridorEngine engine = new QuoridorEngine(rules, pawnValidator, wallValidator, winChecker);
 
-        GameState initialState = engine.getGameState();
-        int currentWalls = initialState.getPlayer(PlayerId.PLAYER_1).wallsRemaining();
+        GameState initialState = engine.gameState();
+        int currentWalls = initialState.player(PlayerId.PLAYER_1).wallsRemaining();
 
         // define a new wall
         Wall wall = hWall(1, 2);
@@ -217,11 +216,11 @@ public class WallPlacementTest {
         when(wallValidator.canPlaceWall(any(GameState.class), eq(PlayerId.PLAYER_1), eq(wall))).thenReturn(false);
 
         MoveResult result = engine.placeWall(PlayerId.PLAYER_1, wall);
-        int updatedWalls = engine.getGameState().getPlayer(PlayerId.PLAYER_1).wallsRemaining();
+        int updatedWalls = engine.gameState().player(PlayerId.PLAYER_1).wallsRemaining();
 
         assertFalse(result.isValid());
         assertEquals(currentWalls, updatedWalls);
-        assertEquals(initialState, engine.getGameState());
+        assertEquals(initialState, engine.gameState());
 
         verify(wallValidator).canPlaceWall(any(GameState.class), eq(PlayerId.PLAYER_1), eq(wall));
         verifyNoMoreInteractions(wallValidator);
@@ -235,10 +234,6 @@ public class WallPlacementTest {
         GameRules rules = new QuoridorGameRules();
         QuoridorEngine engine = new QuoridorEngine(rules, pawnValidator, wallValidator, winChecker);
 
-        // Use up all walls for PLAYER_1 by manually updating the state
-        GameState stateWithNoWalls = engine.getGameState()
-                .withUpdatedPlayer(engine.getGameState().getPlayer(PlayerId.PLAYER_1).withWallsRemaining(0));
-
         // We need to simulate this - let's place 10 valid walls
         Wall wall = hWall(1, 2);
         when(wallValidator.canPlaceWall(any(GameState.class), eq(PlayerId.PLAYER_1), any(Wall.class))).thenReturn(true);
@@ -250,15 +245,15 @@ public class WallPlacementTest {
             engine.placeWall(PlayerId.PLAYER_2, new Wall(new WallPosition(i % 8, 1), WallOrientation.VERTICAL));
         }
 
-        GameState initialState = engine.getGameState();
-        assertEquals(0, initialState.getPlayer(PlayerId.PLAYER_1).wallsRemaining());
+        GameState initialState = engine.gameState();
+        assertEquals(0, initialState.player(PlayerId.PLAYER_1).wallsRemaining());
 
         // Try to place another wall
         MoveResult result = engine.placeWall(PlayerId.PLAYER_1, wall);
 
         // assertions
         assertFalse(result.isValid());
-        assertEquals(initialState, engine.getGameState()); // state should not have changed
+        assertEquals(initialState, engine.gameState()); // state should not have changed
 
         // Validator should have been called 20 times (10 for each player), but not for the final attempt
         verify(wallValidator, times(20)).canPlaceWall(any(GameState.class), any(PlayerId.class), any(Wall.class));
