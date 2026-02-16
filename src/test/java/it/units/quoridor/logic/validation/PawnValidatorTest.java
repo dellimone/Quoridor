@@ -169,7 +169,7 @@ public class PawnValidatorTest {
     void Diagonal_horizontalCase () {
         Player p1 = new Player(PlayerId.PLAYER_1, "P1", 10, 8);
         Player p2 = new Player(PlayerId.PLAYER_2, "P2", 10, 0);
-        WallPosition wallPosition = new WallPosition(2,3);
+        WallPosition wallPosition = new WallPosition(2,2);
         Wall wall = new Wall(wallPosition, WallOrientation.VERTICAL);
 
         Board board = new Board()
