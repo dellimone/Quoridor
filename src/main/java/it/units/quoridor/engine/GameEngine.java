@@ -4,7 +4,9 @@ import it.units.quoridor.domain.PlayerId;
 import it.units.quoridor.domain.Position;
 import it.units.quoridor.domain.Wall;
 import it.units.quoridor.domain.GameState;
+import it.units.quoridor.logic.rules.PlayerCount;
 
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -22,7 +24,9 @@ public interface GameEngine {
     /** All positions the player can legally move to this turn. */
     Set<Position> legalPawnDestinationsForPlayer(PlayerId player);
 
-    /** Reset to a fresh game. */
+    /** Start a new game with the given player count and player names. */
+    void newGame(PlayerCount playerCount, List<String> playerNames);
+    /** Reset to a fresh game with the last used player count. */
     void reset();
     /** Undo the last move. Returns false if nothing to undo. */
     boolean undo();
