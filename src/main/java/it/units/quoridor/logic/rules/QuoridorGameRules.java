@@ -3,6 +3,9 @@ package it.units.quoridor.logic.rules;
 import it.units.quoridor.domain.PlayerId;
 import it.units.quoridor.domain.Position;
 
+import java.util.HashSet;
+import java.util.Set;
+
 /** Standard Quoridor rules: P1 starts bottom, P2 starts top, 10 walls each. */
 public class QuoridorGameRules implements GameRules {
 
@@ -17,14 +20,22 @@ public class QuoridorGameRules implements GameRules {
     }
 
     @Override
-    public int getGoalRow(PlayerId playerId) {
+    public Set<Position> getGoalPositions(PlayerId playerId) {
         return switch (playerId) {
-            case PLAYER_1 -> 8;
-            case PLAYER_2 -> 0;
+            case PLAYER_1 -> buildRow(8);
+            case PLAYER_2 -> buildRow(0);
             case PLAYER_3, PLAYER_4 -> throw new UnsupportedOperationException(
                 "4-player goals not yet implemented (requires column goals)"
             );
         };
+    }
+
+    private Set<Position> buildRow(int row) {
+        Set<Position> positions = new HashSet<>();
+        for (int col = Position.MIN_COORDINATE; col <= Position.MAX_COORDINATE; col++) {
+            positions.add(new Position(row, col));
+        }
+        return Set.copyOf(positions);
     }
 
     @Override

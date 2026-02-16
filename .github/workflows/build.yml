@@ -2,7 +2,7 @@ name: CI
 
 on:
   push:
-    branches: [main, master, code-smells]
+    branches: [main, master, four-player-game]
   pull_request:
     branches: [main, master]
 
