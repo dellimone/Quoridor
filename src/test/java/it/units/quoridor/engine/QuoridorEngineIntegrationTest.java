@@ -224,4 +224,114 @@ public class QuoridorEngineIntegrationTest {
         assertEquals(new Position(1, 3), engine.getGameState().getPlayerPosition(PlayerId.PLAYER_1));
     }
 
+
+    // 9. standard one-step in a cardinal direction tests
+    @Test
+    void standardOneStepTest_bothPlayers() {
+        Player p1 = new Player(PlayerId.PLAYER_1, "P1", 10, 8);
+        Player p2 = new Player(PlayerId.PLAYER_2, "P2", 10, 0);
+
+        Board board = new Board()
+                .withPlayerAt(PlayerId.PLAYER_1, new Position(6, 5))
+                .withPlayerAt(PlayerId.PLAYER_2, new Position(3, 0))
+                .addWall(new Wall(new WallPosition(3, 0), WallOrientation.VERTICAL))
+                .addWall(new Wall(new WallPosition(4, 5), WallOrientation.VERTICAL))
+                .addWall(new Wall(new WallPosition(6, 4), WallOrientation.HORIZONTAL));
+
+
+        GameState state = new GameState(board, List.of(p1, p2));
+        QuoridorEngine engine = QuoridorEngine.forTesting(rules, pawnValidator, wallValidator, winChecker, state);
+
+        Set<Position> destP1 = engine.legalPawnDestinationsForPlayer(PlayerId.PLAYER_1);
+        Set<Position> destP2 = engine.legalPawnDestinationsForPlayer(PlayerId.PLAYER_2);
+
+        //legal moves for player1
+        assertTrue(destP1.contains(new Position(6, 4)));
+        assertTrue(destP1.contains(new Position(5, 5)));
+
+        // legal moves for player2
+        assertTrue(destP2.contains(new Position(4, 0)));
+        assertTrue(destP2.contains(new Position(2, 0)));
+    }
+
+    // 10. straight and diagonal jump cases
+    @Test
+    void straightAndDiagonal_JumpCases_bothPlayers() {
+        Player p1 = new Player(PlayerId.PLAYER_1, "P1", 10, 8);
+        Player p2 = new Player(PlayerId.PLAYER_2, "P2", 10, 0);
+
+        Board board = new Board()
+                .withPlayerAt(PlayerId.PLAYER_1, new Position(6, 5))
+                .withPlayerAt(PlayerId.PLAYER_2, new Position(5, 5))
+                .addWall(new Wall(new WallPosition(6, 4), WallOrientation.HORIZONTAL));
+
+
+        GameState state = new GameState(board, List.of(p1, p2));
+        QuoridorEngine engine = QuoridorEngine.forTesting(rules, pawnValidator, wallValidator, winChecker, state);
+
+        Set<Position> destP1 = engine.legalPawnDestinationsForPlayer(PlayerId.PLAYER_1);
+        Set<Position> destP2 = engine.legalPawnDestinationsForPlayer(PlayerId.PLAYER_2);
+
+        // legal moves for player1
+        assertTrue(destP1.contains(new Position(6, 4)));
+        assertTrue(destP1.contains(new Position(6, 6)));
+        assertTrue(destP1.contains(new Position(4, 5)));
+
+        // legal moves for player2
+        assertTrue(destP2.contains(new Position(6, 4)));
+        assertTrue(destP2.contains(new Position(6, 6)));
+        assertTrue(destP2.contains(new Position(5, 4)));
+        assertTrue(destP2.contains(new Position(5, 6)));
+        assertTrue(destP1.contains(new Position(6, 4)));
+        assertTrue(destP1.contains(new Position(4, 5)));
+    }
+
+    // 11. edge cases for diagonals and jump for player 1
+    @Test
+    void straightAndDiagonalJumps_playerOneCases() {
+        Player p1 = new Player(PlayerId.PLAYER_1, "P1", 10, 8);
+        Player p2 = new Player(PlayerId.PLAYER_2, "P2", 10, 0);
+
+        Board board = new Board()
+                .withPlayerAt(PlayerId.PLAYER_1, new Position(4, 3))
+                .withPlayerAt(PlayerId.PLAYER_2, new Position(4, 4))
+                .addWall(new Wall(new WallPosition(4, 4), WallOrientation.HORIZONTAL));
+
+
+        GameState state = new GameState(board, List.of(p1, p2));
+        QuoridorEngine engine = QuoridorEngine.forTesting(rules, pawnValidator, wallValidator, winChecker, state);
+
+        Set<Position> destP1 = engine.legalPawnDestinationsForPlayer(PlayerId.PLAYER_1);
+        // legal moves for player1
+        assertTrue(destP1.contains(new Position(5, 3)));
+        assertTrue(destP1.contains(new Position(3, 3)));
+        assertTrue(destP1.contains(new Position(4, 2)));
+        assertTrue(destP1.contains(new Position(4, 5)));
+    }
+
+    // edge case in which we disable the jump and thus enable the diagonal by putting a wall behind
+    @Test
+    void straightAndDiagonalJumps_playerOneEdgeCases() {
+        Player p1 = new Player(PlayerId.PLAYER_1, "P1", 10, 8);
+        Player p2 = new Player(PlayerId.PLAYER_2, "P2", 10, 0);
+
+        Board board = new Board()
+                .withPlayerAt(PlayerId.PLAYER_1, new Position(4, 3))
+                .withPlayerAt(PlayerId.PLAYER_2, new Position(4, 4))
+                .addWall(new Wall(new WallPosition(5, 4), WallOrientation.HORIZONTAL))
+                .addWall(new Wall(new WallPosition(4, 4), WallOrientation.VERTICAL));
+
+
+        GameState state = new GameState(board, List.of(p1, p2));
+        QuoridorEngine engine = QuoridorEngine.forTesting(rules, pawnValidator, wallValidator, winChecker, state);
+
+
+        Set<Position> destP1 = engine.legalPawnDestinationsForPlayer(PlayerId.PLAYER_1);
+
+        // legal moves for player1
+        assertTrue(destP1.contains(new Position(5, 3)));
+        assertTrue(destP1.contains(new Position(3, 3)));
+        assertTrue(destP1.contains(new Position(4, 2)));
+        assertTrue(destP1.contains(new Position(3, 4)));
+    }
 }
