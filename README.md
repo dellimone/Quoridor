@@ -62,6 +62,7 @@ This will launch the Swing-based graphical user interface.
 ## Documentation
 
 - [Architecture Details](docs/architecture.md) - High level description of architecture
+- [Project Wiki](https://github.com/dellimone/Quoridor/wiki) - Detailed description of the implementation
 - [Game Rules](docs/rules.md) - Complete Quoridor rules reference
 - [Behaviors](docs/behaviors.md) - Technical functional requirements
 - [Test Scenarios (Plays)](docs/plays.md) - Integration test cases and expected outcomes.
