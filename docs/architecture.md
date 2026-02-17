@@ -56,7 +56,20 @@ The system follows a **layered architecture** in which we separate:
 
 # 2. Main Components
 ## 2.1 Domain Layer
-// TODO
+- Defines the **vocabulary** of the game: all data structures that the upper layers reason about.
+- Every type is **immutable** (Java records or enums). State changes always produce new instances,
+  which enables safe undo / redo and eliminates aliasing bugs.
+- **Self-validating**: constructors reject illegal values immediately (e.g. out-of-range coordinates),
+  so invalid states are impossible to represent.
+- Two distinct coordinate systems prevent accidental misuse at compile time:
+    - `Position` — 9x9 cell grid (0–8, 0–8)
+    - `WallPosition` — 8x8 wall-intersection grid (0–7, 0–7)
+- `Wall` computes the `BlockedEdge`s it creates, bridging the physical wall placement model and the
+  movement model used by the logic layer.
+- Spatial state (where are pawns and walls?) lives in `Board`;
+  player identity and resources (name, walls remaining) live in `Player`.
+  `GameState` composes both into a complete, immutable snapshot of the game.
+
 
 ## 2.2 Validation (Rules) Layer
 - Its only role is checking whether a certain move is legal or not given the current GameState; it just has to return
