@@ -9,7 +9,6 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
@@ -350,11 +349,12 @@ public class BoardPanel extends JPanel {
 
     private HoverResult detectHoverTarget(int cellRow, int cellCol, float localX, float localY) {
         float edgeThreshold = 0.1f;
+        int wallCol = (localX < 0.5f) ? Math.max(0, cellCol - 1) : cellCol;
+        int wallRow = (localY < 0.5f) ? Math.max(0, cellRow - 1) : cellRow;
 
         if (localY < edgeThreshold) {
             // Near TOP edge — horizontal wall above
             if (cellRow > 0) {
-                int wallCol = (localX < 0.5f) ? Math.max(0, cellCol - 1) : cellCol;
                 if (wallCol <= 7) {
                     return HoverResult.ofWall(new WallHover(cellRow - 1, wallCol, WallOrientation.HORIZONTAL));
                 }
@@ -362,7 +362,6 @@ public class BoardPanel extends JPanel {
         } else if (localY > (1.0f - edgeThreshold)) {
             // Near BOTTOM edge — horizontal wall below
             if (cellRow < GRID_SIZE - 1) {
-                int wallCol = (localX < 0.5f) ? Math.max(0, cellCol - 1) : cellCol;
                 if (wallCol <= 7) {
                     return HoverResult.ofWall(new WallHover(cellRow, wallCol, WallOrientation.HORIZONTAL));
                 }
@@ -370,7 +369,6 @@ public class BoardPanel extends JPanel {
         } else if (localX < edgeThreshold) {
             // Near LEFT edge — vertical wall to the left
             if (cellCol > 0) {
-                int wallRow = (localY < 0.5f) ? Math.max(0, cellRow - 1) : cellRow;
                 if (wallRow <= 7) {
                     return HoverResult.ofWall(new WallHover(wallRow, cellCol - 1, WallOrientation.VERTICAL));
                 }
@@ -378,7 +376,6 @@ public class BoardPanel extends JPanel {
         } else if (localX > (1.0f - edgeThreshold)) {
             // Near RIGHT edge — vertical wall to the right
             if (cellCol < GRID_SIZE - 1) {
-                int wallRow = (localY < 0.5f) ? Math.max(0, cellRow - 1) : cellRow;
                 if (wallRow <= 7) {
                     return HoverResult.ofWall(new WallHover(wallRow, cellCol, WallOrientation.VERTICAL));
                 }
