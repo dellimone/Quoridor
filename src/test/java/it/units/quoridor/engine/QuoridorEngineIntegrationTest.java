@@ -288,4 +288,112 @@ public class QuoridorEngineIntegrationTest {
         assertTrue(destP1.contains(new Position(4, 2)));
         assertTrue(destP1.contains(new Position(3, 4)));
     }
+
+    // 12. verify that:
+    /*
+    - UI-style highlight query works
+    - engine enforces turn
+    - engine updates immutable state
+    - turn changes after move
+     */
+    @Test
+    void integration_cornerMove_executesAndTurnAdvances() {
+        Board board = new Board()
+                .withPlayerAt(PlayerId.PLAYER_1, new Position(0, 0))
+                .withPlayerAt(PlayerId.PLAYER_2, new Position(8, 8));
+
+        GameState state = stateWith(board);
+        QuoridorEngine engine = QuoridorEngine.forTesting(rules, pawnValidator, wallValidator, winChecker, state);
+
+        Set<Position> destP1 = engine.legalPawnDestinationsForPlayer(PlayerId.PLAYER_1);
+        assertEquals(Set.of(new Position(1, 0), new Position(0, 1)), destP1);
+
+        // execute a valid move
+        MoveResult r = engine.movePawn(PlayerId.PLAYER_1, new Position(0, 1));
+        assertTrue(r.isValid()); // adapt if your MoveResult API differs
+
+        // state updated
+        GameState after = engine.gameState();
+        assertEquals(new Position(0, 1), after.playerPosition(PlayerId.PLAYER_1));
+
+        // and finally assert that the turn advanced to P2
+        assertEquals(PlayerId.PLAYER_2, after.currentPlayerId());
+    }
+
+    // 13. available straight jump
+    @Test
+    void integration_straightJump_executesCorrectLanding() {
+        Board board = new Board()
+                .withPlayerAt(PlayerId.PLAYER_1, new Position(4, 4))
+                .withPlayerAt(PlayerId.PLAYER_2, new Position(5, 4)); // directly NORTH of P1
+
+        GameState state = stateWith(board);
+        QuoridorEngine engine = QuoridorEngine.forTesting(rules, pawnValidator, wallValidator, winChecker, state);
+
+        // jump landing should be legal from (4,4) to (6,4)
+        Set<Position> destP1 = engine.legalPawnDestinationsForPlayer(PlayerId.PLAYER_1);
+        assertTrue(destP1.contains(new Position(6, 4)));
+
+        MoveResult r = engine.movePawn(PlayerId.PLAYER_1, new Position(6, 4));
+        assertTrue(r.isValid());
+
+        GameState after = engine.gameState();
+        assertEquals(new Position(6, 4), after.playerPosition(PlayerId.PLAYER_1));
+        assertEquals(PlayerId.PLAYER_2, after.currentPlayerId());
+    }
+
+    // from the plays.md
+
+    // Play #23
+    /**
+     * Setup: A at (0, 0),
+     * Valid moves: SOUTH, EAST only,
+     * Invalid: NORTH (edge), WEST (edge)
+     */
+    @Test
+    void cornerMovement_playerAt00_onlyTwoLegalDestinations() {
+        Board board = new Board()
+                .withPlayerAt(PlayerId.PLAYER_1, new Position(0, 0))
+                .withPlayerAt(PlayerId.PLAYER_2, new Position(8, 8));
+
+        GameState state = stateWith(board);
+        QuoridorEngine engine = QuoridorEngine.forTesting(rules, pawnValidator, wallValidator, winChecker, state);
+
+        Set<Position> destP1 = engine.legalPawnDestinationsForPlayer(PlayerId.PLAYER_1);
+
+        // only two legal moves from the corner (no walls):
+        assertTrue(destP1.contains(new Position(1, 0)));
+        assertTrue(destP1.contains(new Position(0, 1)));
+
+        // and nothing else
+        assertEquals(Set.of(new Position(1, 0), new Position(0, 1)), destP1);
+    }
+
+
+    // Play #24
+    /**
+     * Setup:
+     * - A at (4, 4)
+     * - B at (3, 4)
+     * - C at (4, 5),
+     * Action: A moves toward B,
+     * Result: Normal jump rules apply to B,
+     */
+    @Test
+    void threePawnsAdjacent_jumpTowardB_isStillAvailable() {
+        Board board = new Board()
+                .withPlayerAt(PlayerId.PLAYER_1, new Position(4, 4)) // A
+                .withPlayerAt(PlayerId.PLAYER_2, new Position(3, 4)) // B (toward direction)
+                .withPlayerAt(PlayerId.PLAYER_3, new Position(4, 5)) // C (adjacent, irrelevant for A->B)
+                .withPlayerAt(PlayerId.PLAYER_4, new Position(8, 8)); // somewhere else
+
+        GameState state = stateWith(board);
+        QuoridorEngine engine = QuoridorEngine.forTesting(rules, pawnValidator, wallValidator, winChecker, state);
+
+        Set<Position> destA = engine.legalPawnDestinationsForPlayer(PlayerId.PLAYER_1);
+
+        // A should be able to jump over B to the square behind B (normal jump rule)
+        assertTrue(destA.contains(new Position(2, 4)));
+    }
+
 }

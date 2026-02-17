@@ -205,4 +205,4 @@ Walls by definition cannot be place outside the grid.
 - [X] legalPawnDestinations should include jumps when available
 - [X] Diagonal jump has to become a possibility when straight jump is not accessible
 - [X] Diagonal jump option should not be available when straight jump is
-- [ ] movePawn succeeds for diagonal jumps AND the engine updates the state
+- [X] movePawn succeeds for diagonal jumps AND the engine updates the state
