@@ -78,13 +78,8 @@ public class PlayerInfoPanel extends JPanel {
      * A card representing a single player's information.
      */
     private static class PlayerCard extends JPanel {
-        private final PlayerViewModel player;
-        private final JLabel nameLabel;
-        private final JLabel wallsLabel;
-        private final JPanel colorIndicator;
 
         public PlayerCard(PlayerViewModel player) {
-            this.player = player;
 
             setLayout(new BorderLayout(5, 5));
             setBorder(BorderFactory.createCompoundBorder(
@@ -95,17 +90,17 @@ public class PlayerInfoPanel extends JPanel {
             setMaximumSize(new Dimension(180, 80));
 
             // Color indicator (small colored square)
-            colorIndicator = new JPanel();
+            JPanel colorIndicator = new JPanel();
             colorIndicator.setPreferredSize(new Dimension(20, 20));
             colorIndicator.setBackground(getPlayerColor(player.id()));
             colorIndicator.setBorder(BorderFactory.createLineBorder(Color.BLACK));
 
             // Player name
-            nameLabel = new JLabel(player.name());
+            JLabel nameLabel = new JLabel(player.name());
             nameLabel.setFont(new Font("SansSerif", Font.BOLD, 14));
 
             // Walls remaining
-            wallsLabel = new JLabel("Walls: " + player.wallsRemaining());
+            JLabel wallsLabel = new JLabel("Walls: " + player.wallsRemaining());
             wallsLabel.setFont(new Font("SansSerif", Font.PLAIN, 12));
 
             // Layout
