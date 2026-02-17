@@ -1,9 +1,14 @@
 plugins {
     id("java")
+    id("application")
 }
 
 group = "it.units"
 version = "1.0-SNAPSHOT"
+
+application {
+    mainClass.set("it.units.Main")
+}
 
 repositories {
     mavenCentral()
