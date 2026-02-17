@@ -93,12 +93,23 @@ boolean legality and **is not responsible** of modifying the actual state.
 
 This is done for the UI to **never** interact with validators or board logic directly.
 
-## 2.5 UI/Controller Layer
+## 2.5 Controller Layer
+- It acts as the mediator and translator between the user interface and the game engine. Its primary goal is to ensure that the View and the Engine remain decoupled and never speaks to each other directly.
+- It is responsible for:
+    - converting data from the UI into commands that the Engine understands
+    - converting the game state into read-only data structures for the UI
+    - orchestrating the flow between user action and engine responses
+
+- The Controller does not contain game rules, path validation logic or rendering responsibilities.
+
+## 2.6 UI/View
+- The UI layer is responsible for rendering the game state and capturing the user interaction.
 - This part handles:
-  - user inputs
-  - display updates
-  - highlight allowed moves
-- It communicates **only with the engine**: it does not know how jumps work, how walls are stored, how legality is computed.
+    - user inputs
+    - render the board, pawns and walls
+    - highlight allowed moves
+    - display feedback messages
+- It communicates **only with the controller**: it does not know how movement rules are implemented, how walls are stored, how path validation and legality is computed.
 
 # 3. An example
 
